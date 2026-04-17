@@ -169,6 +169,131 @@
       line-height: 1.65;
     }
 
+    /* ─── PROGRESS ─── */
+    .progress-list { display: flex; flex-direction: column; gap: 0; }
+    .progress-item {
+      display: flex; gap: 20px; align-items: flex-start;
+      padding-bottom: 36px; position: relative;
+    }
+    .progress-item:not(:last-child)::after {
+      content: ''; position: absolute;
+      left: 19px; top: 42px; width: 2px; bottom: 0;
+      background: #d1fae5;
+    }
+    .progress-dot {
+      width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; font-weight: 800; position: relative; z-index: 1;
+    }
+    .progress-dot--done { background: #dcfce7; border: 2px solid #16a34a; color: #16a34a; }
+    .progress-content { padding-top: 6px; }
+    .progress-phase { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: #16a34a; margin-bottom: 5px; }
+    .progress-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .progress-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.7; max-width: 680px; }
+
+    /* ─── POV CALLOUT ─── */
+    .pov-callout {
+      margin-top: 16px;
+      background: linear-gradient(135deg, #14532d 0%, #166534 100%);
+      border-radius: 12px;
+      padding: 24px 28px;
+      max-width: 680px;
+    }
+    .pov-label {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; color: #86efac; margin-bottom: 10px;
+    }
+    .pov-text {
+      font-size: 15px; color: #fff; line-height: 1.75;
+    }
+    .pov-text strong { color: #bbf7d0; font-weight: 700; }
+
+    /* ─── TRATON FEEDBACK ─── */
+    .traton-feedback {
+      margin-top: 16px; display: flex; flex-direction: column; gap: 12px;
+      max-width: 700px;
+    }
+    .feedback-item {
+      display: flex; gap: 14px; align-items: flex-start;
+      background: var(--bg-card); border: 1.5px solid var(--border);
+      border-radius: 10px; padding: 16px 18px;
+      box-shadow: var(--shadow);
+    }
+    .feedback-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+    .feedback-title { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+    .feedback-body  { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+    /* ─── ARCHITECTURE DIAGRAM ─── */
+    .arch-diagram {
+      margin-top: 24px;
+      display: flex; flex-direction: column; align-items: stretch; gap: 0;
+    }
+    .arch-layer {
+      display: flex; align-items: center; gap: 16px;
+      border-radius: 10px; padding: 14px 18px;
+      border: 1.5px solid transparent;
+    }
+    .arch-layer--agent    { background: #eff6ff; border-color: #bfdbfe; }
+    .arch-layer--registry { background: #f0fdf4; border-color: #bbf7d0; }
+    .arch-layer--governance { background: #fdf4ff; border-color: #e9d5ff; }
+    .arch-layer--auth     { background: #fefce8; border-color: #fde68a; }
+    .arch-layer--security { background: #fff1f2; border-color: #fecdd3; }
+
+    .arch-layer-icon { font-size: 20px; flex-shrink: 0; }
+    .arch-layer-name { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+    .arch-layer-desc { font-size: 12px; color: var(--text-secondary); }
+
+    .arch-arrow {
+      text-align: center; color: var(--text-muted);
+      font-size: 16px; line-height: 1; padding: 4px 0;
+    }
+
+    /* progress last item no connector */
+    .progress-item--last::after { display: none !important; }
+
+    /* next card colors 4 and 5 */
+    .next-card--4 { border-left: 4px solid #0891b2; }
+    .next-card--5 { border-left: 4px solid #9ca3af; background: #fafafa; }
+    .next-card--4 .next-num { background: #0891b2; }
+    .next-card--5 .next-num { background: #9ca3af; font-size: 14px; }
+    .next-card--4 .next-label { color: #0891b2; }
+    .next-card--5 .next-label { color: var(--text-muted); }
+
+    /* ─── NEXT STEPS ─── */
+    .next-steps-grid { display: flex; flex-direction: column; gap: 16px; }
+    .next-card {
+      display: flex; gap: 24px; align-items: flex-start;
+      background: var(--bg-card); border: 1.5px solid var(--border);
+      border-radius: var(--radius); padding: 28px;
+      box-shadow: var(--shadow); position: relative;
+    }
+    .next-card--1 { border-left: 4px solid var(--traton-blue); }
+    .next-card--2 { border-left: 4px solid #7c3aed; }
+    .next-card--3 { border-left: 4px solid #059669; }
+
+    .next-num {
+      width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px; font-weight: 800; color: #fff; flex-shrink: 0;
+    }
+    .next-card--1 .next-num { background: var(--traton-blue); }
+    .next-card--2 .next-num { background: #7c3aed; }
+    .next-card--3 .next-num { background: #059669; }
+
+    .next-body { flex: 1; }
+    .next-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--text-muted); margin-bottom: 5px; }
+    .next-card--1 .next-label { color: var(--traton-blue); }
+    .next-card--2 .next-label { color: #7c3aed; }
+    .next-card--3 .next-label { color: #059669; }
+    .next-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .next-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+    .next-desc strong { color: var(--text-primary); }
+
+    @media (max-width: 560px) {
+      .next-card { flex-direction: column; gap: 14px; }
+      .progress-item { gap: 14px; }
+    }
+
     /* ─── TEAM ─── */
     .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px; }
 
@@ -241,7 +366,7 @@
     <div class="container">
       <div class="hero-eyebrow">⚡ Innovation Sprint</div>
       <h1>The <em>Thinking</em> Behind<br>the Marketplace</h1>
-      <p>Target users, pain points, key features, risks, and the experiment we're running to find out if we're solving the right problem.</p>
+      <p>Our hypothesis, what we've validated so far, and what we're building toward next.</p>
     </div>
   </div>
 
@@ -309,6 +434,157 @@
             <div class="question">"If you knew every AI agent that existed across the TRATON group right now — what would you actually do differently?"</div>
           </div>
         </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PROGRESS + NEXT STEPS -->
+  <section class="section section--alt">
+    <div class="container">
+
+      <!-- Progress -->
+      <div class="sh">
+        <h2>Progress So Far</h2>
+        <p>What we've done and what we learned from it.</p>
+      </div>
+
+      <div class="progress-list" style="margin-bottom: 64px;">
+
+        <div class="progress-item">
+          <div class="progress-dot progress-dot--done">✓</div>
+          <div class="progress-content">
+            <div class="progress-phase">Step 1 — Completed</div>
+            <div class="progress-title">Discovery session — tested our understanding of the problem space</div>
+            <p class="progress-desc">Ran an initial session to pressure-test our assumptions — specifically whether the core need was technical or organisational. Confirmed that discoverability and cross-brand coordination are genuine blockers. From this we developed our Point of View statement:</p>
+            <div class="pov-callout">
+              <div class="pov-label">Point of View Statement</div>
+              <p class="pov-text"><strong>Teams working digitally across TRATON need</strong> a way to easily find, trust, and reuse existing agents across brands <strong>because</strong> access restrictions and fragmented systems make reuse harder than rebuilding, <strong>leading to</strong> duplicated work and inefficiency.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="progress-item">
+          <div class="progress-dot progress-dot--done">✓</div>
+          <div class="progress-content">
+            <div class="progress-phase">Step 2 — Completed</div>
+            <div class="progress-title">Built initial prototype</div>
+            <p class="progress-desc">Developed this interactive prototype — an agent registry across all TRATON brands with a live governance demo — to make the concept tangible and discussable with real stakeholders rather than abstract.</p>
+          </div>
+        </div>
+
+        <div class="progress-item progress-item--last">
+          <div class="progress-dot progress-dot--done">✓</div>
+          <div class="progress-content">
+            <div class="progress-phase">Step 3 — Completed</div>
+            <div class="progress-title">Validated prototype with TRATON — directionally confirmed, new dimensions identified</div>
+            <p class="progress-desc">Tested the prototype with our TRATON point of contact. Feedback was clear: <strong>the direction is absolutely right</strong> for what they need. Beyond validation, the session surfaced additional dimensions that are key to moving forward and have now been added to our roadmap:</p>
+            <div class="traton-feedback">
+              <div class="feedback-item">
+                <div class="feedback-icon">🗺️</div>
+                <div>
+                  <div class="feedback-title">Governance &amp; security architecture mapping</div>
+                  <div class="feedback-body">A conceptual mapping of how governance, access control, authentication, and security layers fit together in the platform — consulting-style, diagram-driven.</div>
+                </div>
+              </div>
+              <div class="feedback-item">
+                <div class="feedback-icon">✨</div>
+                <div>
+                  <div class="feedback-title">Agent creation in-platform (nice-to-have)</div>
+                  <div class="feedback-body">The idea of building and deploying agents directly inside the marketplace resonated strongly. Scope TBD — will be evaluated once core validation is complete.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Next Steps -->
+      <div class="sh">
+        <h2>Next Steps</h2>
+        <p>In order — each step depends on the one before it.</p>
+      </div>
+
+      <div class="next-steps-grid">
+
+        <div class="next-card next-card--1">
+          <div class="next-num">1</div>
+          <div class="next-body">
+            <div class="next-label">Upcoming · Build</div>
+            <div class="next-title">Add real agents and get the platform live with a backend</div>
+            <p class="next-desc">Move from prototype to a working platform: onboard 2–3 real agents with live data flows, proper backend infrastructure, and the governance pipeline enforced end-to-end — not simulated.</p>
+          </div>
+        </div>
+
+        <div class="next-card next-card--2">
+          <div class="next-num">2</div>
+          <div class="next-body">
+            <div class="next-label">Dependent on Step 1 · Interviews &amp; Prototype Demo</div>
+            <div class="next-title">Run interviews to test we're solving the right problem — then show the live platform</div>
+            <p class="next-desc">Run structured interviews with brand leads using <strong>MOMs test principles</strong> — questions designed to surface real behaviour and expose whether the problem we've identified is the one that actually blocks people. Once unbiased responses are captured, close each interview by showing the live platform, letting people react to a working version of the solution.</p>
+          </div>
+        </div>
+
+        <div class="next-card next-card--3">
+          <div class="next-num">3</div>
+          <div class="next-body">
+            <div class="next-label">From TRATON Input · Consulting Deliverable</div>
+            <div class="next-title">Conceptual mapping of the platform's governance &amp; security architecture</div>
+            <p class="next-desc">Develop a clear, diagram-driven conceptual model showing how the platform's key technical dimensions fit together — governance, access control, authentication, and security. Consulting-style advisory output to guide future technical decisions.</p>
+            <div class="arch-diagram">
+              <div class="arch-layer arch-layer--agent">
+                <div class="arch-layer-icon">🤖</div>
+                <div>
+                  <div class="arch-layer-name">Agent Layer</div>
+                  <div class="arch-layer-desc">Brand agents (Scania · MAN · VW T&amp;B · TRATON)</div>
+                </div>
+              </div>
+              <div class="arch-arrow">↓</div>
+              <div class="arch-layer arch-layer--registry">
+                <div class="arch-layer-icon">📋</div>
+                <div>
+                  <div class="arch-layer-name">Registry &amp; Discovery Layer</div>
+                  <div class="arch-layer-desc">Metadata · Search · Capability matching · Status</div>
+                </div>
+              </div>
+              <div class="arch-arrow">↓</div>
+              <div class="arch-layer arch-layer--governance">
+                <div class="arch-layer-icon">🛡️</div>
+                <div>
+                  <div class="arch-layer-name">Governance Engine</div>
+                  <div class="arch-layer-desc">Policy check · Data classification · Human approval gate · Audit log</div>
+                </div>
+              </div>
+              <div class="arch-arrow">↓</div>
+              <div class="arch-layer arch-layer--auth">
+                <div class="arch-layer-icon">🔑</div>
+                <div>
+                  <div class="arch-layer-name">Access Control &amp; Auth</div>
+                  <div class="arch-layer-desc">Identity · Role-based permissions · Cross-brand trust model</div>
+                </div>
+              </div>
+              <div class="arch-arrow">↓</div>
+              <div class="arch-layer arch-layer--security">
+                <div class="arch-layer-icon">🔒</div>
+                <div>
+                  <div class="arch-layer-name">Security &amp; Compliance Layer</div>
+                  <div class="arch-layer-desc">Encryption · GDPR · EU AI Act conformance · Immutable audit trail</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="next-card next-card--5">
+          <div class="next-num">★</div>
+          <div class="next-body">
+            <div class="next-label">Nice-to-Have · Scope TBD</div>
+            <div class="next-title">Agent creation &amp; flow builder inside the platform</div>
+            <p class="next-desc">The ability to build, configure, and deploy agents directly within the marketplace — not just discover existing ones. This idea resonated strongly with TRATON stakeholders. Whether it falls within our project scope will be determined once core validation is complete.</p>
+          </div>
+        </div>
+
       </div>
 
     </div>
