@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Innovation — TRATON AI Agent Marketplace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── TOKENS ─── */
+    :root {
+      --scania-blue:       #00305e;
+      --scania-amber:      #f0a500;
+      --man-red:           #cc0000;
+      --vwtb-blue:         #003b82;
+      --vwtb-cyan:         #00b0f0;
+      --traton-navy:       #002b6d;
+      --traton-blue:       #0066cc;
+
+      --bg-body:           #f5f6f8;
+      --bg-card:           #ffffff;
+      --bg-header:         #001a40;
+      --bg-section-alt:    #eef1f6;
+
+      --text-primary:      #0d1117;
+      --text-secondary:    #4b5563;
+      --text-muted:        #9ca3af;
+      --border-subtle:     #e5e7eb;
+
+      --radius-card:       14px;
+      --shadow-card:       0 1px 3px rgba(0,0,0,.07), 0 4px 16px rgba(0,0,0,.06);
+      --shadow-card-hover: 0 4px 16px rgba(0,0,0,.12), 0 8px 32px rgba(0,0,0,.10);
+      --transition:        200ms ease;
+    }
+
+    /* ─── RESET ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg-body);
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+
+    /* ─── LAYOUT ─── */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .section { padding: 80px 0; }
+    .section--alt { background: var(--bg-section-alt); }
+
+    /* ─── HEADER ─── */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-header);
+      border-bottom: 2px solid var(--traton-blue);
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+    .brand { display: flex; align-items: center; gap: 14px; }
+    .brand-logo {
+      width: 40px; height: 40px;
+      background: var(--traton-blue);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -1px;
+      flex-shrink: 0;
+    }
+    .brand-name { display: block; font-size: 15px; font-weight: 700; color: #fff; letter-spacing: 0.4px; }
+    .brand-subtitle { display: block; font-size: 11px; font-weight: 400; color: rgba(255,255,255,.55); letter-spacing: 0.6px; text-transform: uppercase; margin-top: 1px; }
+    .site-nav { display: flex; gap: 4px; }
+    .nav-link {
+      padding: 7px 16px; border-radius: 7px;
+      font-size: 14px; font-weight: 500;
+      color: rgba(255,255,255,.65); transition: var(--transition);
+    }
+    .nav-link:hover { color: #fff; background: rgba(255,255,255,.08); }
+    .nav-link.active { color: #fff; background: rgba(0,102,204,.5); }
+    .nav-link--highlight { border: 1.5px solid rgba(0,102,204,.5); margin-left: 4px; }
+    .nav-link--highlight:hover { border-color: var(--traton-blue); }
+    @media (max-width: 640px) { .site-nav { display: none; } }
+
+    /* ─── HERO ─── */
+    .page-hero {
+      background: linear-gradient(135deg, var(--bg-header) 0%, #1a1060 100%);
+      padding: 64px 0 72px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .page-hero h1 {
+      font-size: 36px; font-weight: 800; color: #fff;
+      letter-spacing: -1px; line-height: 1.2; margin-bottom: 14px;
+    }
+    .page-hero h1 span { color: #a78bfa; }
+    .page-hero p {
+      font-size: 16px; color: rgba(255,255,255,.65);
+      max-width: 580px; line-height: 1.75;
+    }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(167,139,250,.15); border: 1px solid rgba(167,139,250,.35);
+      color: #c4b5fd; border-radius: 20px;
+      padding: 5px 14px; font-size: 12px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.8px;
+      margin-bottom: 20px;
+    }
+
+    /* ─── HYPOTHESIS BLOCK ─── */
+    .hypothesis-block {
+      background: linear-gradient(135deg, var(--traton-navy) 0%, #0d3572 100%);
+      border-radius: 20px;
+      padding: 48px;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 56px;
+    }
+    .hypothesis-block::before {
+      content: '"';
+      position: absolute;
+      top: -20px; left: 32px;
+      font-size: 180px; font-weight: 900;
+      color: rgba(255,255,255,.04);
+      line-height: 1; font-family: Georgia, serif;
+      pointer-events: none;
+    }
+    .hypothesis-label {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+      color: #a78bfa; margin-bottom: 20px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .hypothesis-label::after {
+      content: ''; flex: 1; height: 1px; background: rgba(167,139,250,.25);
+    }
+    .hypothesis-text {
+      font-size: 20px; font-weight: 500;
+      color: #fff; line-height: 1.75;
+      max-width: 760px; position: relative; z-index: 1;
+    }
+    .hypothesis-text strong { color: #a78bfa; font-weight: 700; }
+    .hypothesis-text em { color: #67e8f9; font-style: normal; }
+    .hypothesis-meta {
+      display: flex; gap: 32px; margin-top: 32px;
+      padding-top: 28px; border-top: 1px solid rgba(255,255,255,.1);
+      flex-wrap: wrap;
+    }
+    .hypothesis-meta-item { }
+    .hypothesis-meta-label {
+      font-size: 11px; color: rgba(255,255,255,.4);
+      text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px;
+    }
+    .hypothesis-meta-value {
+      font-size: 14px; color: rgba(255,255,255,.8); font-weight: 500;
+    }
+
+    /* ─── SECTION HEADERS ─── */
+    .section-title { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
+    .section-subtitle { font-size: 15px; color: var(--text-secondary); margin-bottom: 40px; }
+
+    /* ─── PROBLEM / OPPORTUNITY GRID ─── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+    @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+
+    .insight-card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius-card);
+      padding: 28px;
+      box-shadow: var(--shadow-card);
+    }
+    .insight-card-icon { font-size: 28px; margin-bottom: 14px; }
+    .insight-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .insight-card p { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+    .insight-card.card--problem { border-top: 3px solid #dc2626; }
+    .insight-card.card--opportunity { border-top: 3px solid var(--traton-blue); }
+    .insight-card.card--approach { border-top: 3px solid #7c3aed; }
+    .insight-card.card--success { border-top: 3px solid #16a34a; }
+
+    /* ─── TEAM GRID ─── */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 24px;
+    }
+    .team-card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius-card);
+      padding: 28px 24px;
+      box-shadow: var(--shadow-card);
+      text-align: center;
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .team-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-card-hover); }
+    .team-avatar {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: 800;
+      margin: 0 auto 16px;
+      color: #fff;
+    }
+    .team-name { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .team-role { font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.4; }
+    .team-brand-badge {
+      display: inline-block; padding: 3px 10px;
+      border-radius: 20px; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.4px; text-transform: uppercase;
+    }
+
+    /* ─── TIMELINE / MILESTONES ─── */
+    .milestone-list { display: flex; flex-direction: column; gap: 0; }
+    .milestone {
+      display: flex; gap: 20px; align-items: flex-start;
+      padding-bottom: 32px; position: relative;
+    }
+    .milestone:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 19px; top: 40px;
+      width: 2px; bottom: 0;
+      background: var(--border-subtle);
+    }
+    .milestone-dot {
+      width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+      border: 2px solid var(--border-subtle);
+      background: var(--bg-card);
+      position: relative; z-index: 1;
+    }
+    .milestone-dot.done { background: #dcfce7; border-color: #16a34a; }
+    .milestone-dot.active { background: #dbeafe; border-color: var(--traton-blue); }
+    .milestone-dot.upcoming { background: var(--bg-section-alt); }
+
+    .milestone-content { padding-top: 6px; }
+    .milestone-phase { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); margin-bottom: 4px; }
+    .milestone-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+    .milestone-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.65; }
+    .milestone-tag {
+      display: inline-block; margin-top: 8px;
+      padding: 3px 10px; border-radius: 20px;
+      font-size: 11px; font-weight: 600;
+    }
+    .milestone-tag.done    { background: #dcfce7; color: #16a34a; }
+    .milestone-tag.active  { background: #dbeafe; color: #2563eb; }
+    .milestone-tag.upcoming{ background: var(--bg-section-alt); color: var(--text-muted); }
+
+    /* ─── METRICS ─── */
+    .metrics-row {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px; margin-bottom: 48px;
+    }
+    .metric-card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius-card);
+      padding: 24px 20px;
+      box-shadow: var(--shadow-card);
+    }
+    .metric-num { font-size: 32px; font-weight: 800; color: var(--traton-blue); line-height: 1; margin-bottom: 6px; }
+    .metric-label { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+    .metric-desc { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+    /* ─── FOOTER ─── */
+    .site-footer {
+      background: var(--bg-header);
+      border-top: 1px solid rgba(255,255,255,.08);
+      padding: 28px 0; text-align: center;
+    }
+    .site-footer p { font-size: 13px; color: rgba(255,255,255,.35); }
+    .site-footer span { color: rgba(255,255,255,.6); }
+
+    /* ─── UTIL ─── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 10px 20px; border-radius: 8px;
+      font-size: 14px; font-weight: 600;
+      cursor: pointer; border: 1.5px solid transparent;
+      font-family: inherit; transition: var(--transition);
+      text-decoration: none;
+    }
+    .btn--primary { background: var(--traton-blue); color: #fff; border-color: var(--traton-blue); }
+    .btn--primary:hover { background: #0052a8; }
+    .divider { height: 1px; background: var(--border-subtle); margin: 48px 0; }
+  </style>
+</head>
+
+<body>
+
+  <!-- ─── HEADER ─── -->
+  <header class="site-header">
+    <div class="header-inner container">
+      <a href="index.html" class="brand">
+        <div class="brand-logo">T</div>
+        <div>
+          <span class="brand-name">TRATON Group</span>
+          <span class="brand-subtitle">AI Agent Marketplace</span>
+        </div>
+      </a>
+      <nav class="site-nav">
+        <a href="index.html#registry"   class="nav-link">Registry</a>
+        <a href="index.html#governance" class="nav-link">Governance</a>
+        <a href="index.html#about"      class="nav-link">About</a>
+        <a href="innovation.html"       class="nav-link nav-link--highlight active">Innovation</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ─── PAGE HERO ─── -->
+  <div class="page-hero">
+    <div class="container">
+      <div class="hero-tag">⚡ Innovation Initiative</div>
+      <h1>The <span>Innovation</span> Behind<br>the Marketplace</h1>
+      <p>Our hypothesis, team, and the strategic thinking that drives the TRATON AI Agent Marketplace — from the problem we identified to the outcome we're testing.</p>
+    </div>
+  </div>
+
+  <!-- ─── INNOVATORS HYPOTHESIS ─── -->
+  <section class="section">
+    <div class="container">
+      <div class="hypothesis-block">
+        <div class="hypothesis-label">Innovators Hypothesis</div>
+        <p class="hypothesis-text">
+          We believe that <strong>enterprise AI agents operating in silos across brands</strong>
+          create compounding inefficiencies and governance risk. By providing
+          <em>a unified, policy-enforced marketplace layer</em> for agent discovery and cross-brand
+          orchestration, we will <strong>reduce redundant agent development by 40%</strong> and
+          enable <em>trusted, auditable data flows</em> across TRATON's brand portfolio —
+          without sacrificing brand autonomy. We'll know we're right when
+          <strong>at least 3 brands actively publish and consume agents</strong> through the platform
+          within the first quarter of rollout.
+        </p>
+        <div class="hypothesis-meta">
+          <div class="hypothesis-meta-item">
+            <div class="hypothesis-meta-label">Target Users</div>
+            <div class="hypothesis-meta-value">Brand AI leads, Data Governance teams</div>
+          </div>
+          <div class="hypothesis-meta-item">
+            <div class="hypothesis-meta-label">Validation Signal</div>
+            <div class="hypothesis-meta-value">3+ brands publishing agents in Q1</div>
+          </div>
+          <div class="hypothesis-meta-item">
+            <div class="hypothesis-meta-label">Key Risk</div>
+            <div class="hypothesis-meta-value">Brand autonomy vs. group standardisation</div>
+          </div>
+          <div class="hypothesis-meta-item">
+            <div class="hypothesis-meta-label">Initiative Stage</div>
+            <div class="hypothesis-meta-value">Prototype / Validation</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Problem / Opportunity Cards -->
+      <div class="section-title">Context &amp; Problem Space</div>
+      <p class="section-subtitle">What we observed, and why it matters now.</p>
+
+      <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 20px;">
+        <div class="insight-card card--problem">
+          <div class="insight-card-icon">⚠️</div>
+          <h4>Fragmented Agent Landscape</h4>
+          <p>Each brand is independently developing AI agents for overlapping functions — procurement, logistics, HR — with no shared infrastructure, duplicating cost and effort across the group.</p>
+        </div>
+        <div class="insight-card card--problem">
+          <div class="insight-card-icon">🔒</div>
+          <h4>Invisible Governance Risk</h4>
+          <p>Cross-brand data flows between autonomous agents happen without visibility, policy enforcement, or audit trails — creating regulatory exposure under GDPR and the EU AI Act.</p>
+        </div>
+        <div class="insight-card card--opportunity">
+          <div class="insight-card-icon">🔗</div>
+          <h4>Reuse Potential</h4>
+          <p>An estimated 60% of agent capabilities being built at brand level are functionally identical. A shared registry would allow brands to consume rather than rebuild.</p>
+        </div>
+        <div class="insight-card card--opportunity">
+          <div class="insight-card-icon">🛡️</div>
+          <h4>Governance as an Enabler</h4>
+          <p>Transparent, enforced policy checks don't just reduce risk — they build trust, allowing brands to open data flows they'd otherwise keep closed out of caution.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── OUR APPROACH ─── -->
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section-title">Our Approach</div>
+      <p class="section-subtitle">How we're testing the hypothesis in practice.</p>
+
+      <div class="two-col">
+        <div>
+          <div class="milestone-list">
+            <div class="milestone">
+              <div class="milestone-dot done">✓</div>
+              <div class="milestone-content">
+                <div class="milestone-phase">Phase 1</div>
+                <div class="milestone-title">Problem Discovery &amp; Stakeholder Interviews</div>
+                <div class="milestone-desc">Interviewed AI leads across Scania, MAN, and VW T&amp;B to map the current agent landscape and surface governance pain points.</div>
+                <span class="milestone-tag done">Completed</span>
+              </div>
+            </div>
+            <div class="milestone">
+              <div class="milestone-dot done">✓</div>
+              <div class="milestone-content">
+                <div class="milestone-phase">Phase 2</div>
+                <div class="milestone-title">Prototype: Agent Registry + Governance Demo</div>
+                <div class="milestone-desc">Built this interactive prototype to demonstrate the registry concept and make the governance pipeline tangible and discussable with stakeholders.</div>
+                <span class="milestone-tag done">Completed — you are here</span>
+              </div>
+            </div>
+            <div class="milestone">
+              <div class="milestone-dot active">→</div>
+              <div class="milestone-content">
+                <div class="milestone-phase">Phase 3</div>
+                <div class="milestone-title">Stakeholder Validation &amp; Feedback Rounds</div>
+                <div class="milestone-desc">Present the prototype to brand AI leads and governance stakeholders. Gather structured feedback on feasibility, willingness to publish agents, and policy requirements.</div>
+                <span class="milestone-tag active">In Progress</span>
+              </div>
+            </div>
+            <div class="milestone">
+              <div class="milestone-dot upcoming">4</div>
+              <div class="milestone-content">
+                <div class="milestone-phase">Phase 4</div>
+                <div class="milestone-title">Pilot: Live Agents on Real Platform</div>
+                <div class="milestone-desc">Onboard one real agent per brand onto a production-grade version of the marketplace, with live policy enforcement and audit logging.</div>
+                <span class="milestone-tag upcoming">Planned</span>
+              </div>
+            </div>
+            <div class="milestone">
+              <div class="milestone-dot upcoming">5</div>
+              <div class="milestone-content">
+                <div class="milestone-phase">Phase 5</div>
+                <div class="milestone-title">Hypothesis Validation &amp; Scale Decision</div>
+                <div class="milestone-desc">Measure adoption signals. If ≥ 3 brands have published and consumed agents, recommend full platform investment. Otherwise, pivot or refine scope.</div>
+                <span class="milestone-tag upcoming">Planned</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-title" style="font-size:20px; margin-bottom: 24px;">Success Metrics</div>
+          <div class="metrics-row" style="grid-template-columns: 1fr 1fr; margin-bottom: 32px;">
+            <div class="metric-card">
+              <div class="metric-num">3+</div>
+              <div class="metric-label">Brands publishing agents</div>
+              <div class="metric-desc">Primary validation signal</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-num">40%</div>
+              <div class="metric-label">Reduction in redundant builds</div>
+              <div class="metric-desc">Efficiency hypothesis</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-num">100%</div>
+              <div class="metric-label">Cross-brand flows audited</div>
+              <div class="metric-desc">Governance requirement</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-num">&lt; 2s</div>
+              <div class="metric-label">Policy check latency</div>
+              <div class="metric-desc">UX threshold for adoption</div>
+            </div>
+          </div>
+
+          <div class="insight-card card--approach">
+            <div class="insight-card-icon">🎯</div>
+            <h4>Prototype Scope &amp; Deliberate Constraints</h4>
+            <p>This prototype is intentionally frontend-only. The goal is not to build the platform — it is to make the concept concrete enough to have a meaningful conversation about whether we <em>should</em> build it. Backend, auth, and real agent integration are deferred until the hypothesis is validated.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── TEAM ─── -->
+  <section class="section">
+    <div class="container">
+      <div class="section-title">The Team</div>
+      <p class="section-subtitle">The people behind this initiative — add your team members here.</p>
+
+      <div class="team-grid">
+
+        <!-- ✏️ Replace these placeholder cards with your actual team members -->
+
+        <div class="team-card">
+          <div class="team-avatar" style="background: var(--traton-navy);">TL</div>
+          <div class="team-name">Team Lead</div>
+          <div class="team-role">Initiative Owner &amp; Product Vision</div>
+          <span class="team-brand-badge" style="background: var(--traton-navy); color: #7eb8ff;">TRATON Group</span>
+        </div>
+
+        <div class="team-card">
+          <div class="team-avatar" style="background: var(--scania-blue);">SD</div>
+          <div class="team-name">Scania Representative</div>
+          <div class="team-role">Domain Expert &amp; Stakeholder Lead</div>
+          <span class="team-brand-badge" style="background: var(--scania-blue); color: var(--scania-amber);">Scania</span>
+        </div>
+
+        <div class="team-card">
+          <div class="team-avatar" style="background: var(--man-red);">MD</div>
+          <div class="team-name">MAN Representative</div>
+          <div class="team-role">Domain Expert &amp; Stakeholder Lead</div>
+          <span class="team-brand-badge" style="background: var(--man-red); color: #fff;">MAN</span>
+        </div>
+
+        <div class="team-card">
+          <div class="team-avatar" style="background: var(--vwtb-blue);">VD</div>
+          <div class="team-name">VW T&amp;B Representative</div>
+          <div class="team-role">Domain Expert &amp; Stakeholder Lead</div>
+          <span class="team-brand-badge" style="background: var(--vwtb-blue); color: var(--vwtb-cyan);">VW Truck &amp; Bus</span>
+        </div>
+
+        <div class="team-card">
+          <div class="team-avatar" style="background: #7c3aed;">GD</div>
+          <div class="team-name">Governance Advisor</div>
+          <div class="team-role">Data Policy &amp; Compliance Lead</div>
+          <span class="team-brand-badge" style="background: var(--traton-navy); color: #7eb8ff;">TRATON Group</span>
+        </div>
+
+        <div class="team-card" style="border-style: dashed; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 180px; background: var(--bg-section-alt);">
+          <div style="font-size: 28px; margin-bottom: 10px;">+</div>
+          <div class="team-name" style="color: var(--text-muted);">Your Name Here</div>
+          <div class="team-role" style="color: var(--text-muted);">Edit innovation.html to add team members</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── CTA ─── -->
+  <section class="section section--alt">
+    <div class="container" style="text-align: center; max-width: 640px;">
+      <div style="font-size: 40px; margin-bottom: 20px;">🚀</div>
+      <h2 style="font-size: 26px; font-weight: 800; margin-bottom: 14px; letter-spacing: -0.5px;">See the Prototype in Action</h2>
+      <p style="font-size: 16px; color: var(--text-secondary); line-height: 1.75; margin-bottom: 28px;">
+        Explore the agent registry and run the governance demo to see the cross-brand data request policy pipeline first-hand.
+      </p>
+      <a href="index.html" class="btn btn--primary">
+        Go to Prototype →
+      </a>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>
+        <span>TRATON Group AI Agent Marketplace</span> &nbsp;·&nbsp;
+        Internal prototype &nbsp;·&nbsp;
+        Scania · MAN · Volkswagen Truck &amp; Bus
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>
