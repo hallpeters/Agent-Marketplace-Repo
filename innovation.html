@@ -112,6 +112,7 @@
     .cards-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
     @media (max-width: 840px) { .cards-3 { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 560px) { .cards-2, .cards-3 { grid-template-columns: 1fr; } }
+    @media (max-width: 700px) { .experiment-inner { grid-template-columns: 1fr !important; } }
 
     .insight-card {
       background: var(--bg-card);
@@ -120,16 +121,29 @@
       padding: 28px;
       box-shadow: var(--shadow);
     }
-    .insight-card--problem   { border-top: 3px solid #dc2626; }
-    .insight-card--risk      { border-top: 3px solid #f59e0b; }
-    .insight-card--feature   { border-top: 3px solid var(--traton-blue); }
+    .insight-card--who        { border-top: 3px solid #0891b2; }
+    .insight-card--problem    { border-top: 3px solid #dc2626; }
+    .insight-card--risk       { border-top: 3px solid #f59e0b; }
+    .insight-card--feature    { border-top: 3px solid var(--traton-blue); }
     .insight-card--experiment { border-top: 3px solid #7c3aed; }
 
-    .card-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; margin-bottom: 10px; }
+    .card-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+    .card-eyebrow--who        { color: #0891b2; }
     .card-eyebrow--problem    { color: #dc2626; }
     .card-eyebrow--risk       { color: #d97706; }
     .card-eyebrow--feature    { color: var(--traton-blue); }
     .card-eyebrow--experiment { color: #7c3aed; }
+
+    .bucket-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 18px; height: 18px; border-radius: 50%;
+      font-size: 10px; font-weight: 800; color: #fff; flex-shrink: 0;
+    }
+    .card-eyebrow--who        .bucket-num { background: #0891b2; }
+    .card-eyebrow--problem    .bucket-num { background: #dc2626; }
+    .card-eyebrow--feature    .bucket-num { background: var(--traton-blue); }
+    .card-eyebrow--risk       .bucket-num { background: #d97706; }
+    .card-eyebrow--experiment .bucket-num { background: #7c3aed; }
 
     .insight-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 10px; line-height: 1.35; }
     .insight-card p  { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
@@ -176,8 +190,9 @@
       margin: 0 auto 16px;
       letter-spacing: -.5px;
     }
-    .team-name { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
-    .team-role { font-size: 13px; color: var(--text-secondary); line-height: 1.45; margin-bottom: 14px; }
+    .team-name { font-size: 15px; font-weight: 700; margin-bottom: 5px; }
+    .team-expertise { font-size: 12px; font-weight: 700; color: var(--traton-blue); letter-spacing: .4px; text-transform: uppercase; margin-bottom: 8px; }
+    .team-role { font-size: 13px; color: var(--text-secondary); line-height: 1.55; margin-bottom: 14px; }
     .linkedin-link {
       display: inline-flex; align-items: center; gap: 6px;
       font-size: 12px; font-weight: 600; color: #0a66c2;
@@ -216,7 +231,7 @@
         <a href="index.html#registry"   class="nav-link">Registry</a>
         <a href="index.html#governance" class="nav-link">Governance</a>
         <a href="index.html#about"      class="nav-link">About</a>
-        <a href="innovation.html"       class="nav-link nav-link--highlight active">Innovation</a>
+        <a href="innovation.html"       class="nav-link nav-link--highlight active">Project Overview</a>
       </nav>
     </div>
   </header>
@@ -230,88 +245,67 @@
     </div>
   </div>
 
-  <!-- HYPOTHESIS -->
+  <!-- INNOVATORS HYPOTHESIS — 5 BUCKETS -->
   <section class="section">
     <div class="container">
       <div class="sh">
         <h2>Innovators Hypothesis</h2>
-        <p>What we believe, and how we'll know if we're right.</p>
+        <p>Five dimensions, in order. Each one distinct.</p>
       </div>
 
-      <div class="hypothesis-wrap">
-        <div class="hyp-label">Our Hypothesis</div>
-        <div class="hyp-row">
-          <div>
-            <div class="hyp-field">
-              <div class="hyp-field-label">Target User</div>
-              <div class="hyp-field-value">
-                <strong>Digital Product / IT Leads at brand level</strong> (Scania, MAN, VW T&amp;B), or other teams working digitally who need to build and deploy agents fast — without shared infrastructure.
-              </div>
-            </div>
-            <div class="hyp-field">
-              <div class="hyp-field-label">Pain Point</div>
-              <div class="hyp-field-value">
-                Agents are <em>siloed by brand</em> with no standardized way to communicate, no shared governance, and no visibility into what exists elsewhere — so cross-brand optimization is blocked and teams rebuild redundantly.
-              </div>
-            </div>
-          </div>
-
-          <div class="hyp-divider"></div>
-
-          <div>
-            <div class="hyp-field">
-              <div class="hyp-field-label">Key Feature</div>
-              <div class="hyp-field-value">
-                A <strong>cross-brand agent registry</strong> with a lightweight governance / request layer that makes agents <em>discoverable and interoperable</em> — without requiring infrastructure consolidation.
-              </div>
-            </div>
-            <div class="hyp-field">
-              <div class="hyp-field-label">We'll Know We're Right When</div>
-              <div class="hyp-field-value">
-                Leads who see the registry immediately identify agents they'd want to consume or workflows they'd restructure — and ask how to get access.
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- PROBLEM + RISK + EXPERIMENT -->
-  <section class="section section--alt">
-    <div class="container">
-
-      <div class="sh">
-        <h2>Problem Space &amp; Sprint Focus</h2>
-        <p>What we're solving, what could go wrong, and how we're pressure-testing it.</p>
-      </div>
-
+      <!-- Row 1: Target User + Pain Point -->
       <div class="cards-2" style="margin-bottom: 20px;">
-        <div class="insight-card insight-card--problem">
-          <div class="card-eyebrow card-eyebrow--problem">Pain Point</div>
-          <h4>No cross-brand visibility or interoperability</h4>
-          <p>Agents are siloed by brand with no standardized communication layer, no shared governance, and no way to discover what's already built elsewhere. Cross-brand optimization is blocked, and teams keep rebuilding the same capabilities independently.</p>
+
+        <div class="insight-card insight-card--who">
+          <div class="card-eyebrow card-eyebrow--who">
+            <span class="bucket-num">1</span> Target User
+          </div>
+          <h4>Digital Product &amp; IT Leads at brand level</h4>
+          <p>Teams at Scania, MAN, or VW T&amp;B who are actively building and deploying AI agents — and need to move fast without waiting for shared group infrastructure to exist.</p>
         </div>
+
+        <div class="insight-card insight-card--problem">
+          <div class="card-eyebrow card-eyebrow--problem">
+            <span class="bucket-num">2</span> Pain Point
+          </div>
+          <h4>Agents are siloed with no way to discover or share across brands</h4>
+          <p>No standardized communication layer, no shared governance, no visibility into what exists elsewhere. Cross-brand optimization is blocked and teams keep rebuilding the same capabilities independently.</p>
+        </div>
+
+      </div>
+
+      <!-- Row 2: Key Feature + Biggest Risk -->
+      <div class="cards-2" style="margin-bottom: 20px;">
 
         <div class="insight-card insight-card--feature">
-          <div class="card-eyebrow card-eyebrow--feature">Key Feature</div>
-          <h4>A registry + lightweight governance layer</h4>
-          <p>Make agents across Scania, MAN, and VW T&amp;B discoverable and interoperable through a shared registry — with a request and approval flow that enforces policy without requiring teams to consolidate infrastructure or give up brand autonomy.</p>
+          <div class="card-eyebrow card-eyebrow--feature">
+            <span class="bucket-num">3</span> Key Feature
+          </div>
+          <h4>A cross-brand registry with a lightweight governance layer</h4>
+          <p>Make agents across all TRATON brands discoverable and interoperable — with a request and approval flow that enforces policy without requiring teams to consolidate infrastructure or give up brand autonomy.</p>
         </div>
+
+        <div class="insight-card insight-card--risk">
+          <div class="card-eyebrow card-eyebrow--risk">
+            <span class="bucket-num">4</span> Biggest Risk This Sprint
+          </div>
+          <h4>We might be solving the wrong problem</h4>
+          <p>The real friction may be <strong>political or organizational</strong>, not technical. If brands don't want to share agents due to trust or internal incentive structures, a platform solution becomes irrelevant no matter how well it works technically.</p>
+        </div>
+
       </div>
 
-      <div class="cards-2">
-        <div class="insight-card insight-card--risk">
-          <div class="card-eyebrow card-eyebrow--risk">Biggest Risk This Sprint</div>
-          <h4>We might be solving the wrong problem</h4>
-          <p>The real friction may be <strong>political or organizational</strong>, not technical. If brands don't want to share agents due to trust, competitive dynamics, or internal incentive structures, a platform solution becomes irrelevant no matter how well it works technically.</p>
+      <!-- Row 3: Experiment — full width -->
+      <div class="insight-card insight-card--experiment">
+        <div class="card-eyebrow card-eyebrow--experiment">
+          <span class="bucket-num">5</span> Experiment to Remove the Risk
         </div>
-
-        <div class="insight-card insight-card--experiment">
-          <div class="card-eyebrow card-eyebrow--experiment">Upcoming Experiment</div>
-          <h4>TRATON interviews to remove the risk</h4>
-          <p>We ask brand leads across the group one focused question to test whether discoverability alone unlocks value — or whether deeper blockers dominate:</p>
-          <div class="experiment-box" style="margin-top: 16px;">
+        <div class="experiment-inner" style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: center;">
+          <div>
+            <h4>TRATON stakeholder interviews</h4>
+            <p>We ask brand leads one focused question designed to separate the technical problem from the organizational one. If discoverability alone unlocks value, people will name concrete actions they'd take. If deeper blockers dominate, they won't.</p>
+          </div>
+          <div class="experiment-box">
             <div class="question">"If you knew every AI agent that existed across the TRATON group right now — what would you actually do differently?"</div>
           </div>
         </div>
@@ -333,7 +327,8 @@
         <div class="team-card">
           <div class="avatar" style="background: linear-gradient(135deg, #1d4ed8, #0066cc);">PH</div>
           <div class="team-name">Peter Hall</div>
-          <div class="team-role">Initiative Lead</div>
+          <div class="team-expertise">Product · Tech · Strategy</div>
+          <div class="team-role">Leading product vision, technical direction, and overall project management for the initiative.</div>
           <a href="https://www.linkedin.com/in/peter-hall-007-s/" target="_blank" rel="noopener" class="linkedin-link">
             <svg class="linkedin-icon" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
             LinkedIn
@@ -343,7 +338,8 @@
         <div class="team-card">
           <div class="avatar" style="background: linear-gradient(135deg, #7c3aed, #6d28d9);">PK</div>
           <div class="team-name">Polina Karaseva</div>
-          <div class="team-role">Innovation &amp; Strategy</div>
+          <div class="team-expertise">Analysis · Presentation</div>
+          <div class="team-role">Structuring findings, building the evidence base, and translating insights into compelling narratives.</div>
           <a href="https://www.linkedin.com/in/pkaraseva/" target="_blank" rel="noopener" class="linkedin-link">
             <svg class="linkedin-icon" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
             LinkedIn
@@ -353,7 +349,8 @@
         <div class="team-card">
           <div class="avatar" style="background: linear-gradient(135deg, #059669, #047857);">EL</div>
           <div class="team-name">Emmanuel Lutterod</div>
-          <div class="team-role">Product &amp; Engineering</div>
+          <div class="team-expertise">Design · Brand · Marketing</div>
+          <div class="team-role">Shaping the visual identity, user experience, and how the concept is presented to stakeholders.</div>
           <a href="https://www.linkedin.com/in/lutterodtemmanuel/" target="_blank" rel="noopener" class="linkedin-link">
             <svg class="linkedin-icon" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
             LinkedIn
@@ -363,7 +360,8 @@
         <div class="team-card">
           <div class="avatar" style="background: linear-gradient(135deg, #be185d, #9d174d);">MG</div>
           <div class="team-name">Milena Gunther-Hanssen</div>
-          <div class="team-role">Research &amp; Stakeholder Engagement</div>
+          <div class="team-expertise">Synthesis · External Coordination</div>
+          <div class="team-role">Note-taking, synthesising discussions into actionable outputs, and managing external stakeholder relationships.</div>
           <a href="https://www.linkedin.com/in/milena-gunther-hanssen/" target="_blank" rel="noopener" class="linkedin-link">
             <svg class="linkedin-icon" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
             LinkedIn
