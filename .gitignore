@@ -1,3 +1,6 @@
 node_modules/
 .DS_Store
 Thumbs.db
+registry.db
+registry.db-shm
+registry.db-wal
