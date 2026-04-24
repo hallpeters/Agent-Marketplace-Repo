@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skills Registry — TRATON AI Marketplace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+
+  <style>
+    .skills-hero {
+      background: linear-gradient(135deg, var(--bg-header) 0%, #003580 100%);
+      padding: 56px 0 64px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .skills-hero h1 { font-size: 34px; font-weight: 800; color: #fff; letter-spacing: -0.8px; margin-bottom: 10px; }
+    .skills-hero h1 span { color: var(--traton-blue); }
+    .skills-hero p { font-size: 15px; color: rgba(255,255,255,.6); max-width: 480px; line-height: 1.7; }
+
+    .controls-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .controls-row .search-input { flex: 1; min-width: 180px; max-width: 280px; }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .skill-card-owner {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .skill-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 4px;
+      border-top: 1px solid var(--border-subtle);
+      margin-top: auto;
+    }
+    .skill-version {
+      font-size: 11px;
+      font-family: 'Courier New', monospace;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 640px) {
+      .skills-grid { grid-template-columns: 1fr; }
+      .controls-row .search-input { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── HEADER ─── -->
+  <header class="site-header">
+    <div class="header-inner container">
+      <a href="index.html" class="brand">
+        <div class="brand-logo">T</div>
+        <div>
+          <span class="brand-name">TRATON Group</span>
+          <span class="brand-subtitle">AI Agent Marketplace</span>
+        </div>
+      </a>
+      <nav class="site-nav">
+        <a href="index.html"      class="nav-link">Agents</a>
+        <a href="skills.html"     class="nav-link active">Skills</a>
+        <a href="index.html#governance" class="nav-link">Governance</a>
+        <a href="index.html#about"      class="nav-link">About</a>
+        <a href="innovation.html" class="nav-link nav-link--highlight">Project Overview</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ─── HERO ─── -->
+  <div class="skills-hero">
+    <div class="container">
+      <h1>Skills <span>Registry</span></h1>
+      <p>Reusable, portable know-how that agents invoke. Each skill has two audiences: builders who want to reuse it, and IT &amp; governance who need oversight.</p>
+    </div>
+  </div>
+
+  <!-- ─── REGISTRY ─── -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">All Skills</h2>
+          <p class="section-subtitle" id="skills-count">Loading…</p>
+        </div>
+        <a href="skill-new.html" class="btn btn--primary">+ Publish new skill</a>
+      </div>
+
+      <div class="controls-row" style="margin-bottom:28px">
+        <input type="text" id="search-input" class="search-input" placeholder="Search by name…" />
+        <select id="filter-category" class="select-input">
+          <option value="">All categories</option>
+        </select>
+        <select id="filter-approval" class="select-input">
+          <option value="">All approval states</option>
+          <option value="draft">Draft</option>
+          <option value="review">In review</option>
+          <option value="approved">Approved</option>
+          <option value="deprecated">Deprecated</option>
+        </select>
+      </div>
+
+      <div id="skills-grid" class="skills-grid">
+        <div class="state-message"><p>Loading skills…</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>
+        <span>TRATON Group AI Agent Marketplace</span> &nbsp;·&nbsp;
+        Internal prototype &nbsp;·&nbsp;
+        Scania · MAN · Volkswagen Truck &amp; Bus
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    const API = 'http://localhost:3001/api';
+
+    let allSkills = [];
+    let policyDescriptions = {};
+
+    function policyTagHtml(tag) {
+      const slug = tag.replace(/\s+/g, '-').toLowerCase();
+      const knownSlugs = ['contains-pii', 'external-facing', 'financial-data', 'internal-only'];
+      const cls = knownSlugs.includes(slug) ? `policy-tag--${slug}` : 'policy-tag--default';
+      const desc = policyDescriptions[tag] || tag;
+      return `<a href="policy-tags.html" class="policy-tag ${cls}" data-tooltip="${desc}">${tag}</a>`;
+    }
+
+    function approvalBadge(state) {
+      const s = (state || 'draft').toLowerCase();
+      return `<span class="approval-badge approval-badge--${s}">${state || 'draft'}</span>`;
+    }
+
+    function renderSkillCard(s) {
+      const tagPills = (s.policy_tags || []).map(policyTagHtml).join('');
+      const usedBy = typeof s.used_by_agent_ids !== 'undefined'
+        ? `Used by ${s.used_by_agent_ids.length} agent${s.used_by_agent_ids.length !== 1 ? 's' : ''}`
+        : '';
+      return `
+        <div class="skill-card">
+          <div class="card-header">
+            <div class="skill-icon">⚡</div>
+            <div class="card-header-meta">
+              <a href="skill-detail.html?id=${s.id}" class="skill-name" style="display:block">${s.name}</a>
+              ${s.category ? `<span class="category-tag">${s.category}</span>` : ''}
+            </div>
+          </div>
+          ${s.description ? `<p class="skill-description">${s.description}</p>` : ''}
+          ${tagPills ? `<div class="policy-tags-row">${tagPills}</div>` : ''}
+          <div class="skill-card-footer">
+            <div>
+              <div class="skill-card-owner">${s.owner_name || ''}${s.owner_team ? ` · ${s.owner_team}` : ''}</div>
+              ${usedBy ? `<div class="card-used-by">${usedBy}</div>` : ''}
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span class="skill-version">v${s.version || '1.0.0'}</span>
+              ${approvalBadge(s.approval_state)}
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function getFilteredSkills() {
+      const q        = document.getElementById('search-input').value.trim().toLowerCase();
+      const category = document.getElementById('filter-category').value;
+      const approval = document.getElementById('filter-approval').value;
+
+      return allSkills.filter(s => {
+        if (q && !s.name.toLowerCase().includes(q)) return false;
+        if (category && (s.category || '').toLowerCase() !== category.toLowerCase()) return false;
+        if (approval && (s.approval_state || '').toLowerCase() !== approval.toLowerCase()) return false;
+        return true;
+      });
+    }
+
+    function renderSkills() {
+      const grid = document.getElementById('skills-grid');
+      const filtered = getFilteredSkills();
+      document.getElementById('skills-count').textContent =
+        `${filtered.length} skill${filtered.length !== 1 ? 's' : ''} shown`;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="state-message" style="grid-column:1/-1"><p>No skills match these filters.</p></div>`;
+        return;
+      }
+      grid.innerHTML = filtered.map(renderSkillCard).join('');
+    }
+
+    function populateCategoryFilter() {
+      const cats = [...new Set(allSkills.map(s => s.category).filter(Boolean))].sort();
+      const sel = document.getElementById('filter-category');
+      cats.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c; opt.textContent = c;
+        sel.appendChild(opt);
+      });
+    }
+
+    async function loadSkills() {
+      const grid = document.getElementById('skills-grid');
+      try {
+        const res = await fetch(`${API}/skills`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        allSkills = await res.json();
+      } catch (e) {
+        grid.innerHTML = `
+          <div class="state-message state-message--error" style="grid-column:1/-1">
+            <h3>⚠️ Backend not running</h3>
+            <p>Start the API server with: <code>npm start</code> (port 3001)</p>
+          </div>`;
+        document.getElementById('skills-count').textContent = '';
+        return;
+      }
+
+      // Load policy tag descriptions (non-fatal)
+      try {
+        const pr = await fetch(`${API}/policy-tags`);
+        if (pr.ok) {
+          const tags = await pr.json();
+          tags.forEach(t => { policyDescriptions[t.name] = t.description; });
+        }
+      } catch (_) {}
+
+      populateCategoryFilter();
+      renderSkills();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSkills();
+
+      document.getElementById('search-input').addEventListener('input', renderSkills);
+      document.getElementById('filter-category').addEventListener('change', renderSkills);
+      document.getElementById('filter-approval').addEventListener('change', renderSkills);
+    });
+  </script>
+</body>
+</html>

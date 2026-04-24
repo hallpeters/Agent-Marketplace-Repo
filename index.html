@@ -6,169 +6,10 @@
   <title>TRATON AI Agent Marketplace</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
 
   <style>
-    /* ─── TOKENS ─── */
-    :root {
-      --scania-blue:       #00305e;
-      --scania-amber:      #f0a500;
-      --man-red:           #cc0000;
-      --man-dark:          #1a1a1a;
-      --vwtb-blue:         #003b82;
-      --vwtb-cyan:         #00b0f0;
-      --traton-navy:       #002b6d;
-      --traton-blue:       #0066cc;
-
-      --bg-body:           #f5f6f8;
-      --bg-card:           #ffffff;
-      --bg-header:         #001a40;
-      --bg-section-alt:    #eef1f6;
-
-      --text-primary:      #0d1117;
-      --text-secondary:    #4b5563;
-      --text-muted:        #9ca3af;
-      --border-subtle:     #e5e7eb;
-
-      --status-active:     #16a34a;
-      --status-active-bg:  #dcfce7;
-      --status-idle:       #d97706;
-      --status-idle-bg:    #fef3c7;
-      --status-pending:    #2563eb;
-      --status-pending-bg: #dbeafe;
-
-      --step-waiting-bg:   #f3f4f6;
-      --step-waiting-c:    #9ca3af;
-      --step-running-bg:   #fef3c7;
-      --step-running-c:    #d97706;
-      --step-done-bg:      #dcfce7;
-      --step-done-c:       #16a34a;
-      --step-denied-bg:    #fee2e2;
-      --step-denied-c:     #dc2626;
-      --step-human-bg:     #ede9fe;
-      --step-human-c:      #7c3aed;
-
-      --radius-card:       14px;
-      --radius-badge:      6px;
-      --radius-btn:        8px;
-      --shadow-card:       0 1px 3px rgba(0,0,0,.07), 0 4px 16px rgba(0,0,0,.06);
-      --shadow-card-hover: 0 4px 16px rgba(0,0,0,.12), 0 8px 32px rgba(0,0,0,.10);
-      --transition:        200ms ease;
-    }
-
-    /* ─── RESET ─── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: 'Inter', system-ui, sans-serif;
-      background: var(--bg-body);
-      color: var(--text-primary);
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-    }
-    a { text-decoration: none; color: inherit; }
-    ul { list-style: none; }
-    button { font-family: inherit; cursor: pointer; border: none; background: none; }
-    img { display: block; max-width: 100%; }
-
-    /* ─── LAYOUT ─── */
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
-    .section {
-      padding: 80px 0;
-    }
-    .section--alt { background: var(--bg-section-alt); }
-
-    .section-header {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      margin-bottom: 40px;
-      gap: 24px;
-      flex-wrap: wrap;
-    }
-    .section-title {
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--text-primary);
-      letter-spacing: -0.5px;
-    }
-    .section-subtitle {
-      font-size: 15px;
-      color: var(--text-secondary);
-      margin-top: 6px;
-      font-weight: 400;
-    }
-
-    /* ─── HEADER ─── */
-    .site-header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: var(--bg-header);
-      border-bottom: 2px solid var(--traton-blue);
-    }
-    .header-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 64px;
-    }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-    .brand-logo {
-      width: 40px;
-      height: 40px;
-      background: var(--traton-blue);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      font-weight: 800;
-      color: #fff;
-      letter-spacing: -1px;
-      flex-shrink: 0;
-    }
-    .brand-name {
-      display: block;
-      font-size: 15px;
-      font-weight: 700;
-      color: #fff;
-      letter-spacing: 0.4px;
-    }
-    .brand-subtitle {
-      display: block;
-      font-size: 11px;
-      font-weight: 400;
-      color: rgba(255,255,255,.55);
-      letter-spacing: 0.6px;
-      text-transform: uppercase;
-      margin-top: 1px;
-    }
-    .site-nav {
-      display: flex;
-      gap: 4px;
-    }
-    .nav-link {
-      padding: 7px 16px;
-      border-radius: 7px;
-      font-size: 14px;
-      font-weight: 500;
-      color: rgba(255,255,255,.65);
-      transition: var(--transition);
-    }
-    .nav-link:hover { color: #fff; background: rgba(255,255,255,.08); }
-    .nav-link.active { color: #fff; background: rgba(0,102,204,.5); }
-    .nav-link--highlight { border: 1.5px solid rgba(0,102,204,.5); margin-left: 4px; }
-    .nav-link--highlight:hover { border-color: var(--traton-blue); }
-
     /* ─── HERO BANNER ─── */
     .hero {
       background: linear-gradient(135deg, var(--bg-header) 0%, #003580 100%);
@@ -176,262 +17,36 @@
       border-bottom: 1px solid rgba(255,255,255,.08);
     }
     .hero-inner { display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
-    .hero-text h1 {
-      font-size: 38px;
-      font-weight: 800;
-      color: #fff;
-      letter-spacing: -1px;
-      line-height: 1.2;
-      margin-bottom: 14px;
-    }
+    .hero-text h1 { font-size: 38px; font-weight: 800; color: #fff; letter-spacing: -1px; line-height: 1.2; margin-bottom: 14px; }
     .hero-text h1 span { color: var(--traton-blue); }
-    .hero-text p {
-      font-size: 16px;
-      color: rgba(255,255,255,.65);
-      max-width: 520px;
-      line-height: 1.7;
-    }
-    .hero-stats {
-      display: flex;
-      gap: 32px;
-    }
-    .stat {
-      text-align: center;
-    }
-    .stat-num {
-      font-size: 32px;
-      font-weight: 800;
-      color: #fff;
-      line-height: 1;
-    }
-    .stat-label {
-      font-size: 12px;
-      color: rgba(255,255,255,.5);
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      margin-top: 4px;
-    }
+    .hero-text p { font-size: 16px; color: rgba(255,255,255,.65); max-width: 520px; line-height: 1.7; }
+    .hero-stats { display: flex; gap: 32px; }
+    .stat { text-align: center; }
+    .stat-num { font-size: 32px; font-weight: 800; color: #fff; line-height: 1; }
+    .stat-label { font-size: 12px; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: 0.6px; margin-top: 4px; }
 
-    /* ─── FILTER BAR ─── */
-    .filter-bar {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-    .filter-label {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      margin-right: 4px;
-    }
-    .filter-pill {
-      padding: 6px 14px;
-      border-radius: 20px;
-      border: 1.5px solid var(--border-subtle);
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-secondary);
-      background: var(--bg-card);
-      cursor: pointer;
-      transition: var(--transition);
-    }
-    .filter-pill:hover { border-color: var(--traton-blue); color: var(--traton-blue); }
-    .filter-pill.active {
-      background: var(--traton-blue);
-      border-color: var(--traton-blue);
-      color: #fff;
-    }
-
-    /* ─── AGENT GRID ─── */
+    /* ─── REGISTRY SECTION ─── */
     .agent-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 24px;
     }
-
-    /* ─── AGENT CARD ─── */
-    .agent-card {
-      background: var(--bg-card);
-      border-radius: var(--radius-card);
-      box-shadow: var(--shadow-card);
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      border: 1.5px solid var(--border-subtle);
-      transition: transform var(--transition), box-shadow var(--transition);
+    .agent-team {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 3px;
+      font-weight: 400;
     }
-    .agent-card:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--shadow-card-hover);
-    }
-
-    .card-header {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-    }
-    .agent-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      flex-shrink: 0;
-      background: var(--bg-section-alt);
-    }
-    .card-header-meta { flex: 1; min-width: 0; }
-    .agent-name {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text-primary);
-      line-height: 1.3;
-      margin-bottom: 6px;
-    }
-
-    /* Brand badges */
-    .brand-badge {
+    .runtime-pill {
       display: inline-block;
       padding: 3px 10px;
       border-radius: 20px;
       font-size: 11px;
       font-weight: 700;
-      letter-spacing: 0.4px;
-      text-transform: uppercase;
     }
-    .brand-badge--scania    { background: var(--scania-blue);  color: var(--scania-amber); }
-    .brand-badge--man       { background: var(--man-red);       color: #fff; }
-    .brand-badge--vwtb      { background: var(--vwtb-blue);     color: var(--vwtb-cyan); }
-    .brand-badge--traton    { background: var(--traton-navy);   color: #7eb8ff; }
-
-    .card-meta-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .domain-tag {
-      padding: 4px 10px;
-      border-radius: var(--radius-badge);
-      background: var(--bg-section-alt);
-      color: var(--text-secondary);
-      font-size: 12px;
-      font-weight: 500;
-    }
-    .status-badge {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      padding: 4px 10px;
-      border-radius: var(--radius-badge);
-      font-size: 12px;
-      font-weight: 600;
-    }
-    .status-badge::before {
-      content: '';
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: currentColor;
-      flex-shrink: 0;
-    }
-    .status-badge--active  { background: var(--status-active-bg);  color: var(--status-active); }
-    .status-badge--idle    { background: var(--status-idle-bg);    color: var(--status-idle); }
-    .status-badge--pending { background: var(--status-pending-bg); color: var(--status-pending); }
-
-    .agent-description {
-      font-size: 13.5px;
-      color: var(--text-secondary);
-      line-height: 1.65;
-    }
-
-    .capabilities-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .capabilities-list li {
-      font-size: 13px;
-      color: var(--text-secondary);
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      line-height: 1.5;
-    }
-    .capabilities-list li::before {
-      content: '✓';
-      color: var(--status-active);
-      font-weight: 700;
-      font-size: 13px;
-      flex-shrink: 0;
-      margin-top: 0px;
-    }
-
-    .card-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: auto;
-      padding-top: 4px;
-    }
-
-    /* ─── BUTTONS ─── */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      padding: 8px 18px;
-      border-radius: var(--radius-btn);
-      font-size: 13px;
-      font-weight: 600;
-      transition: var(--transition);
-      cursor: pointer;
-      white-space: nowrap;
-      border: 1.5px solid transparent;
-    }
-    .btn--primary {
-      background: var(--traton-blue);
-      color: #fff;
-      border-color: var(--traton-blue);
-    }
-    .btn--primary:hover { background: #0052a8; border-color: #0052a8; }
-    .btn--secondary {
-      background: transparent;
-      color: var(--text-secondary);
-      border-color: var(--border-subtle);
-    }
-    .btn--secondary:hover { border-color: var(--traton-blue); color: var(--traton-blue); }
-    .btn--ghost {
-      background: transparent;
-      color: var(--text-muted);
-      border-color: var(--border-subtle);
-    }
-    .btn--ghost:hover { color: var(--text-secondary); border-color: #c0c7d0; }
-    .btn--danger {
-      background: #dc2626;
-      color: #fff;
-      border-color: #dc2626;
-    }
-    .btn--danger:hover { background: #b91c1c; border-color: #b91c1c; }
-    .btn--success {
-      background: var(--status-active);
-      color: #fff;
-      border-color: var(--status-active);
-    }
-    .btn--success:hover { background: #15803d; border-color: #15803d; }
-    .btn--lg { padding: 12px 28px; font-size: 15px; border-radius: 10px; }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
     /* ─── GOVERNANCE SECTION ─── */
-    .governance-section {
-      background: var(--bg-header);
-      padding: 80px 0;
-    }
+    .governance-section { background: var(--bg-header); padding: 80px 0; }
     .governance-section .section-title { color: #fff; }
     .governance-section .section-subtitle { color: rgba(255,255,255,.55); }
 
@@ -442,7 +57,6 @@
       align-items: center;
       margin-bottom: 40px;
     }
-
     .agent-panel {
       background: rgba(255,255,255,.06);
       border: 1.5px solid rgba(255,255,255,.12);
@@ -450,45 +64,16 @@
       padding: 24px;
       transition: border-color 0.3s ease, background 0.3s ease;
     }
-    .agent-panel.panel--active {
-      border-color: var(--traton-blue);
-      background: rgba(0,102,204,.12);
-    }
-    .panel-role {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: rgba(255,255,255,.4);
-      margin-bottom: 12px;
-    }
-    .panel-agent-name {
-      font-size: 16px;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 6px;
-    }
-    .panel-domain {
-      font-size: 13px;
-      color: rgba(255,255,255,.55);
-    }
-    .panel-icon {
-      font-size: 28px;
-      margin-bottom: 10px;
-    }
+    .agent-panel.panel--active { border-color: var(--traton-blue); background: rgba(0,102,204,.12); }
+    .panel-role { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: rgba(255,255,255,.4); margin-bottom: 12px; }
+    .panel-agent-name { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .panel-domain { font-size: 13px; color: rgba(255,255,255,.55); }
+    .panel-icon { font-size: 28px; margin-bottom: 10px; }
 
-    .flow-controls {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-    }
-    .flow-arrow {
-      font-size: 22px;
-      color: rgba(255,255,255,.3);
-    }
+    .flow-controls { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .flow-arrow { font-size: 22px; color: rgba(255,255,255,.3); }
 
-    /* ─── GOVERNANCE STEPS ─── */
+    /* ─── STEPS ─── */
     .steps-container {
       display: flex;
       gap: 0;
@@ -499,72 +84,37 @@
     .steps-container::before {
       content: '';
       position: absolute;
-      top: 24px;
-      left: 24px;
-      right: 24px;
+      top: 24px; left: 24px; right: 24px;
       height: 2px;
       background: rgba(255,255,255,.1);
       z-index: 0;
     }
-    .step-item {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      position: relative;
-      z-index: 1;
-    }
+    .step-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 10px; position: relative; z-index: 1; }
     .step-icon-wrap {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      font-weight: 700;
+      width: 48px; height: 48px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 700;
       transition: background 0.3s ease, color 0.3s ease;
       background: rgba(255,255,255,.08);
       color: rgba(255,255,255,.4);
       border: 2px solid rgba(255,255,255,.12);
       position: relative;
     }
-    .step-item[data-state="waiting"]  .step-icon-wrap { background: rgba(255,255,255,.06); color: rgba(255,255,255,.35); }
-    .step-item[data-state="running"]  .step-icon-wrap { background: var(--step-running-bg); color: var(--step-running-c); border-color: var(--step-running-c); }
-    .step-item[data-state="done"]     .step-icon-wrap { background: var(--step-done-bg); color: var(--step-done-c); border-color: var(--step-done-c); }
-    .step-item[data-state="denied"]   .step-icon-wrap { background: var(--step-denied-bg); color: var(--step-denied-c); border-color: var(--step-denied-c); }
-    .step-item[data-state="human"]    .step-icon-wrap { background: var(--step-human-bg); color: var(--step-human-c); border-color: var(--step-human-c); }
+    .step-item[data-state="running"] .step-icon-wrap { background: var(--status-idle-bg);       color: var(--status-idle);              border-color: var(--status-idle); }
+    .step-item[data-state="done"]    .step-icon-wrap { background: var(--status-active-bg);      color: var(--status-active);            border-color: var(--status-active); }
+    .step-item[data-state="denied"]  .step-icon-wrap { background: var(--approval-deprecated-bg); color: var(--approval-deprecated-c);   border-color: var(--approval-deprecated-c); }
+    .step-item[data-state="human"]   .step-icon-wrap { background: #ede9fe; color: #7c3aed; border-color: #7c3aed; }
 
-    .step-spinner {
-      display: none;
-      position: absolute;
-      inset: -3px;
-      border-radius: 50%;
-      border: 2px solid transparent;
-      border-top-color: var(--step-running-c);
-      animation: spin 0.8s linear infinite;
-    }
+    .step-spinner { display: none; position: absolute; inset: -3px; border-radius: 50%; border: 2px solid transparent; border-top-color: var(--status-idle); animation: spin 0.8s linear infinite; }
     .step-item[data-state="running"] .step-spinner { display: block; }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+    .step-label { font-size: 12px; font-weight: 600; color: rgba(255,255,255,.5); text-align: center; line-height: 1.4; max-width: 90px; }
+    .step-item[data-state="running"] .step-label { color: var(--status-idle); }
+    .step-item[data-state="done"]    .step-label { color: var(--status-active); }
+    .step-item[data-state="denied"]  .step-label { color: var(--approval-deprecated-c); }
+    .step-item[data-state="human"]   .step-label { color: #7c3aed; }
 
-    .step-label {
-      font-size: 12px;
-      font-weight: 600;
-      color: rgba(255,255,255,.5);
-      text-align: center;
-      line-height: 1.4;
-      max-width: 90px;
-    }
-    .step-item[data-state="running"] .step-label { color: var(--step-running-c); }
-    .step-item[data-state="done"]    .step-label { color: var(--step-done-c); }
-    .step-item[data-state="denied"]  .step-label { color: var(--step-denied-c); }
-    .step-item[data-state="human"]   .step-label { color: var(--step-human-c); }
-
-    /* ─── DECISION PANEL ─── */
+    /* ─── DECISION / RESULT PANELS ─── */
     .decision-panel {
       background: rgba(124,58,237,.15);
       border: 1.5px solid rgba(124,58,237,.4);
@@ -573,180 +123,49 @@
       margin-bottom: 32px;
       animation: fadeInUp 0.3s ease;
     }
-    .decision-panel h4 {
-      font-size: 16px;
-      font-weight: 700;
-      color: #c4b5fd;
-      margin-bottom: 8px;
-    }
-    .decision-panel p {
-      font-size: 14px;
-      color: rgba(255,255,255,.65);
-      margin-bottom: 20px;
-      line-height: 1.65;
-    }
-    .decision-actions {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
+    .decision-panel h4 { font-size: 16px; font-weight: 700; color: #c4b5fd; margin-bottom: 8px; }
+    .decision-panel p  { font-size: 14px; color: rgba(255,255,255,.65); margin-bottom: 20px; line-height: 1.65; }
+    .decision-actions  { display: flex; gap: 12px; flex-wrap: wrap; }
 
-    /* ─── RESULT PANEL ─── */
-    .result-panel {
-      border-radius: 14px;
-      padding: 28px;
-      margin-bottom: 32px;
-      animation: fadeInUp 0.3s ease;
-    }
-    .result-panel--approved {
-      background: rgba(22,163,74,.12);
-      border: 1.5px solid rgba(22,163,74,.35);
-    }
-    .result-panel--denied {
-      background: rgba(220,38,38,.12);
-      border: 1.5px solid rgba(220,38,38,.35);
-    }
-    .result-panel h4 {
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
+    .result-panel { border-radius: 14px; padding: 28px; margin-bottom: 32px; animation: fadeInUp 0.3s ease; }
+    .result-panel--approved { background: rgba(22,163,74,.12); border: 1.5px solid rgba(22,163,74,.35); }
+    .result-panel--denied   { background: rgba(220,38,38,.12); border: 1.5px solid rgba(220,38,38,.35); }
+    .result-panel h4 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
     .result-panel--approved h4 { color: #86efac; }
     .result-panel--denied   h4 { color: #fca5a5; }
-    .result-panel p {
-      font-size: 14px;
-      color: rgba(255,255,255,.65);
-      line-height: 1.65;
-    }
+    .result-panel p  { font-size: 14px; color: rgba(255,255,255,.65); line-height: 1.65; }
 
     /* ─── TIMELINE LOG ─── */
-    .timeline-log {
-      border-top: 1px solid rgba(255,255,255,.1);
-      padding-top: 28px;
-    }
-    .timeline-log-title {
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: rgba(255,255,255,.35);
-      margin-bottom: 16px;
-    }
+    .timeline-log { border-top: 1px solid rgba(255,255,255,.1); padding-top: 28px; }
+    .timeline-log-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: rgba(255,255,255,.35); margin-bottom: 16px; }
     .timeline-entries { display: flex; flex-direction: column; gap: 10px; }
-    .timeline-empty {
-      font-size: 13px;
-      color: rgba(255,255,255,.3);
-      font-style: italic;
-    }
-
-    .timeline-entry {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      animation: fadeInDown 0.25s ease;
-    }
-    .timeline-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      flex-shrink: 0;
-      margin-top: 4px;
-    }
+    .timeline-empty { font-size: 13px; color: rgba(255,255,255,.3); font-style: italic; }
+    .timeline-entry { display: flex; align-items: flex-start; gap: 12px; animation: fadeInDown 0.25s ease; }
+    .timeline-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
     .timeline-entry[data-level="info"]    .timeline-dot { background: #60a5fa; }
     .timeline-entry[data-level="success"] .timeline-dot { background: #4ade80; }
     .timeline-entry[data-level="error"]   .timeline-dot { background: #f87171; }
     .timeline-entry[data-level="warning"] .timeline-dot { background: #fbbf24; }
+    .timeline-ts  { font-size: 12px; font-family: 'Courier New', monospace; color: rgba(255,255,255,.35); white-space: nowrap; flex-shrink: 0; }
+    .timeline-msg { font-size: 13px; color: rgba(255,255,255,.7); line-height: 1.5; }
 
-    .timeline-ts {
-      font-size: 12px;
-      font-family: 'Courier New', monospace;
-      color: rgba(255,255,255,.35);
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-    .timeline-msg {
-      font-size: 13px;
-      color: rgba(255,255,255,.7);
-      line-height: 1.5;
-    }
-
-    /* ─── ABOUT SECTION ─── */
-    .about-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 48px;
-      align-items: start;
-    }
-    .about-text p {
-      font-size: 15px;
-      color: var(--text-secondary);
-      line-height: 1.75;
-      margin-bottom: 16px;
-    }
-    .brand-family {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .brand-card {
-      border-radius: 12px;
-      padding: 18px 20px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
+    /* ─── ABOUT ─── */
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+    .about-text p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; margin-bottom: 16px; }
+    .brand-family { display: flex; flex-direction: column; gap: 12px; }
+    .brand-card { border-radius: 12px; padding: 18px 20px; display: flex; align-items: center; gap: 16px; }
     .brand-card--scania { background: var(--scania-blue); }
     .brand-card--man    { background: var(--man-red); }
     .brand-card--vwtb   { background: var(--vwtb-blue); }
     .brand-card--traton { background: var(--traton-navy); }
-
-    .brand-card-name {
-      font-size: 15px;
-      font-weight: 700;
-      color: #fff;
-    }
-    .brand-card-desc {
-      font-size: 12px;
-      color: rgba(255,255,255,.6);
-      margin-top: 2px;
-    }
-    .brand-card-icon {
-      font-size: 24px;
-      flex-shrink: 0;
-    }
-    .brand-card--scania .brand-card-name span { color: var(--scania-amber); }
-    .brand-card--vwtb   .brand-card-name span { color: var(--vwtb-cyan); }
-    .brand-card--traton .brand-card-name span { color: #7eb8ff; }
-
-    /* ─── FOOTER ─── */
-    .site-footer {
-      background: var(--bg-header);
-      border-top: 1px solid rgba(255,255,255,.08);
-      padding: 28px 0;
-      text-align: center;
-    }
-    .site-footer p {
-      font-size: 13px;
-      color: rgba(255,255,255,.35);
-    }
-    .site-footer span { color: rgba(255,255,255,.6); }
-
-    /* ─── ANIMATIONS ─── */
-    @keyframes fadeInDown {
-      from { opacity: 0; transform: translateY(-8px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    .brand-card-name { font-size: 15px; font-weight: 700; color: #fff; }
+    .brand-card-desc { font-size: 12px; color: rgba(255,255,255,.6); margin-top: 2px; }
+    .brand-card-icon { font-size: 24px; flex-shrink: 0; }
 
     /* ─── RESPONSIVE ─── */
     @media (max-width: 900px) {
       .hero-stats { display: none; }
-      .governance-layout {
-        grid-template-columns: 1fr;
-      }
+      .governance-layout { grid-template-columns: 1fr; }
       .flow-controls { flex-direction: row; justify-content: center; }
       .flow-arrow { display: none; }
       .about-grid { grid-template-columns: 1fr; gap: 32px; }
@@ -755,8 +174,6 @@
     }
     @media (max-width: 640px) {
       .hero-text h1 { font-size: 28px; }
-      .site-nav { display: none; }
-      .section { padding: 56px 0; }
       .agent-grid { grid-template-columns: 1fr; }
       .steps-container { flex-wrap: wrap; gap: 16px; }
       .steps-container::before { display: none; }
@@ -770,17 +187,18 @@
   <!-- ─── HEADER ─── -->
   <header class="site-header">
     <div class="header-inner container">
-      <div class="brand">
+      <a href="index.html" class="brand">
         <div class="brand-logo">T</div>
         <div>
           <span class="brand-name">TRATON Group</span>
           <span class="brand-subtitle">AI Agent Marketplace</span>
         </div>
-      </div>
+      </a>
       <nav class="site-nav">
-        <a href="#registry"   class="nav-link active">Registry</a>
-        <a href="#governance" class="nav-link">Governance</a>
-        <a href="#about"      class="nav-link">About</a>
+        <a href="index.html"      class="nav-link active">Agents</a>
+        <a href="skills.html"     class="nav-link">Skills</a>
+        <a href="#governance"     class="nav-link">Governance</a>
+        <a href="#about"          class="nav-link">About</a>
         <a href="innovation.html" class="nav-link nav-link--highlight">Project Overview</a>
       </nav>
     </div>
@@ -794,19 +212,10 @@
           <h1>Enterprise <span>AI Agents</span><br>Across the Group</h1>
           <p>Discover, govern, and orchestrate intelligent agents operating across Scania, MAN, and Volkswagen Truck &amp; Bus — with built-in policy enforcement and cross-brand data governance.</p>
         </div>
-        <div class="hero-stats">
-          <div class="stat">
-            <div class="stat-num">8</div>
-            <div class="stat-label">Agents</div>
-          </div>
-          <div class="stat">
-            <div class="stat-num">3</div>
-            <div class="stat-label">Brands</div>
-          </div>
-          <div class="stat">
-            <div class="stat-num">6</div>
-            <div class="stat-label">Domains</div>
-          </div>
+        <div class="hero-stats" id="hero-stats">
+          <div class="stat"><div class="stat-num" id="stat-agents">—</div><div class="stat-label">Agents</div></div>
+          <div class="stat"><div class="stat-num" id="stat-skills">—</div><div class="stat-label">Skills</div></div>
+          <div class="stat"><div class="stat-num" id="stat-runtimes">—</div><div class="stat-label">Runtimes</div></div>
         </div>
       </div>
     </div>
@@ -822,14 +231,21 @@
         </div>
         <div class="filter-bar">
           <span class="filter-label">Filter</span>
-          <button class="filter-pill active" data-filter="all">All</button>
-          <button class="filter-pill" data-filter="scania">Scania</button>
-          <button class="filter-pill" data-filter="man">MAN</button>
-          <button class="filter-pill" data-filter="vwtb">VW T&amp;B</button>
-          <button class="filter-pill" data-filter="traton">TRATON Group</button>
+          <select id="filter-approval" class="select-input">
+            <option value="">All states</option>
+            <option value="draft">Draft</option>
+            <option value="review">In review</option>
+            <option value="approved">Approved</option>
+            <option value="deprecated">Deprecated</option>
+          </select>
+          <select id="filter-runtime" class="select-input">
+            <option value="">All runtimes</option>
+          </select>
         </div>
       </div>
-      <div id="agent-grid" class="agent-grid"></div>
+      <div id="agent-grid" class="agent-grid">
+        <div class="state-message"><p>Loading agents…</p></div>
+      </div>
     </div>
   </section>
 
@@ -843,7 +259,6 @@
         </div>
       </div>
 
-      <!-- Agent Panels -->
       <div class="governance-layout">
         <div class="agent-panel" id="panel-requester">
           <div class="panel-role">Requesting Agent</div>
@@ -851,17 +266,11 @@
           <div class="panel-agent-name">MAN HR Analytics Agent</div>
           <div class="panel-domain">MAN &middot; Human Resources</div>
         </div>
-
         <div class="flow-controls">
           <div class="flow-arrow">→</div>
-          <button class="btn btn--primary btn--lg" id="btn-start">
-            Send Data Request
-          </button>
-          <button class="btn btn--ghost" id="btn-reset" style="display:none">
-            ↺ Reset
-          </button>
+          <button class="btn btn--primary btn--lg" id="btn-start">Send Data Request</button>
+          <button class="btn btn--ghost" id="btn-reset" style="display:none">↺ Reset</button>
         </div>
-
         <div class="agent-panel" id="panel-target">
           <div class="panel-role">Target Agent</div>
           <div class="panel-icon">🛡️</div>
@@ -870,13 +279,9 @@
         </div>
       </div>
 
-      <!-- Step Indicators -->
       <div class="steps-container" id="steps-container"></div>
-
-      <!-- Dynamic governance panels (decision, result) -->
       <div id="governance-dynamic"></div>
 
-      <!-- Timeline Log -->
       <div class="timeline-log">
         <div class="timeline-log-title">Activity Log</div>
         <div class="timeline-entries" id="timeline-entries">
@@ -905,7 +310,7 @@
           <div class="brand-card brand-card--traton">
             <div class="brand-card-icon">🏢</div>
             <div>
-              <div class="brand-card-name"><span>TRATON</span> Group</div>
+              <div class="brand-card-name"><span style="color:#7eb8ff">TRATON</span> Group</div>
               <div class="brand-card-desc">Group holding &middot; Compliance &middot; Fleet Intelligence</div>
             </div>
           </div>
@@ -946,243 +351,164 @@
     </div>
   </footer>
 
-
   <script>
-    /* === DATA === */
-    const AGENTS = [
-      {
-        id: "scania-procurement",
-        name: "Scania Procurement Agent",
-        icon: "📦",
-        brand: "Scania",
-        brandKey: "scania",
-        domain: "Procurement",
-        status: "Active",
-        description: "Automates supplier RFQ processing and contract compliance checks across Scania's global sourcing network.",
-        capabilities: [
-          "Real-time supplier risk scoring",
-          "Automated PO generation & approval routing",
-          "GDPR-compliant contract data extraction"
-        ]
-      },
-      {
-        id: "scania-logistics",
-        name: "Scania Logistics Optimizer",
-        icon: "🚛",
-        brand: "Scania",
-        brandKey: "scania",
-        domain: "Logistics",
-        status: "Active",
-        description: "Optimizes last-mile delivery routes and warehouse throughput for Scania's European distribution network.",
-        capabilities: [
-          "Dynamic route recalculation with live traffic",
-          "Carbon footprint reporting per shipment",
-          "Cross-dock scheduling automation"
-        ]
-      },
-      {
-        id: "man-hr",
-        name: "MAN HR Analytics Agent",
-        icon: "👥",
-        brand: "MAN",
-        brandKey: "man",
-        domain: "HR",
-        status: "Active",
-        description: "Delivers workforce analytics and talent gap identification across MAN's manufacturing sites.",
-        capabilities: [
-          "Attrition prediction with 90-day horizon",
-          "Skill matrix gap analysis",
-          "Anonymised salary benchmarking"
-        ]
-      },
-      {
-        id: "man-finance",
-        name: "MAN Finance Reporting Agent",
-        icon: "📊",
-        brand: "MAN",
-        brandKey: "man",
-        domain: "Finance",
-        status: "Idle",
-        description: "Consolidates P&L data across MAN entities and generates IFRS-compliant management reports.",
-        capabilities: [
-          "Multi-currency consolidation engine",
-          "Automated variance commentary (NLG)",
-          "Audit-trail preserving data lineage"
-        ]
-      },
-      {
-        id: "vwtb-supply-chain",
-        name: "VW T&B Supply Chain Agent",
-        icon: "🔗",
-        brand: "VW Truck & Bus",
-        brandKey: "vwtb",
-        domain: "Supply Chain",
-        status: "Active",
-        description: "Monitors tier-1 and tier-2 supplier health to prevent production line stoppages for VW Truck & Bus.",
-        capabilities: [
-          "Supply disruption early-warning alerts",
-          "Inventory buffer optimisation",
-          "Supplier KPI dashboard streaming"
-        ]
-      },
-      {
-        id: "vwtb-demand",
-        name: "VW T&B Demand Forecasting Agent",
-        icon: "📈",
-        brand: "VW Truck & Bus",
-        brandKey: "vwtb",
-        domain: "Forecasting",
-        status: "Active",
-        description: "Generates 12-month demand forecasts for commercial vehicle segments using market signal fusion.",
-        capabilities: [
-          "Macro-economic indicator integration",
-          "Segment-level SKU-granular forecasts",
-          "Forecast accuracy self-evaluation loop"
-        ]
-      },
-      {
-        id: "traton-compliance",
-        name: "TRATON Compliance Guardian",
-        icon: "🛡️",
-        brand: "TRATON Group",
-        brandKey: "traton",
-        domain: "Compliance",
-        status: "Active",
-        description: "Enforces group-wide regulatory compliance policies and monitors agent interactions for policy violations.",
-        capabilities: [
-          "Real-time EU AI Act conformance checks",
-          "Cross-brand data access policy enforcement",
-          "Automated incident escalation & logging"
-        ]
-      },
-      {
-        id: "traton-fleet",
-        name: "TRATON Fleet Intelligence Agent",
-        icon: "🚌",
-        brand: "TRATON Group",
-        brandKey: "traton",
-        domain: "Fleet Management",
-        status: "Idle",
-        description: "Aggregates telematics data across all TRATON-branded vehicles to deliver group-level fleet health insights.",
-        capabilities: [
-          "Predictive maintenance across 500k+ vehicles",
-          "OTA update orchestration",
-          "Fleet electrification readiness scoring"
-        ]
-      }
-    ];
+    const API = 'http://localhost:3001/api';
 
-    /* === GOVERNANCE STATE === */
-    const STEPS_DEF = [
-      {
-        id: 1,
-        label: "Request\nInitiated",
-        icon: "📤",
-        autoAdvance: true,
-        delay: 900
-      },
-      {
-        id: 2,
-        label: "Policy\nCheck",
-        icon: "🔍",
-        autoAdvance: true,
-        delay: 2400
-      },
-      {
-        id: 3,
-        label: "Approval\nRequired",
-        icon: "👤",
-        autoAdvance: false
-      },
-      {
-        id: 4,
-        label: "Decision\nRecorded",
-        icon: "📋",
-        autoAdvance: true,
-        delay: 700
-      },
-      {
-        id: 5,
-        label: "Result",
-        icon: "📩",
-        autoAdvance: false
-      }
-    ];
+    /* === REGISTRY === */
+    let allAgents = [];
+    let skillsMap  = {};
 
-    const GOV = {
-      currentStep: 0,
-      stepStates: { 1: 'waiting', 2: 'waiting', 3: 'waiting', 4: 'waiting', 5: 'waiting' },
-      decision: null,
-      log: [],
-      running: false
+    const RUNTIME_META = {
+      'n8n':            { label: 'n8n',            abbrev: 'n8n', bg: '#f0510f' },
+      'copilot-studio': { label: 'Copilot Studio',  abbrev: 'CS',  bg: '#0078d4' },
+      'claude-code':    { label: 'Claude Code',     abbrev: 'CC',  bg: '#7c3aed' },
+      'power-automate': { label: 'Power Automate',  abbrev: 'PA',  bg: '#0066ff' },
     };
 
-    /* === RENDERING: REGISTRY === */
-    function renderRegistry() {
-      const grid = document.getElementById('agent-grid');
-      grid.innerHTML = AGENTS.map(a => `
-        <div class="agent-card" data-brand="${a.brandKey}" data-status="${a.status.toLowerCase()}">
-          <div class="card-header">
-            <div class="agent-icon">${a.icon}</div>
-            <div class="card-header-meta">
-              <h3 class="agent-name">${a.name}</h3>
-              <span class="brand-badge brand-badge--${a.brandKey}">${a.brand}</span>
-            </div>
-          </div>
-          <div class="card-meta-row">
-            <span class="domain-tag">${a.domain}</span>
-            <span class="status-badge status-badge--${a.status.toLowerCase()}">${a.status}</span>
-          </div>
-          <p class="agent-description">${a.description}</p>
-          <ul class="capabilities-list">
-            ${a.capabilities.map(c => `<li>${c}</li>`).join('')}
-          </ul>
-          <div class="card-actions">
-            <button class="btn btn--secondary" onclick="showDetails('${a.id}')">View Details</button>
-            <button class="btn btn--primary" onclick="scrollToGovernance()">Request Data</button>
-          </div>
-        </div>
-      `).join('');
+    function runtimeMeta(r) {
+      return RUNTIME_META[r] || { label: r || 'Unknown', abbrev: (r || '??').slice(0, 2).toUpperCase(), bg: '#6b7280' };
     }
 
-    function showDetails(id) {
-      const a = AGENTS.find(x => x.id === id);
-      if (!a) return;
-      alert(`${a.icon} ${a.name}\n\nBrand: ${a.brand}\nDomain: ${a.domain}\nStatus: ${a.status}\n\nCapabilities:\n${a.capabilities.map(c => '• ' + c).join('\n')}\n\n${a.description}`);
+    async function fetchAgents() {
+      const grid = document.getElementById('agent-grid');
+      try {
+        const [agentsRes, skillsRes] = await Promise.all([
+          fetch(`${API}/agents`),
+          fetch(`${API}/skills`)
+        ]);
+        if (!agentsRes.ok) throw new Error(`HTTP ${agentsRes.status}`);
+        allAgents = await agentsRes.json();
+
+        if (skillsRes.ok) {
+          const skills = await skillsRes.json();
+          skills.forEach(s => { skillsMap[s.id] = s; });
+          document.getElementById('stat-skills').textContent = skills.length;
+        }
+
+        const uniqueRuntimes = new Set(allAgents.map(a => a.runtime).filter(Boolean));
+        document.getElementById('stat-agents').textContent   = allAgents.length;
+        document.getElementById('stat-runtimes').textContent = uniqueRuntimes.size;
+
+        populateRuntimeFilter(uniqueRuntimes);
+        initFilters();
+        renderAgents();
+      } catch (e) {
+        grid.innerHTML = `
+          <div class="state-message state-message--error" style="grid-column:1/-1">
+            <h3>⚠️ Backend not running</h3>
+            <p>Start the API server with: <code>npm start</code> (port 3001)</p>
+          </div>`;
+      }
+    }
+
+    function populateRuntimeFilter(runtimes) {
+      const sel = document.getElementById('filter-runtime');
+      runtimes.forEach(r => {
+        const opt = document.createElement('option');
+        opt.value = r;
+        opt.textContent = runtimeMeta(r).label;
+        sel.appendChild(opt);
+      });
+    }
+
+    function initFilters() {
+      document.getElementById('filter-approval').addEventListener('change', renderAgents);
+      document.getElementById('filter-runtime').addEventListener('change', renderAgents);
+    }
+
+    function getFiltered() {
+      const approval = document.getElementById('filter-approval').value;
+      const runtime  = document.getElementById('filter-runtime').value;
+      return allAgents.filter(a => {
+        if (approval && (a.approval_state || '').toLowerCase() !== approval) return false;
+        if (runtime  && (a.runtime || '') !== runtime) return false;
+        return true;
+      });
+    }
+
+    function renderAgents() {
+      const grid     = document.getElementById('agent-grid');
+      const filtered = getFiltered();
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="state-message" style="grid-column:1/-1"><p>No agents match these filters.</p></div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(a => {
+        const rm  = runtimeMeta(a.runtime);
+        const als = (a.approval_state || 'draft').toLowerCase();
+
+        // Skills used — up to 3, then "+N more"
+        const skillIds    = a.skills_used || [];
+        const skillItems  = skillIds.map(id => skillsMap[id]).filter(Boolean);
+        const visible     = skillItems.slice(0, 3);
+        const overflow    = skillIds.length - visible.length;
+
+        let skillsHtml = '';
+        if (skillIds.length > 0) {
+          const pills = visible.map(s =>
+            `<a href="skill-detail.html?id=${s.id}" class="chip">${s.name}</a>`
+          ).join('');
+          const more = overflow > 0
+            ? `<span class="chip" style="color:var(--text-muted);border-style:dashed">+${overflow} more</span>`
+            : '';
+          skillsHtml = `
+            <div>
+              <div class="subsection-label" style="margin-bottom:8px">Skills used</div>
+              <div class="chip-list">${pills}${more}</div>
+            </div>`;
+        }
+
+        return `
+          <div class="agent-card">
+            <div class="card-header">
+              <div class="agent-icon" style="background:${rm.bg};color:#fff;font-size:12px;font-weight:800;letter-spacing:-0.5px">${rm.abbrev}</div>
+              <div class="card-header-meta">
+                <h3 class="agent-name">${a.name}</h3>
+                ${a.owner_team ? `<div class="agent-team">${a.owner_team}</div>` : ''}
+              </div>
+            </div>
+            <div class="card-meta-row">
+              <span class="runtime-pill" style="background:${rm.bg}22;color:${rm.bg};border:1.5px solid ${rm.bg}55">${rm.label}</span>
+              <span class="approval-badge approval-badge--${als}">${a.approval_state || 'draft'}</span>
+            </div>
+            <p class="agent-description">${a.description || ''}</p>
+            ${skillsHtml}
+            <div class="card-actions">
+              <a href="agent-detail.html?id=${a.id}" class="btn btn--secondary">View Details</a>
+              <button class="btn btn--primary" onclick="scrollToGovernance()">Request Data</button>
+            </div>
+          </div>`;
+      }).join('');
     }
 
     function scrollToGovernance() {
       document.getElementById('governance').scrollIntoView({ behavior: 'smooth' });
     }
 
-    /* === RENDERING: FILTER === */
-    function initFilters() {
-      document.querySelectorAll('.filter-pill').forEach(pill => {
-        pill.addEventListener('click', () => {
-          document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
-          pill.classList.add('active');
-          filterAgents(pill.dataset.filter);
-        });
-      });
-    }
+    /* === GOVERNANCE STATE === */
+    const STEPS_DEF = [
+      { id: 1, label: "Request\nInitiated",  icon: "📤", autoAdvance: true,  delay: 900  },
+      { id: 2, label: "Policy\nCheck",       icon: "🔍", autoAdvance: true,  delay: 2400 },
+      { id: 3, label: "Approval\nRequired",  icon: "👤", autoAdvance: false              },
+      { id: 4, label: "Decision\nRecorded",  icon: "📋", autoAdvance: true,  delay: 700  },
+      { id: 5, label: "Result",              icon: "📩", autoAdvance: false              }
+    ];
 
-    function filterAgents(brand) {
-      document.querySelectorAll('.agent-card').forEach(card => {
-        const match = brand === 'all' || card.dataset.brand === brand;
-        card.style.display = match ? '' : 'none';
-      });
-    }
+    const GOV = {
+      currentStep: 0,
+      stepStates: { 1:'waiting', 2:'waiting', 3:'waiting', 4:'waiting', 5:'waiting' },
+      decision: null,
+      log: [],
+      running: false
+    };
 
-    /* === RENDERING: GOVERNANCE === */
     function renderSteps() {
       const container = document.getElementById('steps-container');
       container.innerHTML = STEPS_DEF.map(s => {
         const state = GOV.stepStates[s.id];
-        let iconContent;
-        if (state === 'done')   iconContent = '✓';
-        else if (state === 'denied') iconContent = '✗';
-        else                   iconContent = s.icon;
-
+        const iconContent = state === 'done' ? '✓' : state === 'denied' ? '✗' : s.icon;
         return `
           <div class="step-item" data-step="${s.id}" data-state="${state}">
             <div class="step-icon-wrap">
@@ -1190,18 +516,13 @@
               ${iconContent}
             </div>
             <div class="step-label">${s.label.replace('\n', '<br>')}</div>
-          </div>
-        `;
+          </div>`;
       }).join('');
     }
 
     function renderDynamic() {
       const el = document.getElementById('governance-dynamic');
-      const step3state = GOV.stepStates[3];
-      const step5state = GOV.stepStates[5];
-
-      // Show decision panel when at step 3 (human gate)
-      if (GOV.currentStep === 2 && step3state === 'running') {
+      if (GOV.currentStep === 2 && GOV.stepStates[3] === 'running') {
         el.innerHTML = `
           <div class="decision-panel">
             <h4>👤 Human Approval Required</h4>
@@ -1216,40 +537,25 @@
               <button class="btn btn--success" onclick="handleDecision('approved')">✓ Approve Access</button>
               <button class="btn btn--danger"  onclick="handleDecision('denied')">✗ Deny Access</button>
             </div>
-          </div>
-        `;
+          </div>`;
         return;
       }
-
-      // Show result panel when step 5 is reached
-      if (step5state === 'running' || (GOV.currentStep >= 4 && step5state !== 'waiting')) {
+      if (GOV.stepStates[5] === 'running' || (GOV.currentStep >= 4 && GOV.stepStates[5] !== 'waiting')) {
         if (GOV.decision === 'approved') {
           el.innerHTML = `
             <div class="result-panel result-panel--approved">
               <h4>✓ Data Transfer Approved &amp; Complete</h4>
-              <p>
-                Salary band data was securely delivered to MAN HR Analytics Agent.
-                An encrypted payload was transmitted via the secure inter-agent channel.
-                Audit entry <strong style="color:#bbf7d0">#AUD-2026-04-08-0471</strong> created and signed.
-              </p>
-            </div>
-          `;
+              <p>Salary band data was securely delivered to MAN HR Analytics Agent. An encrypted payload was transmitted via the secure inter-agent channel. Audit entry <strong style="color:#bbf7d0">#AUD-2026-04-24-0471</strong> created and signed.</p>
+            </div>`;
         } else {
           el.innerHTML = `
             <div class="result-panel result-panel--denied">
               <h4>✗ Access Denied</h4>
-              <p>
-                Request rejected by CISO governance review. Reason: Cross-brand HR data transfer
-                prohibited under <strong style="color:#fecaca">TRATON Data Policy §4.2 — Confidential HR Data</strong>.
-                MAN HR Analytics Agent has been notified. No data was transmitted.
-                Audit entry <strong style="color:#fecaca">#AUD-2026-04-08-0471</strong> created.
-              </p>
-            </div>
-          `;
+              <p>Request rejected by CISO governance review. Reason: Cross-brand HR data transfer prohibited under <strong style="color:#fecaca">TRATON Data Policy §4.2 — Confidential HR Data</strong>. MAN HR Analytics Agent has been notified. No data was transmitted. Audit entry <strong style="color:#fecaca">#AUD-2026-04-24-0471</strong> created.</p>
+            </div>`;
         }
         return;
       }
-
       el.innerHTML = '';
     }
 
@@ -1259,38 +565,26 @@
         container.innerHTML = '<div class="timeline-empty">No activity yet. Start the demo to see the log.</div>';
         return;
       }
-      container.innerHTML = GOV.log.map(entry => `
-        <div class="timeline-entry" data-level="${entry.level}">
+      container.innerHTML = GOV.log.map(e => `
+        <div class="timeline-entry" data-level="${e.level}">
           <div class="timeline-dot"></div>
-          <span class="timeline-ts">${entry.ts}</span>
-          <span class="timeline-msg">${entry.msg}</span>
-        </div>
-      `).join('');
+          <span class="timeline-ts">${e.ts}</span>
+          <span class="timeline-msg">${e.msg}</span>
+        </div>`).join('');
     }
 
     function renderPanelHighlights() {
-      const reqPanel = document.getElementById('panel-requester');
-      const tgtPanel = document.getElementById('panel-target');
-      const step = GOV.currentStep;
-
-      reqPanel.classList.toggle('panel--active', step === 0 || step === 1);
-      tgtPanel.classList.toggle('panel--active', step >= 3);
+      document.getElementById('panel-requester').classList.toggle('panel--active', GOV.currentStep <= 1);
+      document.getElementById('panel-target').classList.toggle('panel--active', GOV.currentStep >= 3);
     }
 
     function renderGovernanceUI() {
-      renderSteps();
-      renderDynamic();
-      renderLog();
-      renderPanelHighlights();
-
-      const btnReset = document.getElementById('btn-reset');
-      const btnStart = document.getElementById('btn-start');
+      renderSteps(); renderDynamic(); renderLog(); renderPanelHighlights();
       const isDone = GOV.stepStates[5] !== 'waiting' || GOV.stepStates[4] === 'done';
-      btnReset.style.display = isDone ? '' : 'none';
-      btnStart.disabled = GOV.running || GOV.currentStep > 0;
+      document.getElementById('btn-reset').style.display = isDone ? '' : 'none';
+      document.getElementById('btn-start').disabled = GOV.running || GOV.currentStep > 0;
     }
 
-    /* === GOVERNANCE STATE MACHINE === */
     const delay = ms => new Promise(r => setTimeout(r, ms));
 
     function addLog(msg, level = 'info') {
@@ -1303,21 +597,18 @@
       if (GOV.running) return;
       GOV.running = true;
       renderGovernanceUI();
-
       const stepDef = STEPS_DEF[GOV.currentStep];
       GOV.stepStates[stepDef.id] = 'running';
       renderGovernanceUI();
-
       const logMessages = {
-        1: ['info',   'Request initiated: MAN HR Analytics Agent → TRATON Compliance Guardian'],
-        2: ['info',   'Policy engine running: checking data classification, cross-brand rules, GDPR basis…'],
-        3: ['warning','Awaiting human approval — data classified Confidential HR Cat-2'],
-        4: ['info',   `Decision recorded: ${GOV.decision?.toUpperCase()} — audit log entry created`],
-        5: ['info',   GOV.decision === 'approved' ? 'Data payload delivered securely to requester' : 'Access denied. Requester notified. No data transmitted.']
+        1: ['info',    'Request initiated: MAN HR Analytics Agent → TRATON Compliance Guardian'],
+        2: ['info',    'Policy engine running: checking data classification, cross-brand rules, GDPR basis…'],
+        3: ['warning', 'Awaiting human approval — data classified Confidential HR Cat-2'],
+        4: ['info',    `Decision recorded: ${GOV.decision?.toUpperCase()} — audit log entry created`],
+        5: ['info',    GOV.decision === 'approved' ? 'Data payload delivered securely to requester' : 'Access denied. Requester notified. No data transmitted.']
       };
       const [level, msg] = logMessages[stepDef.id];
       addLog(msg, level);
-
       if (stepDef.autoAdvance) {
         await delay(stepDef.delay);
         GOV.stepStates[stepDef.id] = 'done';
@@ -1333,24 +624,19 @@
     function handleDecision(decision) {
       GOV.decision = decision;
       GOV.stepStates[3] = decision === 'approved' ? 'done' : 'denied';
-      addLog(
-        `Decision by governance officer: ${decision.toUpperCase()}`,
-        decision === 'approved' ? 'success' : 'error'
-      );
+      addLog(`Decision by governance officer: ${decision.toUpperCase()}`, decision === 'approved' ? 'success' : 'error');
       GOV.currentStep++;
       advanceGovernance();
     }
 
     function resetGovernance() {
       GOV.currentStep = 0;
-      GOV.stepStates = { 1: 'waiting', 2: 'waiting', 3: 'waiting', 4: 'waiting', 5: 'waiting' };
-      GOV.decision = null;
-      GOV.log = [];
-      GOV.running = false;
+      GOV.stepStates = { 1:'waiting', 2:'waiting', 3:'waiting', 4:'waiting', 5:'waiting' };
+      GOV.decision = null; GOV.log = []; GOV.running = false;
       renderGovernanceUI();
     }
 
-    /* === NAV SCROLL OBSERVER === */
+    /* === NAV === */
     function initScrollObserver() {
       const sections = document.querySelectorAll('section[id]');
       const navLinks = document.querySelectorAll('.nav-link');
@@ -1369,7 +655,7 @@
     function initNavSmooth() {
       document.querySelectorAll('.nav-link').forEach(link => {
         const href = link.getAttribute('href');
-        if (!href || !href.startsWith('#')) return; // let external page links navigate normally
+        if (!href || !href.startsWith('#')) return;
         link.addEventListener('click', e => {
           e.preventDefault();
           const target = document.querySelector(href);
@@ -1380,18 +666,13 @@
 
     /* === INIT === */
     document.addEventListener('DOMContentLoaded', () => {
-      renderRegistry();
-      initFilters();
+      fetchAgents();
       renderGovernanceUI();
       initScrollObserver();
       initNavSmooth();
-
-      document.getElementById('btn-start').addEventListener('click', () => {
-        if (GOV.currentStep === 0) advanceGovernance();
-      });
+      document.getElementById('btn-start').addEventListener('click', () => { if (GOV.currentStep === 0) advanceGovernance(); });
       document.getElementById('btn-reset').addEventListener('click', resetGovernance);
     });
   </script>
-
 </body>
 </html>

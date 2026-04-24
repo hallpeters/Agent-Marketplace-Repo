@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skill Detail — TRATON AI Marketplace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
+
+  <style>
+    /* ─── DUAL-PANEL LAYOUT ─── */
+    .dual-panel-body {
+      padding: 40px 0 80px;
+    }
+
+    .dual-panel-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      align-items: start;
+    }
+
+    .panel-col {
+      padding: 0 20px;
+    }
+    .panel-col:first-child {
+      padding-left: 0;
+      border-right: 1px solid var(--border-subtle);
+    }
+    .panel-col:last-child {
+      padding-right: 0;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border-subtle);
+    }
+    .panel-header-left  { border-color: var(--traton-blue); }
+    .panel-header-right { border-color: var(--approval-approved-c); }
+
+    .panel-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .panel-label--builder    { color: var(--traton-blue); }
+    .panel-label--governance { color: var(--approval-approved-c); }
+
+    .panel-label-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* ─── GOVERNANCE SUMMARY ─── */
+    .gov-summary {
+      background: var(--bg-section-alt);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 24px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 16px;
+    }
+    .gov-summary-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+    .gov-summary-item strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+    .gov-summary-sep {
+      color: var(--border-subtle);
+      user-select: none;
+    }
+
+    /* ─── OWNER BLOCK ─── */
+    .owner-block {
+      background: var(--bg-section-alt);
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin-bottom: 20px;
+    }
+    .owner-name { font-size: 15px; font-weight: 700; color: var(--text-primary); }
+    .owner-team { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+    .owner-email { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .owner-email a { color: var(--traton-blue); }
+
+    /* ─── META ROWS ─── */
+    .meta-row-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .meta-item { }
+    .meta-item-key {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+    .meta-item-val {
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+
+    /* ─── USED BY AGENTS ─── */
+    .used-by-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .used-by-agent {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border-subtle);
+      background: var(--bg-card);
+      transition: var(--transition);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+    .used-by-agent:hover { border-color: var(--traton-blue); color: var(--traton-blue); }
+
+    /* ─── JSON BLOCK ─── */
+    .json-block {
+      background: var(--bg-section-alt);
+      border-radius: 8px;
+      padding: 16px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      color: var(--text-primary);
+      overflow-x: auto;
+      line-height: 1.6;
+      white-space: pre;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 900px) {
+      .dual-panel-grid {
+        grid-template-columns: 1fr;
+      }
+      .panel-col:first-child {
+        border-right: none;
+        border-bottom: 1px solid var(--border-subtle);
+        padding: 0 0 32px;
+        margin-bottom: 32px;
+      }
+      .panel-col:last-child { padding: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── HEADER ─── -->
+  <header class="site-header">
+    <div class="header-inner container">
+      <a href="index.html" class="brand">
+        <div class="brand-logo">T</div>
+        <div>
+          <span class="brand-name">TRATON Group</span>
+          <span class="brand-subtitle">AI Agent Marketplace</span>
+        </div>
+      </a>
+      <nav class="site-nav">
+        <a href="index.html"      class="nav-link">Agents</a>
+        <a href="skills.html"     class="nav-link active">Skills</a>
+        <a href="index.html#governance" class="nav-link">Governance</a>
+        <a href="index.html#about"      class="nav-link">About</a>
+        <a href="innovation.html" class="nav-link nav-link--highlight">Project Overview</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ─── HERO ─── -->
+  <div class="detail-hero">
+    <div class="container">
+      <a href="skills.html" class="detail-back">← All Skills</a>
+      <div class="detail-hero-inner" id="detail-hero-inner">
+        <p style="color:rgba(255,255,255,.5)">Loading…</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── DUAL PANEL BODY ─── -->
+  <div class="dual-panel-body">
+    <div class="container">
+      <div id="dual-panel-content">
+        <div class="state-message"><p>Loading skill…</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>
+        <span>TRATON Group AI Agent Marketplace</span> &nbsp;·&nbsp;
+        Internal prototype &nbsp;·&nbsp;
+        Scania · MAN · Volkswagen Truck &amp; Bus
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    const API = 'http://localhost:3001/api';
+
+    function getParam(name) {
+      return new URLSearchParams(location.search).get(name);
+    }
+
+    function fmtDate(iso) {
+      if (!iso) return null;
+      return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    function daysSince(iso) {
+      if (!iso) return null;
+      const diff = Date.now() - new Date(iso).getTime();
+      return Math.floor(diff / (1000 * 60 * 60 * 24));
+    }
+
+    function approvalBadge(state) {
+      const s = (state || 'draft').toLowerCase();
+      return `<span class="approval-badge approval-badge--${s}">${state || 'draft'}</span>`;
+    }
+
+    function policyTagHtml(tag, policyDescriptions) {
+      const slug = tag.replace(/\s+/g, '-').toLowerCase();
+      const knownSlugs = ['contains-pii', 'external-facing', 'financial-data', 'internal-only'];
+      const cls = knownSlugs.includes(slug) ? `policy-tag--${slug}` : 'policy-tag--default';
+      const desc = (policyDescriptions || {})[tag] || tag;
+      return `<a href="policy-tags.html" class="policy-tag ${cls}" data-tooltip="${desc}">${tag}</a>`;
+    }
+
+    function runStatusHtml(status) {
+      const s = (status || '').toLowerCase();
+      const cls = s === 'success' ? 'run-status--success' : s === 'failed' ? 'run-status--failed' : 'run-status--running';
+      return `<span class="run-status ${cls}">${status}</span>`;
+    }
+
+    function safeMarkdown(text) {
+      if (!text) return '';
+      const raw = marked.parse(text);
+      return DOMPurify.sanitize(raw);
+    }
+
+    function renderHero(skill) {
+      document.title = `${skill.name} — TRATON AI Marketplace`;
+      const approvalS = (skill.approval_state || 'draft').toLowerCase();
+      document.getElementById('detail-hero-inner').innerHTML = `
+        <div class="detail-icon">⚡</div>
+        <div class="detail-hero-meta">
+          <div class="detail-hero-name">${skill.name}</div>
+          <div class="detail-hero-badges">
+            ${skill.category ? `<span class="category-tag" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.7)">${skill.category}</span>` : ''}
+            <span class="approval-badge approval-badge--${approvalS}">${skill.approval_state || 'draft'}</span>
+            <span style="font-size:12px;color:rgba(255,255,255,.5)">v${skill.version || '1.0.0'}</span>
+          </div>
+        </div>`;
+    }
+
+    function buildGovSummary(skill, runs) {
+      const approvalState = skill.approval_state || 'draft';
+      const reviewed = daysSince(skill.last_reviewed_at);
+      const usedBy = (skill.used_by_agent_ids || []).length;
+      const recentRuns = runs.length;
+
+      const parts = [];
+
+      const approvalCls = `approval-badge--${approvalState.toLowerCase()}`;
+      parts.push(`<span class="gov-summary-item"><span class="approval-badge ${approvalCls}" style="font-size:11px;padding:2px 8px">${approvalState}</span></span>`);
+
+      if (reviewed !== null) {
+        parts.push(`<span class="gov-summary-item">Reviewed <strong>${reviewed === 0 ? 'today' : `${reviewed} day${reviewed !== 1 ? 's' : ''} ago`}</strong></span>`);
+      }
+
+      parts.push(`<span class="gov-summary-item">Used by <strong>${usedBy} agent${usedBy !== 1 ? 's' : ''}</strong></span>`);
+      parts.push(`<span class="gov-summary-item"><strong>${recentRuns}</strong> recent run${recentRuns !== 1 ? 's' : ''}</span>`);
+
+      return `<div class="gov-summary">${parts.join('<span class="gov-summary-sep">·</span>')}</div>`;
+    }
+
+    function renderDualPanel(skill, agentMap, runs, policyDescriptions) {
+      // ── LEFT: Builder view ──
+      const instructionsHtml = skill.instructions
+        ? `<div class="markdown-body">${safeMarkdown(skill.instructions)}</div>`
+        : '<p style="font-size:13px;color:var(--text-muted)">No instructions provided.</p>';
+
+      const inputSchemaHtml = skill.input_schema
+        ? `<div class="subsection-label" style="margin-top:24px;margin-bottom:8px">Input schema</div>
+           <div class="json-block">${JSON.stringify(skill.input_schema, null, 2)}</div>`
+        : '';
+      const outputSchemaHtml = skill.output_schema
+        ? `<div class="subsection-label" style="margin-top:20px;margin-bottom:8px">Output schema</div>
+           <div class="json-block">${JSON.stringify(skill.output_schema, null, 2)}</div>`
+        : '';
+
+      const leftHtml = `
+        <div class="panel-header panel-header-left">
+          <span class="panel-label panel-label--builder">🔧 Builder view</span>
+          <span class="panel-label-desc">— for teams building with this skill</span>
+        </div>
+
+        <div style="margin-bottom:20px">
+          <div class="subsection-label" style="margin-bottom:6px">Description</div>
+          <p style="font-size:14px;color:var(--text-secondary);line-height:1.7">${skill.description || '—'}</p>
+        </div>
+
+        <div class="subsection-label" style="margin-bottom:10px">Instructions</div>
+        ${instructionsHtml}
+        ${inputSchemaHtml}
+        ${outputSchemaHtml}
+      `;
+
+      // ── RIGHT: Governance view ──
+      const tagPills = (skill.policy_tags || []).map(t => policyTagHtml(t, policyDescriptions)).join('');
+
+      // Used-by agents
+      const usedByIds = skill.used_by_agent_ids || [];
+      let usedByHtml = '';
+      if (usedByIds.length > 0) {
+        const agentItems = usedByIds.map(aid => {
+          const a = agentMap[aid];
+          const label = a ? a.name : aid;
+          return `<a href="agent-detail.html?id=${aid}" class="used-by-agent">${a?.icon || '🤖'} ${label}</a>`;
+        }).join('');
+        usedByHtml = `<div class="used-by-list">${agentItems}</div>`;
+      } else {
+        usedByHtml = '<p style="font-size:13px;color:var(--text-muted)">Not used by any agents yet.</p>';
+      }
+
+      // Recent runs table
+      let runsHtml = '';
+      if (runs.length > 0) {
+        runsHtml = `
+          <table class="mini-table">
+            <thead><tr>
+              <th>Agent</th><th>When</th><th>Status</th>
+            </tr></thead>
+            <tbody>
+              ${runs.slice(0, 5).map(r => {
+                const agentName = agentMap[r.agent_id]?.name || r.agent_id || '—';
+                const agentId   = r.agent_id || '';
+                const agentCell = agentId
+                  ? `<a href="agent-detail.html?id=${agentId}" style="color:var(--traton-blue)">${agentName}</a>`
+                  : agentName;
+                return `<tr>
+                  <td>${agentCell}</td>
+                  <td style="font-family:'Courier New',monospace;font-size:12px;color:var(--text-muted)">${fmtDate(r.ran_at || r.created_at) || '—'}</td>
+                  <td>${runStatusHtml(r.status)}</td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>`;
+      } else {
+        runsHtml = '<p style="font-size:13px;color:var(--text-muted)">No recent runs recorded.</p>';
+      }
+
+      const rightHtml = `
+        <div class="panel-header panel-header-right">
+          <span class="panel-label panel-label--governance">🛡️ Governance view</span>
+          <span class="panel-label-desc">— for IT &amp; management oversight</span>
+        </div>
+
+        ${buildGovSummary(skill, runs)}
+
+        <div class="owner-block">
+          <div class="subsection-label" style="margin-bottom:8px">Owner</div>
+          <div class="owner-name">${skill.owner_name || '—'}</div>
+          ${skill.owner_team  ? `<div class="owner-team">${skill.owner_team}</div>` : ''}
+          ${skill.owner_email ? `<div class="owner-email"><a href="mailto:${skill.owner_email}">${skill.owner_email}</a></div>` : ''}
+        </div>
+
+        ${tagPills ? `
+          <div style="margin-bottom:20px">
+            <div class="subsection-label" style="margin-bottom:10px">Policy tags</div>
+            <div class="policy-tags-row">${tagPills}</div>
+          </div>` : ''}
+
+        <div class="meta-row-pair">
+          <div class="meta-item">
+            <div class="meta-item-key">Version</div>
+            <div class="meta-item-val" style="font-family:'Courier New',monospace">v${skill.version || '1.0.0'}</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-item-key">Last reviewed</div>
+            <div class="meta-item-val">${fmtDate(skill.last_reviewed_at) || 'Never'}</div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:24px">
+          <div class="subsection-label" style="margin-bottom:12px">Used by (${usedByIds.length} agent${usedByIds.length !== 1 ? 's' : ''})</div>
+          ${usedByHtml}
+        </div>
+
+        <div>
+          <div class="subsection-label" style="margin-bottom:12px">Recent runs</div>
+          ${runsHtml}
+        </div>
+      `;
+
+      document.getElementById('dual-panel-content').innerHTML = `
+        <div class="dual-panel-grid">
+          <div class="panel-col">${leftHtml}</div>
+          <div class="panel-col">${rightHtml}</div>
+        </div>`;
+    }
+
+    async function load() {
+      const id = getParam('id');
+      if (!id) {
+        showError('No skill ID specified in URL.');
+        return;
+      }
+
+      let skill, runs = [], agentMap = {}, policyDescriptions = {};
+
+      try {
+        const res = await fetch(`${API}/skills/${id}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        skill = await res.json();
+      } catch (e) {
+        showError('⚠️ Backend not running', 'Start the API server with: <code>npm start</code> (port 3001)');
+        return;
+      }
+
+      // Fetch runs (non-fatal)
+      try {
+        const rr = await fetch(`${API}/agent-runs?skill_id=${id}&limit=5`);
+        if (rr.ok) runs = await rr.json();
+      } catch (_) {}
+
+      // Fetch agents for name resolution (non-fatal)
+      try {
+        const ar = await fetch(`${API}/agents`);
+        if (ar.ok) {
+          const agents = await ar.json();
+          agents.forEach(a => { agentMap[a.id] = a; });
+        }
+      } catch (_) {}
+
+      // Fetch policy tag descriptions (non-fatal)
+      try {
+        const pr = await fetch(`${API}/policy-tags`);
+        if (pr.ok) {
+          const tags = await pr.json();
+          tags.forEach(t => { policyDescriptions[t.name] = t.description; });
+        }
+      } catch (_) {}
+
+      renderHero(skill);
+      renderDualPanel(skill, agentMap, runs, policyDescriptions);
+    }
+
+    function showError(title, body = '') {
+      document.getElementById('detail-hero-inner').innerHTML =
+        `<p style="color:rgba(255,255,255,.5)">${title}</p>`;
+      document.getElementById('dual-panel-content').innerHTML = `
+        <div class="state-message state-message--error">
+          <h3>${title}</h3>
+          ${body ? `<p>${body}</p>` : ''}
+        </div>`;
+    }
+
+    document.addEventListener('DOMContentLoaded', load);
+  </script>
+</body>
+</html>

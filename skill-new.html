@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Publish New Skill — TRATON AI Marketplace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+
+  <style>
+    .form-hero {
+      background: linear-gradient(135deg, var(--bg-header) 0%, #003580 100%);
+      padding: 48px 0 56px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .form-hero h1 { font-size: 28px; font-weight: 800; color: #fff; letter-spacing: -0.5px; margin-bottom: 8px; }
+    .form-hero p  { font-size: 14px; color: rgba(255,255,255,.55); line-height: 1.6; }
+
+    .form-body { padding: 48px 0 80px; }
+
+    .form-layout {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+
+    .form-card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-card);
+      padding: 32px;
+      margin-bottom: 20px;
+    }
+    .form-card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .form-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    /* ─── SIDEBAR ─── */
+    .sidebar-card {
+      background: var(--bg-section-alt);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius-card);
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    .sidebar-card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+    .sidebar-tip {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+    .sidebar-tip + .sidebar-tip { margin-top: 10px; }
+
+    .draft-badge-preview {
+      display: inline-block;
+      margin-top: 12px;
+    }
+
+    /* ─── SUBMIT FEEDBACK ─── */
+    .submit-error {
+      color: var(--approval-deprecated-c);
+      font-size: 13px;
+      margin-top: 8px;
+      display: none;
+    }
+
+    @media (max-width: 840px) {
+      .form-layout { grid-template-columns: 1fr; }
+      .form-row-2  { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── HEADER ─── -->
+  <header class="site-header">
+    <div class="header-inner container">
+      <a href="index.html" class="brand">
+        <div class="brand-logo">T</div>
+        <div>
+          <span class="brand-name">TRATON Group</span>
+          <span class="brand-subtitle">AI Agent Marketplace</span>
+        </div>
+      </a>
+      <nav class="site-nav">
+        <a href="index.html"      class="nav-link">Agents</a>
+        <a href="skills.html"     class="nav-link active">Skills</a>
+        <a href="index.html#governance" class="nav-link">Governance</a>
+        <a href="index.html#about"      class="nav-link">About</a>
+        <a href="innovation.html" class="nav-link nav-link--highlight">Project Overview</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ─── HERO ─── -->
+  <div class="form-hero">
+    <div class="container">
+      <a href="skills.html" class="detail-back">← All Skills</a>
+      <h1>Publish a New Skill</h1>
+      <p>New skills start in <strong style="color:rgba(255,255,255,.75)">draft</strong> state. Submit for review once your instructions are ready.</p>
+    </div>
+  </div>
+
+  <!-- ─── FORM BODY ─── -->
+  <div class="form-body">
+    <div class="container">
+      <form id="skill-form" novalidate>
+        <div class="form-layout">
+
+          <!-- ─── MAIN COLUMN ─── -->
+          <div class="form-main">
+
+            <!-- Basic info -->
+            <div class="form-card">
+              <div class="form-card-title">Basic information</div>
+
+              <div class="form-group">
+                <label class="form-label" for="f-name">Skill name <span class="required">*</span></label>
+                <input type="text" id="f-name" name="name" class="form-control" placeholder="e.g. GDPR Data Classifier" required />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="f-description">Short description <span class="required">*</span></label>
+                <input type="text" id="f-description" name="description" class="form-control" placeholder="One sentence explaining what this skill does" required />
+              </div>
+
+              <div class="form-row-2">
+                <div class="form-group" style="margin-bottom:0">
+                  <label class="form-label" for="f-category">Category <span class="required">*</span></label>
+                  <select id="f-category" name="category" class="form-control" required>
+                    <option value="">Select a category…</option>
+                    <option>Data Processing</option>
+                    <option>Compliance &amp; Policy</option>
+                    <option>Analytics</option>
+                    <option>Communication</option>
+                    <option>Integration</option>
+                    <option>Forecasting</option>
+                    <option>Monitoring</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                  <label class="form-label" for="f-version">Version</label>
+                  <input type="text" id="f-version" name="version" class="form-control" value="1.0.0" placeholder="1.0.0" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Instructions -->
+            <div class="form-card">
+              <div class="form-card-title">Instructions</div>
+              <div class="form-group">
+                <label class="form-label" for="f-instructions">Markdown instructions <span class="required">*</span></label>
+                <span class="form-hint">Describe inputs, outputs, and how to invoke this skill. Markdown is supported.</span>
+                <textarea id="f-instructions" name="instructions" class="form-control form-control--mono" rows="10"
+                  placeholder="## Overview&#10;&#10;This skill does...&#10;&#10;## Inputs&#10;- `param`: description&#10;&#10;## Outputs&#10;- `result`: description" required></textarea>
+              </div>
+            </div>
+
+            <!-- Owner -->
+            <div class="form-card">
+              <div class="form-card-title">Ownership</div>
+              <div class="form-group">
+                <label class="form-label" for="f-owner-name">Owner name <span class="required">*</span></label>
+                <input type="text" id="f-owner-name" name="owner_name" class="form-control" placeholder="Full name" required />
+              </div>
+              <div class="form-row-2">
+                <div class="form-group" style="margin-bottom:0">
+                  <label class="form-label" for="f-owner-team">Team</label>
+                  <input type="text" id="f-owner-team" name="owner_team" class="form-control" placeholder="e.g. Scania IT Platform" />
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                  <label class="form-label" for="f-owner-email">Email</label>
+                  <input type="email" id="f-owner-email" name="owner_email" class="form-control" placeholder="owner@traton.com" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Policy tags -->
+            <div class="form-card">
+              <div class="form-card-title">Policy tags</div>
+              <span class="form-hint" style="display:block;margin-bottom:14px">Select all tags that apply. These drive governance controls and access decisions.</span>
+              <div id="policy-tags-wrap" class="multi-select-wrap">
+                <span style="font-size:13px;color:var(--text-muted)">Loading tags…</span>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="form-actions">
+              <button type="submit" class="btn btn--primary btn--lg" id="btn-submit">Publish skill →</button>
+              <a href="skills.html" class="btn btn--ghost btn--lg">Cancel</a>
+            </div>
+            <div class="submit-error" id="submit-error"></div>
+
+          </div>
+
+          <!-- ─── SIDEBAR ─── -->
+          <div class="form-sidebar">
+            <div class="sidebar-card">
+              <div class="sidebar-card-title">What happens when you publish?</div>
+              <p class="sidebar-tip">Your skill is created in <strong>draft</strong> state immediately.</p>
+              <p class="sidebar-tip">It becomes visible in the registry so your team can find it, but agents cannot invoke it until it reaches <strong>approved</strong> state.</p>
+              <p class="sidebar-tip">Submit for review from the skill's detail page once your instructions are complete.</p>
+              <div class="draft-badge-preview">
+                <span class="approval-badge approval-badge--draft">draft</span>
+              </div>
+            </div>
+
+            <div class="sidebar-card">
+              <div class="sidebar-card-title">Approval state lifecycle</div>
+              <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <span class="approval-badge approval-badge--draft">draft</span>
+                  <span style="font-size:12px;color:var(--text-secondary)">Created, not yet reviewed</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px">
+                  <span class="approval-badge approval-badge--review">review</span>
+                  <span style="font-size:12px;color:var(--text-secondary)">Under governance review</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px">
+                  <span class="approval-badge approval-badge--approved">approved</span>
+                  <span style="font-size:12px;color:var(--text-secondary)">Live — agents can invoke</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px">
+                  <span class="approval-badge approval-badge--deprecated">deprecated</span>
+                  <span style="font-size:12px;color:var(--text-secondary)">Retired, use not recommended</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="sidebar-card">
+              <div class="sidebar-card-title">Policy tag reference</div>
+              <p class="sidebar-tip">Unsure which tags apply? <a href="policy-tags.html" style="color:var(--traton-blue)">View all policy tags →</a></p>
+            </div>
+          </div>
+
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>
+        <span>TRATON Group AI Agent Marketplace</span> &nbsp;·&nbsp;
+        Internal prototype &nbsp;·&nbsp;
+        Scania · MAN · Volkswagen Truck &amp; Bus
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    const API = 'http://localhost:3001/api';
+
+    function policyTagClass(name) {
+      const slug = name.replace(/\s+/g, '-').toLowerCase();
+      const knownSlugs = ['contains-pii', 'external-facing', 'financial-data', 'internal-only'];
+      return knownSlugs.includes(slug) ? `policy-tag--${slug}` : 'policy-tag--default';
+    }
+
+    async function loadPolicyTags() {
+      const wrap = document.getElementById('policy-tags-wrap');
+      try {
+        const res = await fetch(`${API}/policy-tags`);
+        if (!res.ok) throw new Error();
+        const tags = await res.json();
+        if (tags.length === 0) {
+          wrap.innerHTML = '<span style="font-size:13px;color:var(--text-muted)">No policy tags available.</span>';
+          return;
+        }
+        wrap.innerHTML = tags.map(t => {
+          const cls = policyTagClass(t.name);
+          return `
+            <label class="multi-select-option" title="${t.description || ''}">
+              <input type="checkbox" name="policy_tags" value="${t.name}" />
+              <span class="tag-pill policy-tag ${cls}">${t.name}</span>
+            </label>`;
+        }).join('');
+      } catch (_) {
+        wrap.innerHTML = `
+          <span style="font-size:13px;color:var(--text-muted)">
+            Could not load policy tags — backend may not be running.
+            Tags can be added after publish.
+          </span>`;
+      }
+    }
+
+    function getFormData() {
+      const f = document.getElementById('skill-form');
+      const checkedTags = [...f.querySelectorAll('input[name="policy_tags"]:checked')].map(el => el.value);
+      return {
+        name:         f.querySelector('#f-name').value.trim(),
+        description:  f.querySelector('#f-description').value.trim(),
+        category:     f.querySelector('#f-category').value,
+        version:      f.querySelector('#f-version').value.trim() || '1.0.0',
+        instructions: f.querySelector('#f-instructions').value.trim(),
+        owner_name:   f.querySelector('#f-owner-name').value.trim(),
+        owner_team:   f.querySelector('#f-owner-team').value.trim(),
+        owner_email:  f.querySelector('#f-owner-email').value.trim(),
+        policy_tags:  checkedTags,
+        approval_state: 'draft'
+      };
+    }
+
+    function validate(data) {
+      if (!data.name)         return 'Skill name is required.';
+      if (!data.description)  return 'Short description is required.';
+      if (!data.category)     return 'Category is required.';
+      if (!data.instructions) return 'Instructions are required.';
+      if (!data.owner_name)   return 'Owner name is required.';
+      return null;
+    }
+
+    async function handleSubmit(e) {
+      e.preventDefault();
+      const errEl = document.getElementById('submit-error');
+      const btn   = document.getElementById('btn-submit');
+      errEl.style.display = 'none';
+
+      const data = getFormData();
+      const err  = validate(data);
+      if (err) {
+        errEl.textContent = err;
+        errEl.style.display = 'block';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Publishing…';
+
+      try {
+        const res = await fetch(`${API}/skills`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const created = await res.json();
+        window.location.href = `skill-detail.html?id=${created.id}`;
+      } catch (ex) {
+        errEl.textContent = ex.message.includes('Failed to fetch')
+          ? '⚠️ Backend not running. Start the API server with: npm start (port 3001)'
+          : `Publish failed: ${ex.message}`;
+        errEl.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Publish skill →';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadPolicyTags();
+      document.getElementById('skill-form').addEventListener('submit', handleSubmit);
+    });
+  </script>
+</body>
+</html>
