@@ -14,6 +14,11 @@ app.use(express.json());
 const db = new DatabaseSync(path.join(__dirname, 'registry.db'));
 db.exec('PRAGMA journal_mode = WAL;');
 
+// ─── MIGRATIONS ──────────────────────────────────────────────────────────────
+// Add tier column to existing databases that were created before this field
+try { db.exec("ALTER TABLE agents ADD COLUMN tier TEXT DEFAULT 'internal'"); } catch { /* already exists */ }
+try { db.exec("ALTER TABLE skills ADD COLUMN tier TEXT DEFAULT 'internal'"); } catch { /* already exists */ }
+
 // ─── SCHEMA ──────────────────────────────────────────────────────────────────
 
 db.exec(`
@@ -34,7 +39,8 @@ db.exec(`
     updated_at       INTEGER,
     last_reviewed_at INTEGER,
     approval_state   TEXT DEFAULT 'draft',
-    used_by_agent_ids TEXT DEFAULT '[]'
+    used_by_agent_ids TEXT DEFAULT '[]',
+    tier             TEXT DEFAULT 'internal'
   );
 
   CREATE TABLE IF NOT EXISTS tools (
@@ -62,7 +68,8 @@ db.exec(`
     policy_tags    TEXT DEFAULT '[]',
     approval_state TEXT DEFAULT 'draft',
     created_at     INTEGER,
-    last_run_at    INTEGER
+    last_run_at    INTEGER,
+    tier           TEXT DEFAULT 'internal'
   );
 
   CREATE TABLE IF NOT EXISTS agent_runs (
@@ -74,6 +81,25 @@ db.exec(`
     status       TEXT,
     tokens_used  INTEGER,
     tools_called TEXT DEFAULT '[]'
+  );
+
+  CREATE TABLE IF NOT EXISTS teams (
+    id               TEXT PRIMARY KEY,
+    name             TEXT NOT NULL,
+    brand            TEXT,
+    spend_budget     INTEGER DEFAULT 1000,
+    earnings_balance INTEGER DEFAULT 0
+  );
+
+  CREATE TABLE IF NOT EXISTS transactions (
+    id            TEXT PRIMARY KEY,
+    payer_team_id TEXT NOT NULL,
+    payee_team_id TEXT NOT NULL,
+    agent_id      TEXT,
+    skill_id      TEXT,
+    credits       INTEGER NOT NULL,
+    status        TEXT DEFAULT 'completed',
+    created_at    INTEGER NOT NULL
   );
 `);
 
@@ -803,13 +829,13 @@ See Confluence: Customer Ops → Escalation Playbook → Section 4.
   ];
 
   const insSkill = db.prepare(`
-    INSERT INTO skills VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+    INSERT INTO skills VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
   `);
   const insTool = db.prepare(`
     INSERT INTO tools VALUES (?,?,?,?,?,?,?,?,?,?)
   `);
   const insAgent = db.prepare(`
-    INSERT INTO agents VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+    INSERT INTO agents VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)
   `);
   const insRun = db.prepare(`
     INSERT INTO agent_runs VALUES (?,?,?,?,?,?,?,?)
@@ -821,7 +847,7 @@ See Confluence: Customer Ops → Escalation Playbook → Section 4.
       insSkill.run(s.id, s.name, s.description, s.category, s.instructions,
         s.input_schema, s.output_schema, s.owner_name, s.owner_team, s.owner_email,
         s.policy_tags, s.version, s.created_at, s.updated_at, s.last_reviewed_at,
-        s.approval_state, s.used_by_agent_ids);
+        s.approval_state, s.used_by_agent_ids, 'internal');
 
     for (const t of tools)
       insTool.run(t.id, t.name, t.description, t.endpoint_url, t.auth_type,
@@ -830,7 +856,7 @@ See Confluence: Customer Ops → Escalation Playbook → Section 4.
     for (const a of agents)
       insAgent.run(a.id, a.name, a.description, a.runtime, a.owner_name, a.owner_team,
         a.skills_used, a.tools_used, a.policy_tags, a.approval_state,
-        a.created_at, a.last_run_at);
+        a.created_at, a.last_run_at, 'internal');
 
     for (const r of runs)
       insRun.run(r.id, r.agent_id, r.skill_id, r.started_at, r.completed_at,
@@ -846,6 +872,333 @@ See Confluence: Customer Ops → Escalation Playbook → Section 4.
 }
 
 seedIfEmpty();
+
+function seedTeamsIfEmpty() {
+  // Migrate if teams exist with old names from a previous seed
+  const existing = db.prepare("SELECT name FROM teams WHERE id = 'team-001'").get();
+  if (existing && existing.name !== 'Sales') {
+    db.exec('DELETE FROM transactions; DELETE FROM teams;');
+  }
+
+  const count = db.prepare('SELECT COUNT(*) as c FROM teams').get().c;
+  if (count > 0) return;
+
+  const now = Math.floor(Date.now() / 1000);
+  const ago = (days) => Math.floor(now - days * 86400);
+
+  // Pre-computed balances after 5 historical transactions:
+  // Sales pays Marketing: txn-001(30) + txn-003(40) + txn-004(50) = 120 → spend=880, Marketing earns 120
+  // Marketing pays Sales: txn-002(25) + txn-005(35) = 60 → spend=940, Sales earns 60
+  db.exec('BEGIN');
+  try {
+    db.prepare('INSERT INTO teams VALUES (?,?,?,?,?)').run('team-001', 'Sales',     'Scania', 880,  60);
+    db.prepare('INSERT INTO teams VALUES (?,?,?,?,?)').run('team-002', 'Marketing', 'Scania', 940, 120);
+
+    const ins = db.prepare('INSERT INTO transactions VALUES (?,?,?,?,?,?,?,?)');
+    ins.run('txn-001', 'team-001', 'team-002', 'agent-sales-001',      'skill-lead-001',     30, 'completed', ago(6));
+    ins.run('txn-002', 'team-002', 'team-001', 'agent-marketing-001',  'skill-health-001',   25, 'completed', ago(5));
+    ins.run('txn-003', 'team-001', 'team-002', 'agent-sales-001',      'skill-campaign-001', 40, 'completed', ago(3));
+    ins.run('txn-004', 'team-001', 'team-002', 'agent-sales-001',      'skill-churn-001',    50, 'completed', ago(2));
+    ins.run('txn-005', 'team-002', 'team-001', 'agent-marketing-001',  'skill-pipeline-001', 35, 'completed', ago(1));
+
+    db.exec('COMMIT');
+    console.log('Seeded teams and transactions.');
+  } catch (err) {
+    db.exec('ROLLBACK');
+    throw err;
+  }
+}
+
+seedTeamsIfEmpty();
+
+function seedEconomySkillsIfEmpty() {
+  if (db.prepare("SELECT id FROM skills WHERE id = 'skill-churn-001'").get()) return;
+
+  const now = Math.floor(Date.now() / 1000);
+  const ago = (days) => Math.floor(now - days * 86400);
+
+  const ins = db.prepare(`
+    INSERT INTO skills
+      (id,name,description,category,instructions,input_schema,output_schema,
+       owner_name,owner_team,owner_email,policy_tags,version,
+       created_at,updated_at,last_reviewed_at,approval_state,used_by_agent_ids)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+  `);
+
+  const skills = [
+    {
+      id: 'skill-churn-001', name: 'Predict Customer Churn Risk',
+      description: 'Scores an account\'s churn probability using 12-month engagement trends, NPS history, support ticket volume, and comparison against patterns from historical churned accounts.',
+      category: 'customer-ops',
+      instructions: `## Predict Customer Churn Risk\n\nAnalyse the provided account data and produce a churn risk score:\n\n1. **Engagement signals** — Email open rate trend (3-month), login frequency, feature adoption breadth\n2. **Support health** — Ticket volume trend, severity distribution, unresolved ticket age\n3. **Relationship health** — NPS trajectory, last executive sponsor contact, contract renewal proximity\n4. **Historical pattern match** — Compare against embedding similarity to 200 churned accounts\n\nReturn: risk_score (0–100), risk_tier (low/medium/high/critical), top_3_signals, recommended_action.`,
+      input_schema: JSON.stringify({ type: 'object', properties: { account_id: { type: 'string' }, lookback_months: { type: 'number', default: 12 } }, required: ['account_id'] }),
+      output_schema: JSON.stringify({ type: 'object', properties: { risk_score: { type: 'number' }, risk_tier: { type: 'string', enum: ['low','medium','high','critical'] }, top_3_signals: { type: 'array' }, recommended_action: { type: 'string' } } }),
+      owner_name: 'Sofia Andersson', owner_team: 'Marketing', owner_email: 'sofia.andersson@scania.com',
+      policy_tags: JSON.stringify(['contains-pii', 'financial-data', 'internal-only']),
+      version: '1.2.0', created_at: ago(45), updated_at: ago(3), last_reviewed_at: ago(3),
+      approval_state: 'approved', used_by_agent_ids: JSON.stringify(['agent-sales-001']),
+    },
+    {
+      id: 'skill-lead-001', name: 'Score Inbound Lead',
+      description: 'Assigns a lead quality score (0–100) to an inbound prospect based on firmographics, intent signals, and fit against the ideal customer profile.',
+      category: 'customer-ops',
+      instructions: `## Lead Scoring\n\nEvaluate the inbound lead and return a quality score plus routing recommendation.\n\nFactors: company size, industry vertical, technology stack signals, website engagement depth, campaign source, match to ICP personas.`,
+      input_schema: JSON.stringify({ type: 'object', properties: { lead_id: { type: 'string' }, include_intent_data: { type: 'boolean' } }, required: ['lead_id'] }),
+      output_schema: JSON.stringify({ type: 'object', properties: { score: { type: 'number' }, grade: { type: 'string' }, routing: { type: 'string' } } }),
+      owner_name: 'Sofia Andersson', owner_team: 'Marketing', owner_email: 'sofia.andersson@scania.com',
+      policy_tags: JSON.stringify(['contains-pii', 'internal-only']),
+      version: '2.0.0', created_at: ago(90), updated_at: ago(10), last_reviewed_at: ago(10),
+      approval_state: 'approved', used_by_agent_ids: JSON.stringify(['agent-sales-001']),
+    },
+    {
+      id: 'skill-campaign-001', name: 'Attribute Campaign Revenue',
+      description: 'Traces closed-won deals back to originating marketing campaigns using multi-touch attribution. Returns revenue influenced per campaign and channel.',
+      category: 'customer-ops',
+      instructions: `## Campaign Revenue Attribution\n\nApply multi-touch attribution (linear, time-decay, and data-driven models) to the provided deal set.\n\nReturn: influenced_revenue per campaign, top_channel, attribution_model_comparison, confidence_band.`,
+      input_schema: JSON.stringify({ type: 'object', properties: { deal_ids: { type: 'array', items: { type: 'string' } }, attribution_model: { type: 'string', enum: ['linear','time-decay','data-driven'], default: 'data-driven' } }, required: ['deal_ids'] }),
+      output_schema: JSON.stringify({ type: 'object', properties: { campaign_attribution: { type: 'array' }, top_channel: { type: 'string' }, influenced_revenue_total: { type: 'number' } } }),
+      owner_name: 'Sofia Andersson', owner_team: 'Marketing', owner_email: 'sofia.andersson@scania.com',
+      policy_tags: JSON.stringify(['financial-data', 'internal-only']),
+      version: '1.1.0', created_at: ago(60), updated_at: ago(7), last_reviewed_at: ago(7),
+      approval_state: 'approved', used_by_agent_ids: JSON.stringify([]),
+    },
+    {
+      id: 'skill-health-001', name: 'Generate Account Health Snapshot',
+      description: 'Produces a one-page account health brief covering revenue trajectory, open opportunities, key contacts, and recent activity from the CRM.',
+      category: 'customer-ops',
+      instructions: `## Account Health Snapshot\n\nPull CRM data for the account and produce a structured brief:\n\n1. Revenue trend (last 3 years)\n2. Open pipeline (stage, value, probability)\n3. Key contacts and last touch dates\n4. Support case history summary\n5. Renewal schedule\n\nFormat as executive-readable markdown.`,
+      input_schema: JSON.stringify({ type: 'object', properties: { account_id: { type: 'string' }, include_pipeline: { type: 'boolean', default: true } }, required: ['account_id'] }),
+      output_schema: JSON.stringify({ type: 'object', properties: { health_brief: { type: 'string' }, health_score: { type: 'number' }, next_action: { type: 'string' } } }),
+      owner_name: 'Henrik Karlsson', owner_team: 'Sales', owner_email: 'henrik.karlsson@scania.com',
+      policy_tags: JSON.stringify(['contains-pii', 'financial-data', 'internal-only']),
+      version: '1.0.0', created_at: ago(30), updated_at: ago(5), last_reviewed_at: null,
+      approval_state: 'approved', used_by_agent_ids: JSON.stringify([]),
+    },
+    {
+      id: 'skill-pipeline-001', name: 'Forecast Sales Pipeline',
+      description: 'Projects end-of-quarter revenue from the current CRM pipeline using stage-weighted probability, rep historical close rates, and deal velocity signals.',
+      category: 'customer-ops',
+      instructions: `## Sales Pipeline Forecast\n\nApply stage-weighted + rep-adjusted probability to the open pipeline:\n\n1. Pull all open opps in current quarter\n2. Weight by stage probability × rep close-rate adjustment\n3. Apply deal velocity adjustment (days in stage vs. average)\n4. Return best-case, commit, and most-likely forecasts with confidence interval.`,
+      input_schema: JSON.stringify({ type: 'object', properties: { quarter: { type: 'string', description: 'e.g. 2026-Q2' }, rep_ids: { type: 'array', items: { type: 'string' } } }, required: ['quarter'] }),
+      output_schema: JSON.stringify({ type: 'object', properties: { most_likely: { type: 'number' }, commit: { type: 'number' }, best_case: { type: 'number' }, confidence_pct: { type: 'number' } } }),
+      owner_name: 'Henrik Karlsson', owner_team: 'Sales', owner_email: 'henrik.karlsson@scania.com',
+      policy_tags: JSON.stringify(['financial-data', 'internal-only']),
+      version: '1.3.0', created_at: ago(50), updated_at: ago(8), last_reviewed_at: ago(8),
+      approval_state: 'approved', used_by_agent_ids: JSON.stringify([]),
+    },
+  ];
+
+  const insAgent = db.prepare(`
+    INSERT INTO agents (id,name,description,runtime,owner_name,owner_team,skills_used,tools_used,policy_tags,approval_state,created_at,last_run_at)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+  `);
+
+  db.exec('BEGIN');
+  try {
+    for (const s of skills)
+      ins.run(s.id, s.name, s.description, s.category, s.instructions,
+        s.input_schema, s.output_schema, s.owner_name, s.owner_team, s.owner_email,
+        s.policy_tags, s.version, s.created_at, s.updated_at, s.last_reviewed_at,
+        s.approval_state, s.used_by_agent_ids);
+
+    insAgent.run('agent-sales-001', 'Sales Account Agent',
+      'Monitors the health of key accounts, triggers churn-risk checks from Marketing\'s prediction skill, and surfaces renewal alerts to account managers.',
+      'claude-code', 'Henrik Karlsson', 'Sales',
+      JSON.stringify(['skill-health-001', 'skill-churn-001']),
+      JSON.stringify(['tool-004']),
+      JSON.stringify(['contains-pii', 'financial-data', 'internal-only']),
+      'approved', ago(40), ago(1));
+
+    insAgent.run('agent-marketing-001', 'Marketing Intelligence Agent',
+      'Automates lead scoring, campaign attribution analysis, and sales pipeline forecasting by calling cross-team skills on demand.',
+      'claude-code', 'Sofia Andersson', 'Marketing',
+      JSON.stringify(['skill-lead-001', 'skill-campaign-001', 'skill-pipeline-001']),
+      JSON.stringify(['tool-004']),
+      JSON.stringify(['contains-pii', 'financial-data', 'internal-only']),
+      'approved', ago(35), ago(1));
+
+    db.exec('COMMIT');
+    console.log('Seeded economy skills and agents.');
+  } catch (err) {
+    db.exec('ROLLBACK');
+    throw err;
+  }
+}
+
+seedEconomySkillsIfEmpty();
+
+function seedTierAgentsIfEmpty() {
+  if (db.prepare("SELECT id FROM agents WHERE id = 'agent-sales-002'").get()) return;
+
+  const now = Math.floor(Date.now() / 1000);
+  const ago = (days) => Math.floor(now - days * 86400);
+
+  const ins = db.prepare(`
+    INSERT INTO agents
+      (id,name,description,runtime,owner_name,owner_team,
+       skills_used,tools_used,policy_tags,approval_state,
+       created_at,last_run_at,tier)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)
+  `);
+
+  const agents = [
+    // Tier 1 — Scania (active)
+    ['agent-sales-002', 'Sales Pipeline Agent',
+     'Monitors open-pipeline deals for stall signals and triggers automated velocity nudges to sales reps.',
+     'n8n', 'Henrik Karlsson', 'Sales',
+     '[]', '[]', '["financial-data","internal-only"]',
+     'approved', ago(25), ago(0.5), 'internal'],
+    ['agent-marketing-002', 'Marketing Campaign Agent',
+     'Orchestrates multi-channel campaign launches by coordinating brief reviews, channel scheduling, and performance tracking.',
+     'power-automate', 'Sofia Andersson', 'Marketing',
+     '[]', '[]', '["contains-pii","financial-data","internal-only"]',
+     'approved', ago(20), ago(1), 'internal'],
+    // Tier 2 — TRATON Group (cross-brand)
+    ['agent-quality-man-001', 'Quality Inspection Agent',
+     'Automates factory floor quality inspection checklists and escalates non-conformances to the engineering review board.',
+     'n8n', 'Thomas Müller', 'Quality · MAN',
+     '[]', '[]', '["regulatory","internal-only"]',
+     'approved', ago(15), ago(1), 'traton-group'],
+    ['agent-engineering-intl-001', 'Engineering Spec Reviewer',
+     'Reviews incoming engineering specifications against group standards and flags deviations for cross-brand harmonisation.',
+     'claude-code', 'Erik Lindqvist', 'Engineering · International',
+     '[]', '[]', '["internal-only"]',
+     'approved', ago(10), ago(2), 'traton-group'],
+    ['agent-warranty-man-001', 'Warranty Triage Agent',
+     'Triages inbound warranty claims, clusters them by fault pattern, and routes critical cases to the appropriate service team.',
+     'copilot-studio', 'Maria Santos', 'Customer Ops · MAN',
+     '[]', '[]', '["contains-pii","safety-critical","internal-only"]',
+     'approved', ago(8), ago(0.5), 'traton-group'],
+    // Tier 3 — Partners and distributors
+    ['agent-logistics-dhl-001', 'Logistics Optimisation Agent',
+     'Optimises last-mile delivery routes and consolidates outbound shipments to reduce transport cost and carbon emissions.',
+     'external', 'DHL Logistics Partner', 'Logistics · DHL Partner',
+     '[]', '[]', '["external-facing"]',
+     'approved', ago(5), ago(1), 'partners'],
+    ['agent-quality-bosch-001', 'Supplier Quality Agent',
+     'Monitors supplier production quality metrics in near-real time and triggers corrective action requests when KPIs breach thresholds.',
+     'external', 'Bosch Supplier Quality', 'Quality · Bosch Supplier',
+     '[]', '[]', '["supplier-data","external-facing"]',
+     'approved', ago(5), ago(2), 'partners'],
+    // Tier 4 — Open agent marketplace
+    ['agent-translation-001', 'Translation Specialist Agent',
+     'Provides high-quality technical translation for service manuals and parts catalogues across 24 languages.',
+     'external', 'Third Party', 'Translation Services',
+     '[]', '[]', '["external-facing"]',
+     'approved', ago(3), ago(1), 'marketplace'],
+    ['agent-legal-001', 'Legal Document Analyst Agent',
+     'Analyses supplier contracts and flags non-standard clauses, liability gaps, and regulatory compliance risks.',
+     'external', 'Third Party', 'Legal Analytics',
+     '[]', '[]', '["financial-data","external-facing"]',
+     'approved', ago(3), ago(0.5), 'marketplace'],
+  ];
+
+  db.exec('BEGIN');
+  try {
+    for (const a of agents) ins.run(...a);
+    db.exec('COMMIT');
+    console.log('Seeded tier agents.');
+  } catch (err) {
+    db.exec('ROLLBACK');
+    throw err;
+  }
+}
+
+seedTierAgentsIfEmpty();
+
+function seedCrossTierSkillsIfEmpty() {
+  if (db.prepare("SELECT id FROM skills WHERE id = 'skill-xbrand-001'").get()) return;
+
+  const now = Math.floor(Date.now() / 1000);
+  const ago = (days) => Math.floor(now - days * 86400);
+
+  const ins = db.prepare(`
+    INSERT INTO skills
+      (id,name,description,category,instructions,input_schema,output_schema,
+       owner_name,owner_team,owner_email,policy_tags,version,
+       created_at,updated_at,last_reviewed_at,approval_state,used_by_agent_ids,tier)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+  `);
+
+  const skills = [
+    {
+      id: 'skill-xbrand-001', name: 'Cross-Brand Parts Sourcing',
+      description: 'Identifies shared components across Scania, MAN, and VW Truck & Bus platforms to consolidate procurement and reduce cost.',
+      category: 'procurement',
+      instructions: `## Cross-Brand Parts Sourcing\n\nAnalyse part requests across all TRATON brands and identify consolidation opportunities.\n\n1. Match part specifications across brand-specific part numbering systems\n2. Flag shared-platform components eligible for joint procurement\n3. Calculate potential volume discounts and lead-time improvements\n4. Generate a consolidated sourcing recommendation report.`,
+      input_schema: JSON.stringify({ type: 'object', properties: { part_numbers: { type: 'array', items: { type: 'string' } }, brands: { type: 'array', items: { type: 'string' } } }, required: ['part_numbers'] }),
+      output_schema: JSON.stringify({ type: 'object', properties: { matches: { type: 'array' }, savings_estimate_eur: { type: 'number' }, recommendation: { type: 'string' } } }),
+      owner_name: 'Group Procurement', owner_team: 'Group Procurement · TRATON', owner_email: 'procurement@traton.com',
+      policy_tags: JSON.stringify(['supplier-data', 'financial-data', 'internal-only']),
+      version: '1.0.0', created_at: ago(20), updated_at: ago(5), last_reviewed_at: ago(5),
+      approval_state: 'approved', used_by_agent_ids: JSON.stringify([]), tier: 'traton-group',
+    },
+    {
+      id: 'skill-xbrand-002', name: 'Group Compliance Reporting',
+      description: 'Aggregates regulatory compliance data across all group brands and generates consolidated EU reporting submissions.',
+      category: 'compliance',
+      instructions: `## Group Compliance Reporting\n\nConsolidate compliance data from Scania, MAN, and VW Truck & Bus for group-level regulatory reporting.\n\n1. Aggregate fleet CO2 data by brand and sub-group\n2. Calculate group-level compliance position against EU HDV targets\n3. Generate filing documents for EEA and national authorities\n4. Flag brands at risk of non-compliance for executive escalation.`,
+      input_schema: JSON.stringify({ type: 'object', properties: { reporting_period: { type: 'string' }, brands: { type: 'array', items: { type: 'string' } } }, required: ['reporting_period'] }),
+      output_schema: JSON.stringify({ type: 'object', properties: { group_compliance_status: { type: 'string' }, brand_breakdown: { type: 'array' }, filing_package: { type: 'string' } } }),
+      owner_name: 'Lars Bergström', owner_team: 'Group Compliance · TRATON', owner_email: 'lars.bergstrom@traton.com',
+      policy_tags: JSON.stringify(['regulatory', 'financial-data', 'external-facing']),
+      version: '1.1.0', created_at: ago(30), updated_at: ago(10), last_reviewed_at: ago(10),
+      approval_state: 'approved', used_by_agent_ids: JSON.stringify([]), tier: 'traton-group',
+    },
+    {
+      id: 'skill-partner-001', name: 'Multi-Modal Logistics Planning',
+      description: 'Plans optimal multi-modal delivery routes combining road, rail, and sea freight for cross-border shipments.',
+      category: 'procurement',
+      instructions: `## Multi-Modal Logistics Planning\n\nOptimise freight routes across transport modes for TRATON Group shipments.\n\n1. Evaluate road, rail, and sea freight options for the given origin-destination pair\n2. Calculate cost, transit time, and carbon footprint for each option\n3. Apply capacity and schedule constraints\n4. Return ranked route options with trade-off analysis.`,
+      input_schema: JSON.stringify({ type: 'object', properties: { origin: { type: 'string' }, destination: { type: 'string' }, cargo_weight_kg: { type: 'number' }, delivery_deadline: { type: 'string' } }, required: ['origin', 'destination', 'cargo_weight_kg'] }),
+      output_schema: JSON.stringify({ type: 'object', properties: { routes: { type: 'array' }, recommended_route: { type: 'object' }, carbon_footprint_kg: { type: 'number' } } }),
+      owner_name: 'DHL Logistics Partner', owner_team: 'Logistics · DHL Partner', owner_email: 'traton@dhl.com',
+      policy_tags: JSON.stringify(['external-facing', 'financial-data']),
+      version: '2.0.0', created_at: ago(10), updated_at: ago(3), last_reviewed_at: ago(3),
+      approval_state: 'approved', used_by_agent_ids: JSON.stringify([]), tier: 'partners',
+    },
+    {
+      id: 'skill-mkt-001', name: 'Real-Time Technical Translation',
+      description: 'Translates technical service documentation and parts catalogues across 24 languages with domain-specific automotive terminology.',
+      category: 'communication',
+      instructions: `## Technical Translation\n\nTranslate automotive technical documents with high accuracy.\n\n1. Detect source language and validate technical terminology\n2. Apply TRATON-specific glossary and terminology database\n3. Produce target-language translation with consistency checks\n4. Flag ambiguous technical terms for human review.`,
+      input_schema: JSON.stringify({ type: 'object', properties: { text: { type: 'string' }, source_language: { type: 'string' }, target_language: { type: 'string' }, document_type: { type: 'string', enum: ['service-manual', 'parts-catalogue', 'technical-bulletin', 'general'] } }, required: ['text', 'target_language'] }),
+      output_schema: JSON.stringify({ type: 'object', properties: { translated_text: { type: 'string' }, confidence: { type: 'number' }, flagged_terms: { type: 'array' } } }),
+      owner_name: 'Third Party', owner_team: 'Translation Services', owner_email: null,
+      policy_tags: JSON.stringify(['external-facing']),
+      version: '3.1.0', created_at: ago(7), updated_at: ago(2), last_reviewed_at: ago(2),
+      approval_state: 'approved', used_by_agent_ids: JSON.stringify([]), tier: 'marketplace',
+    },
+    {
+      id: 'skill-mkt-002', name: 'Contract Clause Extraction',
+      description: 'Extracts and classifies key contract clauses — liability, termination, IP ownership, data processing — from supplier agreements.',
+      category: 'compliance',
+      instructions: `## Contract Clause Extraction\n\nAnalyse supplier contracts and extract key clauses for legal review.\n\n1. Identify and extract liability caps, indemnification, and limitation clauses\n2. Flag non-standard termination provisions\n3. Extract IP ownership and data processing terms\n4. Cross-reference against TRATON standard contract template and highlight deviations.`,
+      input_schema: JSON.stringify({ type: 'object', properties: { document_url: { type: 'string' }, contract_type: { type: 'string', enum: ['supplier', 'partner', 'service', 'nda'] } }, required: ['document_url'] }),
+      output_schema: JSON.stringify({ type: 'object', properties: { clauses: { type: 'array' }, deviations: { type: 'array' }, risk_summary: { type: 'string' } } }),
+      owner_name: 'Third Party', owner_team: 'Legal Analytics', owner_email: null,
+      policy_tags: JSON.stringify(['financial-data', 'external-facing', 'supplier-data']),
+      version: '1.0.0', created_at: ago(5), updated_at: ago(1), last_reviewed_at: ago(1),
+      approval_state: 'approved', used_by_agent_ids: JSON.stringify([]), tier: 'marketplace',
+    },
+  ];
+
+  db.exec('BEGIN');
+  try {
+    for (const s of skills)
+      ins.run(s.id, s.name, s.description, s.category, s.instructions,
+        s.input_schema, s.output_schema, s.owner_name, s.owner_team, s.owner_email,
+        s.policy_tags, s.version, s.created_at, s.updated_at, s.last_reviewed_at,
+        s.approval_state, s.used_by_agent_ids, s.tier);
+    db.exec('COMMIT');
+    console.log('Seeded cross-tier skills.');
+  } catch (err) {
+    db.exec('ROLLBACK');
+    throw err;
+  }
+}
+
+seedCrossTierSkillsIfEmpty();
 
 // ─── ROUTES ──────────────────────────────────────────────────────────────────
 
@@ -1008,6 +1361,65 @@ app.post('/api/agent-runs', (req, res) => {
     JSON.stringify(b.tools_called || [])
   );
   res.status(201).json(fmtRun(db.prepare('SELECT * FROM agent_runs WHERE id = ?').get(id)));
+});
+
+// Teams
+app.get('/api/teams', (_req, res) => {
+  res.json(db.prepare('SELECT * FROM teams').all());
+});
+
+// Transactions
+app.get('/api/transactions', (_req, res) => {
+  const rows = db.prepare(`
+    SELECT t.*,
+           pa.name AS payer_name, pa.brand AS payer_brand,
+           py.name AS payee_name, py.brand AS payee_brand,
+           ag.name AS agent_name,
+           sk.name AS skill_name
+    FROM transactions t
+    LEFT JOIN teams  pa ON t.payer_team_id = pa.id
+    LEFT JOIN teams  py ON t.payee_team_id = py.id
+    LEFT JOIN agents ag ON t.agent_id      = ag.id
+    LEFT JOIN skills sk ON t.skill_id      = sk.id
+    ORDER BY t.created_at DESC
+  `).all();
+  res.json(rows.map(r => ({ ...r, created_at: toIso(r.created_at) })));
+});
+
+app.post('/api/transactions', (req, res) => {
+  const { payer_team_id, payee_team_id, agent_id, skill_id, credits } = req.body;
+  if (!payer_team_id || !payee_team_id || !credits)
+    return res.status(400).json({ error: 'payer_team_id, payee_team_id, and credits are required' });
+
+  const payer = db.prepare('SELECT * FROM teams WHERE id = ?').get(payer_team_id);
+  const payee = db.prepare('SELECT * FROM teams WHERE id = ?').get(payee_team_id);
+  if (!payer) return res.status(404).json({ error: 'Payer team not found' });
+  if (!payee) return res.status(404).json({ error: 'Payee team not found' });
+  if (payer.spend_budget < credits)
+    return res.status(400).json({ error: 'Insufficient spend budget' });
+
+  const id  = `txn-${Date.now()}`;
+  const now = Math.floor(Date.now() / 1000);
+
+  db.exec('BEGIN');
+  try {
+    db.prepare('UPDATE teams SET spend_budget     = spend_budget     - ? WHERE id = ?').run(credits, payer_team_id);
+    db.prepare('UPDATE teams SET earnings_balance = earnings_balance + ? WHERE id = ?').run(credits, payee_team_id);
+    db.prepare(`
+      INSERT INTO transactions (id,payer_team_id,payee_team_id,agent_id,skill_id,credits,status,created_at)
+      VALUES (?,?,?,?,?,?,?,?)
+    `).run(id, payer_team_id, payee_team_id, agent_id || null, skill_id || null, credits, 'completed', now);
+    db.exec('COMMIT');
+  } catch (err) {
+    db.exec('ROLLBACK');
+    return res.status(500).json({ error: 'Transaction failed' });
+  }
+
+  res.status(201).json({
+    transaction_id: id,
+    payer: db.prepare('SELECT * FROM teams WHERE id = ?').get(payer_team_id),
+    payee: db.prepare('SELECT * FROM teams WHERE id = ?').get(payee_team_id),
+  });
 });
 
 // ─── STATIC FILES ────────────────────────────────────────────────────────────

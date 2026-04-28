@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -81,8 +81,8 @@
       <nav class="site-nav">
         <a href="index.html"      class="nav-link active">Agents</a>
         <a href="skills.html"     class="nav-link">Skills</a>
-        <a href="index.html#governance" class="nav-link">Governance</a>
-        <a href="index.html#about"      class="nav-link">About</a>
+        <a href="economy.html"    class="nav-link">Workflows</a>
+        <a href="index.html#about" class="nav-link">About</a>
         <a href="innovation.html" class="nav-link nav-link--highlight">Project Overview</a>
       </nav>
     </div>
@@ -123,16 +123,30 @@
       return new URLSearchParams(location.search).get(name);
     }
 
-    function brandKey(brand) {
-      const b = (brand || '').toLowerCase();
-      if (b.includes('scania')) return 'scania';
-      if (b.includes('man'))    return 'man';
-      if (b.includes('vw') || b.includes('volkswagen')) return 'vwtb';
-      return 'traton';
+    const RUNTIME_META = {
+      'n8n':            { label: 'n8n',           abbrev: 'n8n', bg: '#f0510f' },
+      'copilot-studio': { label: 'Copilot Studio', abbrev: 'CS',  bg: '#0078d4' },
+      'claude-code':    { label: 'Claude Code',    abbrev: 'CC',  bg: '#7c3aed' },
+      'power-automate': { label: 'Power Automate', abbrev: 'PA',  bg: '#0066ff' },
+      'external':       { label: 'External',       abbrev: 'EX',  bg: '#6b7280' },
+    };
+
+    const TIER_META = {
+      'internal':     { label: 'Internal',     color: '#16a34a' },
+      'traton-group': { label: 'TRATON Group', color: '#0066cc' },
+      'partners':     { label: 'Partners',     color: '#b46400' },
+      'marketplace':  { label: 'Marketplace',  color: '#7c3aed' },
+    };
+
+    function runtimeMeta(r) {
+      return RUNTIME_META[r] || { label: r || 'Unknown', abbrev: (r || '??').slice(0, 2).toUpperCase(), bg: '#6b7280' };
     }
 
-    function statusKey(status) {
-      return (status || 'idle').toLowerCase();
+    function tierPill(tier) {
+      const t = tier || 'internal';
+      const cls = t === 'traton-group' ? 'traton' : t;
+      const label = (TIER_META[t] || {}).label || t;
+      return `<span class="tier-pill tier-pill--${cls}">${label}</span>`;
     }
 
     function fmtDate(iso) {
@@ -202,16 +216,17 @@
     }
 
     function renderHero(agent) {
-      const bk = brandKey(agent.brand);
-      const sk = statusKey(agent.status);
+      const rm  = runtimeMeta(agent.runtime);
+      const als = (agent.approval_state || 'draft').toLowerCase();
       document.getElementById('detail-hero-inner').innerHTML = `
-        <div class="detail-icon">${agent.icon || '🤖'}</div>
+        <div class="detail-icon" style="background:${rm.bg};color:#fff;font-size:12px;font-weight:800;letter-spacing:-0.5px">${rm.abbrev}</div>
         <div class="detail-hero-meta">
           <div class="detail-hero-name">${agent.name}</div>
           <div class="detail-hero-badges">
-            <span class="brand-badge brand-badge--${bk}">${agent.brand}</span>
-            <span class="status-badge status-badge--${sk}">${agent.status}</span>
-            ${agent.domain ? `<span class="domain-tag" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.7)">${agent.domain}</span>` : ''}
+            <span class="approval-badge approval-badge--${als}">${agent.approval_state || 'draft'}</span>
+            ${tierPill(agent.tier)}
+            <span style="font-size:12px;color:rgba(255,255,255,.5)">${rm.label}</span>
+            ${agent.owner_team ? `<span style="font-size:12px;color:rgba(255,255,255,.4)">· ${agent.owner_team}</span>` : ''}
           </div>
         </div>`;
     }

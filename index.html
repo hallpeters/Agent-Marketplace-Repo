@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -45,110 +45,6 @@
       font-weight: 700;
     }
 
-    /* ─── GOVERNANCE SECTION ─── */
-    .governance-section { background: var(--bg-header); padding: 80px 0; }
-    .governance-section .section-title { color: #fff; }
-    .governance-section .section-subtitle { color: rgba(255,255,255,.55); }
-
-    .governance-layout {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 24px;
-      align-items: center;
-      margin-bottom: 40px;
-    }
-    .agent-panel {
-      background: rgba(255,255,255,.06);
-      border: 1.5px solid rgba(255,255,255,.12);
-      border-radius: 14px;
-      padding: 24px;
-      transition: border-color 0.3s ease, background 0.3s ease;
-    }
-    .agent-panel.panel--active { border-color: var(--traton-blue); background: rgba(0,102,204,.12); }
-    .panel-role { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: rgba(255,255,255,.4); margin-bottom: 12px; }
-    .panel-agent-name { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 6px; }
-    .panel-domain { font-size: 13px; color: rgba(255,255,255,.55); }
-    .panel-icon { font-size: 28px; margin-bottom: 10px; }
-
-    .flow-controls { display: flex; flex-direction: column; align-items: center; gap: 12px; }
-    .flow-arrow { font-size: 22px; color: rgba(255,255,255,.3); }
-
-    /* ─── STEPS ─── */
-    .steps-container {
-      display: flex;
-      gap: 0;
-      align-items: flex-start;
-      margin-bottom: 40px;
-      position: relative;
-    }
-    .steps-container::before {
-      content: '';
-      position: absolute;
-      top: 24px; left: 24px; right: 24px;
-      height: 2px;
-      background: rgba(255,255,255,.1);
-      z-index: 0;
-    }
-    .step-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 10px; position: relative; z-index: 1; }
-    .step-icon-wrap {
-      width: 48px; height: 48px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px; font-weight: 700;
-      transition: background 0.3s ease, color 0.3s ease;
-      background: rgba(255,255,255,.08);
-      color: rgba(255,255,255,.4);
-      border: 2px solid rgba(255,255,255,.12);
-      position: relative;
-    }
-    .step-item[data-state="running"] .step-icon-wrap { background: var(--status-idle-bg);       color: var(--status-idle);              border-color: var(--status-idle); }
-    .step-item[data-state="done"]    .step-icon-wrap { background: var(--status-active-bg);      color: var(--status-active);            border-color: var(--status-active); }
-    .step-item[data-state="denied"]  .step-icon-wrap { background: var(--approval-deprecated-bg); color: var(--approval-deprecated-c);   border-color: var(--approval-deprecated-c); }
-    .step-item[data-state="human"]   .step-icon-wrap { background: #ede9fe; color: #7c3aed; border-color: #7c3aed; }
-
-    .step-spinner { display: none; position: absolute; inset: -3px; border-radius: 50%; border: 2px solid transparent; border-top-color: var(--status-idle); animation: spin 0.8s linear infinite; }
-    .step-item[data-state="running"] .step-spinner { display: block; }
-
-    .step-label { font-size: 12px; font-weight: 600; color: rgba(255,255,255,.5); text-align: center; line-height: 1.4; max-width: 90px; }
-    .step-item[data-state="running"] .step-label { color: var(--status-idle); }
-    .step-item[data-state="done"]    .step-label { color: var(--status-active); }
-    .step-item[data-state="denied"]  .step-label { color: var(--approval-deprecated-c); }
-    .step-item[data-state="human"]   .step-label { color: #7c3aed; }
-
-    /* ─── DECISION / RESULT PANELS ─── */
-    .decision-panel {
-      background: rgba(124,58,237,.15);
-      border: 1.5px solid rgba(124,58,237,.4);
-      border-radius: 14px;
-      padding: 28px;
-      margin-bottom: 32px;
-      animation: fadeInUp 0.3s ease;
-    }
-    .decision-panel h4 { font-size: 16px; font-weight: 700; color: #c4b5fd; margin-bottom: 8px; }
-    .decision-panel p  { font-size: 14px; color: rgba(255,255,255,.65); margin-bottom: 20px; line-height: 1.65; }
-    .decision-actions  { display: flex; gap: 12px; flex-wrap: wrap; }
-
-    .result-panel { border-radius: 14px; padding: 28px; margin-bottom: 32px; animation: fadeInUp 0.3s ease; }
-    .result-panel--approved { background: rgba(22,163,74,.12); border: 1.5px solid rgba(22,163,74,.35); }
-    .result-panel--denied   { background: rgba(220,38,38,.12); border: 1.5px solid rgba(220,38,38,.35); }
-    .result-panel h4 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
-    .result-panel--approved h4 { color: #86efac; }
-    .result-panel--denied   h4 { color: #fca5a5; }
-    .result-panel p  { font-size: 14px; color: rgba(255,255,255,.65); line-height: 1.65; }
-
-    /* ─── TIMELINE LOG ─── */
-    .timeline-log { border-top: 1px solid rgba(255,255,255,.1); padding-top: 28px; }
-    .timeline-log-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: rgba(255,255,255,.35); margin-bottom: 16px; }
-    .timeline-entries { display: flex; flex-direction: column; gap: 10px; }
-    .timeline-empty { font-size: 13px; color: rgba(255,255,255,.3); font-style: italic; }
-    .timeline-entry { display: flex; align-items: flex-start; gap: 12px; animation: fadeInDown 0.25s ease; }
-    .timeline-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
-    .timeline-entry[data-level="info"]    .timeline-dot { background: #60a5fa; }
-    .timeline-entry[data-level="success"] .timeline-dot { background: #4ade80; }
-    .timeline-entry[data-level="error"]   .timeline-dot { background: #f87171; }
-    .timeline-entry[data-level="warning"] .timeline-dot { background: #fbbf24; }
-    .timeline-ts  { font-size: 12px; font-family: 'Courier New', monospace; color: rgba(255,255,255,.35); white-space: nowrap; flex-shrink: 0; }
-    .timeline-msg { font-size: 13px; color: rgba(255,255,255,.7); line-height: 1.5; }
-
     /* ─── ABOUT ─── */
     .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
     .about-text p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; margin-bottom: 16px; }
@@ -162,22 +58,34 @@
     .brand-card-desc { font-size: 12px; color: rgba(255,255,255,.6); margin-top: 2px; }
     .brand-card-icon { font-size: 24px; flex-shrink: 0; }
 
+    /* ─── TIER SECTION HEADERS ─── */
+    .tier-section-header {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0 4px;
+      border-top: 1px solid var(--border-subtle);
+      margin-top: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .tier-section-header:first-child { border-top: none; margin-top: 0; }
+    .tier-section-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
     /* ─── RESPONSIVE ─── */
     @media (max-width: 900px) {
       .hero-stats { display: none; }
-      .governance-layout { grid-template-columns: 1fr; }
-      .flow-controls { flex-direction: row; justify-content: center; }
-      .flow-arrow { display: none; }
       .about-grid { grid-template-columns: 1fr; gap: 32px; }
-      .steps-container { gap: 4px; }
-      .step-label { font-size: 11px; max-width: 72px; }
     }
     @media (max-width: 640px) {
       .hero-text h1 { font-size: 28px; }
       .agent-grid { grid-template-columns: 1fr; }
-      .steps-container { flex-wrap: wrap; gap: 16px; }
-      .steps-container::before { display: none; }
-      .step-item { flex: 0 0 calc(50% - 8px); }
     }
   </style>
 </head>
@@ -197,7 +105,7 @@
       <nav class="site-nav">
         <a href="index.html"      class="nav-link active">Agents</a>
         <a href="skills.html"     class="nav-link">Skills</a>
-        <a href="#governance"     class="nav-link">Governance</a>
+        <a href="economy.html"    class="nav-link">Workflows</a>
         <a href="#about"          class="nav-link">About</a>
         <a href="innovation.html" class="nav-link nav-link--highlight">Project Overview</a>
       </nav>
@@ -241,52 +149,17 @@
           <select id="filter-runtime" class="select-input">
             <option value="">All runtimes</option>
           </select>
+          <select id="filter-tier" class="select-input">
+            <option value="">All tiers</option>
+            <option value="internal">Internal</option>
+            <option value="traton-group">TRATON Group</option>
+            <option value="partners">Partners</option>
+            <option value="marketplace">Marketplace</option>
+          </select>
         </div>
       </div>
       <div id="agent-grid" class="agent-grid">
         <div class="state-message"><p>Loading agents…</p></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ─── GOVERNANCE SECTION ─── -->
-  <section id="governance" class="governance-section">
-    <div class="container">
-      <div class="section-header" style="margin-bottom:40px">
-        <div>
-          <h2 class="section-title">Governance Demo</h2>
-          <p class="section-subtitle">Watch a cross-brand data request move through the policy enforcement pipeline in real time.</p>
-        </div>
-      </div>
-
-      <div class="governance-layout">
-        <div class="agent-panel" id="panel-requester">
-          <div class="panel-role">Requesting Agent</div>
-          <div class="panel-icon">👥</div>
-          <div class="panel-agent-name">MAN HR Analytics Agent</div>
-          <div class="panel-domain">MAN &middot; Human Resources</div>
-        </div>
-        <div class="flow-controls">
-          <div class="flow-arrow">→</div>
-          <button class="btn btn--primary btn--lg" id="btn-start">Send Data Request</button>
-          <button class="btn btn--ghost" id="btn-reset" style="display:none">↺ Reset</button>
-        </div>
-        <div class="agent-panel" id="panel-target">
-          <div class="panel-role">Target Agent</div>
-          <div class="panel-icon">🛡️</div>
-          <div class="panel-agent-name">TRATON Compliance Guardian</div>
-          <div class="panel-domain">TRATON Group &middot; Compliance</div>
-        </div>
-      </div>
-
-      <div class="steps-container" id="steps-container"></div>
-      <div id="governance-dynamic"></div>
-
-      <div class="timeline-log">
-        <div class="timeline-log-title">Activity Log</div>
-        <div class="timeline-entries" id="timeline-entries">
-          <div class="timeline-empty">No activity yet. Start the demo to see the log.</div>
-        </div>
       </div>
     </div>
   </section>
@@ -363,10 +236,26 @@
       'copilot-studio': { label: 'Copilot Studio',  abbrev: 'CS',  bg: '#0078d4' },
       'claude-code':    { label: 'Claude Code',     abbrev: 'CC',  bg: '#7c3aed' },
       'power-automate': { label: 'Power Automate',  abbrev: 'PA',  bg: '#0066ff' },
+      'external':       { label: 'External',        abbrev: 'EX',  bg: '#6b7280' },
     };
+
+    const TIER_META = {
+      'internal':     { label: 'Internal',      sublabel: 'Scania · Active',          color: '#16a34a' },
+      'traton-group': { label: 'TRATON Group',  sublabel: 'Cross-brand · Shared',     color: '#0066cc' },
+      'partners':     { label: 'Partners',      sublabel: 'Distributors & Suppliers', color: '#b46400' },
+      'marketplace':  { label: 'Marketplace',   sublabel: 'Third-party · Open',       color: '#7c3aed' },
+    };
+    const TIER_ORDER = ['internal', 'traton-group', 'partners', 'marketplace'];
 
     function runtimeMeta(r) {
       return RUNTIME_META[r] || { label: r || 'Unknown', abbrev: (r || '??').slice(0, 2).toUpperCase(), bg: '#6b7280' };
+    }
+
+    function tierPill(tier) {
+      const t = tier || 'internal';
+      const cls = t === 'traton-group' ? 'traton' : t;
+      const label = (TIER_META[t] || {}).label || t;
+      return `<span class="tier-pill tier-pill--${cls}">${label}</span>`;
     }
 
     async function fetchAgents() {
@@ -414,16 +303,66 @@
     function initFilters() {
       document.getElementById('filter-approval').addEventListener('change', renderAgents);
       document.getElementById('filter-runtime').addEventListener('change', renderAgents);
+      document.getElementById('filter-tier').addEventListener('change', renderAgents);
     }
 
     function getFiltered() {
       const approval = document.getElementById('filter-approval').value;
       const runtime  = document.getElementById('filter-runtime').value;
+      const tier     = document.getElementById('filter-tier').value;
       return allAgents.filter(a => {
         if (approval && (a.approval_state || '').toLowerCase() !== approval) return false;
         if (runtime  && (a.runtime || '') !== runtime) return false;
+        if (tier     && (a.tier || 'internal') !== tier) return false;
         return true;
       });
+    }
+
+    function renderCard(a) {
+      const rm  = runtimeMeta(a.runtime);
+      const als = (a.approval_state || 'draft').toLowerCase();
+
+      const skillIds   = a.skills_used || [];
+      const skillItems = skillIds.map(id => skillsMap[id]).filter(Boolean);
+      const visible    = skillItems.slice(0, 3);
+      const overflow   = skillIds.length - visible.length;
+
+      let skillsHtml = '';
+      if (skillIds.length > 0) {
+        const pills = visible.map(s =>
+          `<a href="skill-detail.html?id=${s.id}" class="chip">${s.name}</a>`
+        ).join('');
+        const more = overflow > 0
+          ? `<span class="chip" style="color:var(--text-muted);border-style:dashed">+${overflow} more</span>`
+          : '';
+        skillsHtml = `
+          <div>
+            <div class="subsection-label" style="margin-bottom:8px">Skills used</div>
+            <div class="chip-list">${pills}${more}</div>
+          </div>`;
+      }
+
+      return `
+        <div class="agent-card">
+          <div class="card-header">
+            <div class="agent-icon" style="background:${rm.bg};color:#fff;font-size:12px;font-weight:800;letter-spacing:-0.5px">${rm.abbrev}</div>
+            <div class="card-header-meta">
+              <h3 class="agent-name">${a.name}</h3>
+              ${a.owner_team ? `<div class="agent-team">${a.owner_team}</div>` : ''}
+            </div>
+          </div>
+          <div class="card-meta-row">
+            <span class="runtime-pill" style="background:${rm.bg}22;color:${rm.bg};border:1.5px solid ${rm.bg}55">${rm.label}</span>
+            <span class="approval-badge approval-badge--${als}">${a.approval_state || 'draft'}</span>
+            ${tierPill(a.tier)}
+          </div>
+          <p class="agent-description">${a.description || ''}</p>
+          ${skillsHtml}
+          <div class="card-actions">
+            <a href="agent-detail.html?id=${a.id}" class="btn btn--secondary">View Details</a>
+            <a href="economy.html" class="btn btn--primary">Workflow Demo</a>
+          </div>
+        </div>`;
     }
 
     function renderAgents() {
@@ -435,205 +374,26 @@
         return;
       }
 
-      grid.innerHTML = filtered.map(a => {
-        const rm  = runtimeMeta(a.runtime);
-        const als = (a.approval_state || 'draft').toLowerCase();
+      const grouped = {};
+      TIER_ORDER.forEach(t => { grouped[t] = []; });
+      filtered.forEach(a => {
+        const t = a.tier || 'internal';
+        (grouped[t] || (grouped['internal'] = grouped['internal'] || [])).push(a);
+      });
 
-        // Skills used — up to 3, then "+N more"
-        const skillIds    = a.skills_used || [];
-        const skillItems  = skillIds.map(id => skillsMap[id]).filter(Boolean);
-        const visible     = skillItems.slice(0, 3);
-        const overflow    = skillIds.length - visible.length;
+      let html = '';
+      TIER_ORDER.forEach(t => {
+        const agents = grouped[t];
+        if (!agents || agents.length === 0) return;
+        const tm = TIER_META[t] || {};
+        html += `<div class="tier-section-header">
+          <span style="color:${tm.color || '#888'}">${tm.label || t}</span>
+          ${tm.sublabel ? `<span class="tier-section-sub">${tm.sublabel}</span>` : ''}
+        </div>`;
+        agents.forEach(a => { html += renderCard(a); });
+      });
 
-        let skillsHtml = '';
-        if (skillIds.length > 0) {
-          const pills = visible.map(s =>
-            `<a href="skill-detail.html?id=${s.id}" class="chip">${s.name}</a>`
-          ).join('');
-          const more = overflow > 0
-            ? `<span class="chip" style="color:var(--text-muted);border-style:dashed">+${overflow} more</span>`
-            : '';
-          skillsHtml = `
-            <div>
-              <div class="subsection-label" style="margin-bottom:8px">Skills used</div>
-              <div class="chip-list">${pills}${more}</div>
-            </div>`;
-        }
-
-        return `
-          <div class="agent-card">
-            <div class="card-header">
-              <div class="agent-icon" style="background:${rm.bg};color:#fff;font-size:12px;font-weight:800;letter-spacing:-0.5px">${rm.abbrev}</div>
-              <div class="card-header-meta">
-                <h3 class="agent-name">${a.name}</h3>
-                ${a.owner_team ? `<div class="agent-team">${a.owner_team}</div>` : ''}
-              </div>
-            </div>
-            <div class="card-meta-row">
-              <span class="runtime-pill" style="background:${rm.bg}22;color:${rm.bg};border:1.5px solid ${rm.bg}55">${rm.label}</span>
-              <span class="approval-badge approval-badge--${als}">${a.approval_state || 'draft'}</span>
-            </div>
-            <p class="agent-description">${a.description || ''}</p>
-            ${skillsHtml}
-            <div class="card-actions">
-              <a href="agent-detail.html?id=${a.id}" class="btn btn--secondary">View Details</a>
-              <button class="btn btn--primary" onclick="scrollToGovernance()">Request Data</button>
-            </div>
-          </div>`;
-      }).join('');
-    }
-
-    function scrollToGovernance() {
-      document.getElementById('governance').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    /* === GOVERNANCE STATE === */
-    const STEPS_DEF = [
-      { id: 1, label: "Request\nInitiated",  icon: "📤", autoAdvance: true,  delay: 900  },
-      { id: 2, label: "Policy\nCheck",       icon: "🔍", autoAdvance: true,  delay: 2400 },
-      { id: 3, label: "Approval\nRequired",  icon: "👤", autoAdvance: false              },
-      { id: 4, label: "Decision\nRecorded",  icon: "📋", autoAdvance: true,  delay: 700  },
-      { id: 5, label: "Result",              icon: "📩", autoAdvance: false              }
-    ];
-
-    const GOV = {
-      currentStep: 0,
-      stepStates: { 1:'waiting', 2:'waiting', 3:'waiting', 4:'waiting', 5:'waiting' },
-      decision: null,
-      log: [],
-      running: false
-    };
-
-    function renderSteps() {
-      const container = document.getElementById('steps-container');
-      container.innerHTML = STEPS_DEF.map(s => {
-        const state = GOV.stepStates[s.id];
-        const iconContent = state === 'done' ? '✓' : state === 'denied' ? '✗' : s.icon;
-        return `
-          <div class="step-item" data-step="${s.id}" data-state="${state}">
-            <div class="step-icon-wrap">
-              <div class="step-spinner"></div>
-              ${iconContent}
-            </div>
-            <div class="step-label">${s.label.replace('\n', '<br>')}</div>
-          </div>`;
-      }).join('');
-    }
-
-    function renderDynamic() {
-      const el = document.getElementById('governance-dynamic');
-      if (GOV.currentStep === 2 && GOV.stepStates[3] === 'running') {
-        el.innerHTML = `
-          <div class="decision-panel">
-            <h4>👤 Human Approval Required</h4>
-            <p>
-              <strong style="color:#e9d5ff">MAN HR Analytics Agent</strong> is requesting access to
-              <strong style="color:#e9d5ff">Salary Band Data (Cross-Brand)</strong> held by
-              <strong style="color:#e9d5ff">TRATON Compliance Guardian</strong>.<br><br>
-              Data classification: <span style="color:#fbbf24">Confidential — HR Category 2</span>.
-              Cross-brand transfer requires CISO approval under Policy §4.2.
-            </p>
-            <div class="decision-actions">
-              <button class="btn btn--success" onclick="handleDecision('approved')">✓ Approve Access</button>
-              <button class="btn btn--danger"  onclick="handleDecision('denied')">✗ Deny Access</button>
-            </div>
-          </div>`;
-        return;
-      }
-      if (GOV.stepStates[5] === 'running' || (GOV.currentStep >= 4 && GOV.stepStates[5] !== 'waiting')) {
-        if (GOV.decision === 'approved') {
-          el.innerHTML = `
-            <div class="result-panel result-panel--approved">
-              <h4>✓ Data Transfer Approved &amp; Complete</h4>
-              <p>Salary band data was securely delivered to MAN HR Analytics Agent. An encrypted payload was transmitted via the secure inter-agent channel. Audit entry <strong style="color:#bbf7d0">#AUD-2026-04-24-0471</strong> created and signed.</p>
-            </div>`;
-        } else {
-          el.innerHTML = `
-            <div class="result-panel result-panel--denied">
-              <h4>✗ Access Denied</h4>
-              <p>Request rejected by CISO governance review. Reason: Cross-brand HR data transfer prohibited under <strong style="color:#fecaca">TRATON Data Policy §4.2 — Confidential HR Data</strong>. MAN HR Analytics Agent has been notified. No data was transmitted. Audit entry <strong style="color:#fecaca">#AUD-2026-04-24-0471</strong> created.</p>
-            </div>`;
-        }
-        return;
-      }
-      el.innerHTML = '';
-    }
-
-    function renderLog() {
-      const container = document.getElementById('timeline-entries');
-      if (GOV.log.length === 0) {
-        container.innerHTML = '<div class="timeline-empty">No activity yet. Start the demo to see the log.</div>';
-        return;
-      }
-      container.innerHTML = GOV.log.map(e => `
-        <div class="timeline-entry" data-level="${e.level}">
-          <div class="timeline-dot"></div>
-          <span class="timeline-ts">${e.ts}</span>
-          <span class="timeline-msg">${e.msg}</span>
-        </div>`).join('');
-    }
-
-    function renderPanelHighlights() {
-      document.getElementById('panel-requester').classList.toggle('panel--active', GOV.currentStep <= 1);
-      document.getElementById('panel-target').classList.toggle('panel--active', GOV.currentStep >= 3);
-    }
-
-    function renderGovernanceUI() {
-      renderSteps(); renderDynamic(); renderLog(); renderPanelHighlights();
-      const isDone = GOV.stepStates[5] !== 'waiting' || GOV.stepStates[4] === 'done';
-      document.getElementById('btn-reset').style.display = isDone ? '' : 'none';
-      document.getElementById('btn-start').disabled = GOV.running || GOV.currentStep > 0;
-    }
-
-    const delay = ms => new Promise(r => setTimeout(r, ms));
-
-    function addLog(msg, level = 'info') {
-      const ts = new Date().toLocaleTimeString('en-GB', { hour12: false });
-      GOV.log.unshift({ ts, msg, level });
-      renderLog();
-    }
-
-    async function advanceGovernance() {
-      if (GOV.running) return;
-      GOV.running = true;
-      renderGovernanceUI();
-      const stepDef = STEPS_DEF[GOV.currentStep];
-      GOV.stepStates[stepDef.id] = 'running';
-      renderGovernanceUI();
-      const logMessages = {
-        1: ['info',    'Request initiated: MAN HR Analytics Agent → TRATON Compliance Guardian'],
-        2: ['info',    'Policy engine running: checking data classification, cross-brand rules, GDPR basis…'],
-        3: ['warning', 'Awaiting human approval — data classified Confidential HR Cat-2'],
-        4: ['info',    `Decision recorded: ${GOV.decision?.toUpperCase()} — audit log entry created`],
-        5: ['info',    GOV.decision === 'approved' ? 'Data payload delivered securely to requester' : 'Access denied. Requester notified. No data transmitted.']
-      };
-      const [level, msg] = logMessages[stepDef.id];
-      addLog(msg, level);
-      if (stepDef.autoAdvance) {
-        await delay(stepDef.delay);
-        GOV.stepStates[stepDef.id] = 'done';
-        GOV.currentStep++;
-        GOV.running = false;
-        advanceGovernance();
-      } else {
-        GOV.running = false;
-        renderGovernanceUI();
-      }
-    }
-
-    function handleDecision(decision) {
-      GOV.decision = decision;
-      GOV.stepStates[3] = decision === 'approved' ? 'done' : 'denied';
-      addLog(`Decision by governance officer: ${decision.toUpperCase()}`, decision === 'approved' ? 'success' : 'error');
-      GOV.currentStep++;
-      advanceGovernance();
-    }
-
-    function resetGovernance() {
-      GOV.currentStep = 0;
-      GOV.stepStates = { 1:'waiting', 2:'waiting', 3:'waiting', 4:'waiting', 5:'waiting' };
-      GOV.decision = null; GOV.log = []; GOV.running = false;
-      renderGovernanceUI();
+      grid.innerHTML = html;
     }
 
     /* === NAV === */
@@ -667,11 +427,8 @@
     /* === INIT === */
     document.addEventListener('DOMContentLoaded', () => {
       fetchAgents();
-      renderGovernanceUI();
       initScrollObserver();
       initNavSmooth();
-      document.getElementById('btn-start').addEventListener('click', () => { if (GOV.currentStep === 0) advanceGovernance(); });
-      document.getElementById('btn-reset').addEventListener('click', resetGovernance);
     });
   </script>
 </body>

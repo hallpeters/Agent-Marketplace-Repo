@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -187,8 +187,8 @@
       <nav class="site-nav">
         <a href="index.html"      class="nav-link">Agents</a>
         <a href="skills.html"     class="nav-link active">Skills</a>
-        <a href="index.html#governance" class="nav-link">Governance</a>
-        <a href="index.html#about"      class="nav-link">About</a>
+        <a href="economy.html"    class="nav-link">Workflows</a>
+        <a href="index.html#about" class="nav-link">About</a>
         <a href="innovation.html" class="nav-link nav-link--highlight">Project Overview</a>
       </nav>
     </div>
@@ -242,6 +242,20 @@
       return Math.floor(diff / (1000 * 60 * 60 * 24));
     }
 
+    const TIER_META = {
+      'internal':     { label: 'Internal',     color: '#16a34a' },
+      'traton-group': { label: 'TRATON Group', color: '#0066cc' },
+      'partners':     { label: 'Partners',     color: '#b46400' },
+      'marketplace':  { label: 'Marketplace',  color: '#7c3aed' },
+    };
+
+    function tierPill(tier) {
+      const t = tier || 'internal';
+      const cls = t === 'traton-group' ? 'traton' : t;
+      const label = (TIER_META[t] || {}).label || t;
+      return `<span class="tier-pill tier-pill--${cls}">${label}</span>`;
+    }
+
     function approvalBadge(state) {
       const s = (state || 'draft').toLowerCase();
       return `<span class="approval-badge approval-badge--${s}">${state || 'draft'}</span>`;
@@ -277,6 +291,7 @@
           <div class="detail-hero-badges">
             ${skill.category ? `<span class="category-tag" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.7)">${skill.category}</span>` : ''}
             <span class="approval-badge approval-badge--${approvalS}">${skill.approval_state || 'draft'}</span>
+            ${tierPill(skill.tier)}
             <span style="font-size:12px;color:rgba(255,255,255,.5)">v${skill.version || '1.0.0'}</span>
           </div>
         </div>`;
