@@ -343,16 +343,16 @@
           <div class="card-eyebrow card-eyebrow--who">
             <span class="bucket-num">1</span> Target User
           </div>
-          <h4>Digital Product &amp; IT Leads at brand level</h4>
-          <p>Teams at Scania, MAN, or VW T&amp;B who are actively building and deploying AI agents — and need to move fast without waiting for shared group infrastructure to exist.</p>
+          <h4>TRATON Group IT and governance teams</h4>
+          <p>TRATON Group IT, digitalisation strategy, and access-control teams responsible for governing agentic AI across Scania and sister brands.</p>
         </div>
 
         <div class="insight-card insight-card--problem">
           <div class="card-eyebrow card-eyebrow--problem">
             <span class="bucket-num">2</span> Pain Point
           </div>
-          <h4>Agents are siloed with no way to discover or share across brands</h4>
-          <p>No standardized communication layer, no shared governance, no visibility into what exists elsewhere. Cross-brand optimization is blocked and teams keep rebuilding the same capabilities independently.</p>
+          <h4>Agents proliferate faster than governance can follow</h4>
+          <p>Shadow agents operate outside the central platform, human-credentialed agent activity is invisible, and there is no economic model for cross-team or cross-brand agent consumption.</p>
         </div>
 
       </div>
@@ -364,16 +364,16 @@
           <div class="card-eyebrow card-eyebrow--feature">
             <span class="bucket-num">3</span> Key Feature
           </div>
-          <h4>A cross-brand registry with a lightweight governance layer</h4>
-          <p>Make agents across all TRATON brands discoverable and interoperable — with a request and approval flow that enforces policy without requiring teams to consolidate infrastructure or give up brand autonomy.</p>
+          <h4>An agent economy layer with token-based reimbursement and governance</h4>
+          <p>A conceptual framework and reference architecture for an agent economy layer — token-based internal reimbursement between teams, extensible to brand-level, partner, and eventually open-marketplace agent transactions — complemented by observability and differentiated policy enforcement for agents vs humans.</p>
         </div>
 
         <div class="insight-card insight-card--risk">
           <div class="card-eyebrow card-eyebrow--risk">
             <span class="bucket-num">4</span> Biggest Risk This Sprint
           </div>
-          <h4>We might be solving the wrong problem</h4>
-          <p>The real friction may be <strong>political or organizational</strong>, not technical. If brands don't want to share agents due to trust or internal incentive structures, a platform solution becomes irrelevant no matter how well it works technically.</p>
+          <h4>Stakeholders reject the economy framing as premature or theoretical</h4>
+          <p>That internal stakeholders redirect us back toward the observability-only problem they already feel, treating token-based reimbursement as a <strong>solution without a problem</strong> rather than the missing governance layer.</p>
         </div>
 
       </div>
@@ -385,11 +385,11 @@
         </div>
         <div class="experiment-inner" style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: center;">
           <div>
-            <h4>TRATON stakeholder interviews</h4>
-            <p>We ask brand leads one focused question designed to separate the technical problem from the organizational one. If discoverability alone unlocks value, people will name concrete actions they'd take. If deeper blockers dominate, they won't.</p>
+            <h4>Two targeted stakeholder conversations with a one-page framework</h4>
+            <p>Pressure-test the agent economy concept in two further stakeholder conversations — one with the security/access control team, one with a business-unit PO — using a one-page framework as the artifact. Specifically ask whether the token/reimbursement logic resonates or feels like a solution without a problem.</p>
           </div>
           <div class="experiment-box">
-            <div class="question">"If you knew every AI agent that existed across the TRATON group right now — what would you actually do differently?"</div>
+            <div class="question">"Does a token-based internal reimbursement model solve a governance problem you actually have — or does it feel like a layer of complexity you wouldn't ask for?"</div>
           </div>
         </div>
       </div>
@@ -431,7 +431,7 @@
           </div>
         </div>
 
-        <div class="progress-item progress-item--last">
+        <div class="progress-item">
           <div class="progress-dot progress-dot--done">✓</div>
           <div class="progress-content">
             <div class="progress-phase">Step 3 — Completed</div>
@@ -456,6 +456,38 @@
           </div>
         </div>
 
+        <div class="progress-item progress-item--last">
+          <div class="progress-dot progress-dot--done">✓</div>
+          <div class="progress-content">
+            <div class="progress-phase">Step 4 — Completed</div>
+            <div class="progress-title">Stakeholder interviews — critical learnings pivoted our scope direction</div>
+            <p class="progress-desc">Conducted one interview with a Scania agent expert and the main project POC. Faced access challenges reaching wider Scania employees due to internal blockers — a new outreach strategy is now in place using targeted messages via the intranet. Secured a 30-minute diagnostic call with a Scania AI strategist. Key finding: <strong>Scania is already building the skills and agent platform internally</strong>, which commoditizes our original registry wedge and required a scope pivot.</p>
+            <div class="traton-feedback">
+              <div class="feedback-item">
+                <div class="feedback-icon">💡</div>
+                <div>
+                  <div class="feedback-title">Skills are portable instructions; agents are the deciders that invoke them</div>
+                  <div class="feedback-body">Reuse is cheapest at the skills layer — the registry value is real, but it's a layer Scania is already building.</div>
+                </div>
+              </div>
+              <div class="feedback-item">
+                <div class="feedback-icon">⚠️</div>
+                <div>
+                  <div class="feedback-title">Scania is already building that registry internally</div>
+                  <div class="feedback-body">This commoditizes our original wedge. Competing on discoverability alone is no longer a defensible position.</div>
+                </div>
+              </div>
+              <div class="feedback-item">
+                <div class="feedback-icon">🎯</div>
+                <div>
+                  <div class="feedback-title">Durable value sits one layer up — governance and economics</div>
+                  <div class="feedback-body">The governance and economic layer wrapping every agent — including shadow ones — is where the real gap is. That is our new scope direction.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <!-- Next Steps -->
@@ -469,18 +501,18 @@
         <div class="next-card next-card--1">
           <div class="next-num">1</div>
           <div class="next-body">
-            <div class="next-label">Upcoming · Build</div>
-            <div class="next-title">Add real agents and get the platform live with a backend</div>
-            <p class="next-desc">Move from prototype to a working platform: onboard 2–3 real agents with live data flows, proper backend infrastructure, and the governance pipeline enforced end-to-end — not simulated.</p>
+            <div class="next-label">This Week · Validate</div>
+            <div class="next-title">Two stakeholder conversations — pressure-test the agent economy framing</div>
+            <p class="next-desc">Run targeted conversations with the security/access control team and one business-unit PO, using a one-page framework as the artifact. The core question: does the token/reimbursement model solve a governance problem they actually have, or does it feel like a layer of complexity they wouldn't ask for? This either confirms our new scope direction or forces a further pivot.</p>
           </div>
         </div>
 
         <div class="next-card next-card--2">
           <div class="next-num">2</div>
           <div class="next-body">
-            <div class="next-label">Dependent on Step 1 · Interviews &amp; Prototype Demo</div>
-            <div class="next-title">Run interviews to test we're solving the right problem — then show the live platform</div>
-            <p class="next-desc">Run structured interviews with brand leads using <strong>MOMs test principles</strong> — questions designed to surface real behaviour and expose whether the problem we've identified is the one that actually blocks people. Once unbiased responses are captured, close each interview by showing the live platform, letting people react to a working version of the solution.</p>
+            <div class="next-label">Dependent on Step 1 · Build</div>
+            <div class="next-title">Deepen the working prototype around governance and economics</div>
+            <p class="next-desc">If stakeholders validate the economy framing: extend the prototype to demonstrate the governance layer in action — shadow agent observability, differentiated policy enforcement, and the token-based reimbursement model across teams. Make the concept undeniable with a working demo that goes beyond the current workflow demo.</p>
           </div>
         </div>
 
