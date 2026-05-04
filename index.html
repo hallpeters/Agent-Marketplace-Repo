@@ -87,10 +87,59 @@
       .hero-text h1 { font-size: 28px; }
       .agent-grid { grid-template-columns: 1fr; }
     }
+  /* ─── RESEARCH DISCLOSURE BANNER ─── */
+  .research-disclosure {
+    background: #fffbeb;
+    border-bottom: 2px solid #f59e0b;
+    padding: 14px 0;
+  }
+  .research-disclosure-inner {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .research-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #92400e;
+    background: #fde68a;
+    border: 1px solid #f59e0b;
+    border-radius: 4px;
+    padding: 3px 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .research-text {
+    font-size: 13px;
+    color: #78350f;
+    line-height: 1.55;
+  }
+  .research-text strong { font-weight: 600; color: #451a03; }
   </style>
 </head>
 
 <body>
+
+  <!-- ─── RESEARCH DISCLOSURE ─── -->
+  <div class="research-disclosure">
+    <div class="container">
+      <div class="research-disclosure-inner">
+        <span class="research-badge">Research Prototype</span>
+        <p class="research-text">
+          This is a student research prototype developed as part of
+          <strong>Navigating AI: Strategy and Impact</strong> at
+          <strong>Stockholm School of Economics</strong>.
+          TRATON Group is the research partner and case context — this is
+          <strong>not</strong> an official product or internal system of TRATON, Scania, MAN, or Volkswagen Truck &amp; Bus.
+          Built for research and stakeholder feedback purposes only.
+        </p>
+      </div>
+    </div>
+  </div>
 
   <!-- ─── HEADER ─── -->
   <header class="site-header">
