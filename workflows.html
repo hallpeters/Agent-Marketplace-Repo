@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agent Workflows — TRATON AI Marketplace</title>
+  <title>Agent Workflows — AI Agent Marketplace</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -118,14 +118,14 @@
       transition: background 0.3s ease, box-shadow 0.3s ease;
     }
     .tx-track.lit {
-      background: linear-gradient(90deg, var(--scania-blue) 0%, var(--traton-blue) 50%, var(--scania-amber) 100%);
+      background: linear-gradient(90deg, var(--brand-a-blue) 0%, var(--primary-blue) 50%, var(--brand-a-amber) 100%);
       box-shadow: 0 0 10px rgba(0,102,204,.4);
     }
     .tx-packet {
       position: absolute; top: -8px; left: 0;
       width: 19px; height: 19px; border-radius: 50%;
-      background: var(--traton-blue);
-      box-shadow: 0 0 16px rgba(0,102,204,.9), 0 0 32px rgba(0,102,204,.4);
+      background: var(--primary-blue);
+      box-shadow: 0 0 16px rgba(37,99,235,.9), 0 0 32px rgba(37,99,235,.4);
       opacity: 0; transform: translateX(-50%); pointer-events: none;
     }
     .tx-packet.flying {
@@ -227,7 +227,7 @@
       display: inline-block; padding: 2px 8px;
       border-radius: 20px; font-size: 11px; font-weight: 700;
     }
-    .tx-flow-badge--sales     { background: #e0e8f0; color: var(--scania-blue); }
+    .tx-flow-badge--sales     { background: #e0e8f0; color: var(--brand-a-blue); }
     .tx-flow-badge--marketing { background: #fff7e0; color: #b07800; }
     .tx-flow-badge--default   { background: var(--bg-section-alt); color: var(--text-secondary); }
 
@@ -251,7 +251,7 @@
       <a href="index.html" class="brand">
         <div class="brand-logo">T</div>
         <div>
-          <span class="brand-name">TRATON Group</span>
+          <span class="brand-name">VehicleGroup</span>
           <span class="brand-subtitle">AI Agent Marketplace</span>
         </div>
       </a>
@@ -259,8 +259,6 @@
         <a href="index.html"       class="nav-link">Agents</a>
         <a href="skills.html"      class="nav-link">Skills</a>
         <a href="workflows.html"   class="nav-link active">Workflows</a>
-        <a href="index.html#about" class="nav-link">About</a>
-        <a href="innovation.html"  class="nav-link nav-link--highlight">Project Overview</a>
       </nav>
     </div>
   </header>
@@ -289,21 +287,21 @@
             <label class="config-label" for="sel-agent">1 · Requesting agent</label>
             <select id="sel-agent" class="form-control">
               <option value="">Select an agent…</option>
-              <option value="agent-sales-001">Sales Account Agent (Sales · Scania)</option>
-              <option value="agent-sales-002">Sales Pipeline Agent (Sales · Scania)</option>
-              <option value="agent-marketing-001">Marketing Insights Agent (Marketing · Scania)</option>
-              <option value="agent-marketing-002">Marketing Campaign Agent (Marketing · Scania)</option>
+              <option value="agent-sales-001">Sales Account Agent (Sales · Atlas)</option>
+              <option value="agent-sales-002">Sales Pipeline Agent (Sales · Atlas)</option>
+              <option value="agent-marketing-001">Marketing Insights Agent (Marketing · Atlas)</option>
+              <option value="agent-marketing-002">Marketing Campaign Agent (Marketing · Atlas)</option>
             </select>
           </div>
           <div class="config-group">
             <label class="config-label" for="sel-skill">2 · Skill to invoke</label>
             <select id="sel-skill" class="form-control">
               <option value="">Select a skill…</option>
-              <option value="skill-churn-001">Predict customer churn risk (Marketing · Scania)</option>
-              <option value="skill-lead-001">Score lead quality (Marketing · Scania)</option>
-              <option value="skill-attr-001">Campaign attribution analysis (Marketing · Scania)</option>
-              <option value="skill-pipeline-001">Pipeline forecast (Sales · Scania)</option>
-              <option value="skill-health-001">Account health snapshot (Sales · Scania)</option>
+              <option value="skill-churn-001">Predict customer churn risk (Marketing · Atlas)</option>
+              <option value="skill-lead-001">Score lead quality (Marketing · Atlas)</option>
+              <option value="skill-attr-001">Campaign attribution analysis (Marketing · Atlas)</option>
+              <option value="skill-pipeline-001">Pipeline forecast (Sales · Atlas)</option>
+              <option value="skill-health-001">Account health snapshot (Sales · Atlas)</option>
             </select>
           </div>
         </div>
@@ -393,9 +391,9 @@
   <footer class="site-footer">
     <div class="container">
       <p>
-        <span>TRATON Group AI Agent Marketplace</span> &nbsp;·&nbsp;
+        <span>AI Agent Marketplace</span> &nbsp;·&nbsp;
         Internal prototype &nbsp;·&nbsp;
-        Scania · MAN · Volkswagen Truck &amp; Bus
+        Atlas · Meridian · Apex Fleet
       </p>
     </div>
   </footer>
@@ -494,11 +492,11 @@
       const isXTeam = agent.owner_team !== skill.owner_team;
       const txType  = isXTeam ? 'Cross-team' : 'Same-team';
 
-      el('tx-label-from').textContent = `${agent.owner_team} · Scania`;
-      el('tx-label-to').textContent   = `${skill.owner_team} · Scania`;
+      el('tx-label-from').textContent = `${agent.owner_team} · Atlas`;
+      el('tx-label-to').textContent   = `${skill.owner_team} · Atlas`;
 
-      el('preview-from').textContent  = `${agent.owner_team} · Scania`;
-      el('preview-to').textContent    = `${skill.owner_team} · Scania`;
+      el('preview-from').textContent  = `${agent.owner_team} · Atlas`;
+      el('preview-to').textContent    = `${skill.owner_team} · Atlas`;
       el('preview-type').textContent  = txType;
       el('preview-links').innerHTML = `
         <a href="agent-detail.html?id=${escHtml(agentId)}" class="tx-link" style="font-size:12px">View ${escHtml(agent.name)} →</a>
@@ -657,3 +655,4 @@
   </script>
 </body>
 </html>
+
