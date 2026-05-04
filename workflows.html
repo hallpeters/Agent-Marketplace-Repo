@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agent Workflows — TRATON AI Marketplace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+
+  <style>
+    /* ─── HERO ─── */
+    .workflows-hero {
+      background: linear-gradient(135deg, var(--bg-header) 0%, #003580 100%);
+      padding: 56px 0 64px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .workflows-hero h1 {
+      font-size: 36px; font-weight: 800; color: #fff;
+      letter-spacing: -1px; line-height: 1.2; margin-bottom: 10px;
+    }
+    .workflows-hero h1 span { color: #60a5fa; }
+    .workflows-hero p {
+      font-size: 15px; color: rgba(255,255,255,.6);
+      max-width: 520px; line-height: 1.7; margin: 0;
+    }
+
+    /* ─── MAIN ─── */
+    .workflows-section { padding: 56px 0 40px; }
+
+    /* ─── CONFIG PANEL ─── */
+    .config-panel {
+      display: flex; gap: 16px;
+      margin-bottom: 20px; align-items: flex-end;
+    }
+    .config-group { flex: 1; }
+    .config-label {
+      display: block; font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.6px;
+      color: var(--text-muted); margin-bottom: 6px;
+    }
+
+    /* ─── TX PREVIEW ─── */
+    .tx-preview {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      background: var(--bg-section-alt);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 14px 20px;
+      margin-bottom: 24px;
+      align-items: start;
+    }
+    .tx-preview-label {
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.6px;
+      color: var(--text-muted); margin-bottom: 4px;
+    }
+    .tx-preview-val {
+      font-size: 13px; font-weight: 600;
+      color: var(--text-primary); line-height: 1.3;
+    }
+    .tx-preview-links {
+      grid-column: 1/-1; display: flex; gap: 20px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-subtle);
+      margin-top: 2px;
+    }
+
+    /* ─── WORKFLOW PANEL ─── */
+    .tx-panel {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-card);
+      padding: 32px; margin-bottom: 48px;
+    }
+    .panel-header {
+      margin-bottom: 22px; padding-bottom: 18px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .panel-header-title {
+      font-size: 17px; font-weight: 800;
+      color: var(--text-primary); letter-spacing: -0.3px; margin-bottom: 3px;
+    }
+    .panel-header-sub { font-size: 13px; color: var(--text-muted); }
+
+    /* ─── PROGRESSIVE DISCLOSURE ─── */
+    #tx-details {
+      display: none; opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+    #tx-details.visible { opacity: 1; }
+    .select-hint {
+      font-size: 13px; color: var(--text-muted);
+      font-style: italic; margin: 4px 0 28px;
+      text-align: center;
+    }
+
+    /* ─── TX FLOW LINE ─── */
+    .tx-flow {
+      display: flex; align-items: center;
+      gap: 16px; margin-bottom: 28px;
+    }
+    .tx-flow-label {
+      font-size: 13px; font-weight: 600;
+      color: var(--text-secondary); white-space: nowrap; min-width: 140px;
+    }
+    .tx-flow-label--left  { text-align: right; }
+    .tx-flow-label--right { text-align: left; }
+
+    .tx-track {
+      flex: 1; height: 3px;
+      background: var(--border-subtle);
+      border-radius: 2px; position: relative;
+      overflow: visible;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+    .tx-track.lit {
+      background: linear-gradient(90deg, var(--scania-blue) 0%, var(--traton-blue) 50%, var(--scania-amber) 100%);
+      box-shadow: 0 0 10px rgba(0,102,204,.4);
+    }
+    .tx-packet {
+      position: absolute; top: -8px; left: 0;
+      width: 19px; height: 19px; border-radius: 50%;
+      background: var(--traton-blue);
+      box-shadow: 0 0 16px rgba(0,102,204,.9), 0 0 32px rgba(0,102,204,.4);
+      opacity: 0; transform: translateX(-50%); pointer-events: none;
+    }
+    .tx-packet.flying {
+      animation: pktFly 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+    @keyframes pktFly {
+      0%   { left: 0%;   opacity: 0; transform: translateX(-50%) scale(0.4); }
+      6%   { opacity: 1; transform: translateX(-50%) scale(1); }
+      92%  { opacity: 1; transform: translateX(-50%) scale(1); }
+      100% { left: 100%; opacity: 0; transform: translateX(-50%) scale(0.4); }
+    }
+
+    .tx-action { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+    .tx-sub { font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
+    .tx-sub strong { color: var(--text-primary); }
+
+    /* ─── STREAMING PANEL ─── */
+    .streaming-panel {
+      margin-top: 28px; padding-top: 28px;
+      border-top: 1px solid var(--border-subtle); display: none;
+    }
+    .streaming-panel.visible { display: block; }
+    .stream-terminal {
+      background: #0d1117; border-radius: 10px;
+      padding: 20px 24px; margin-bottom: 16px;
+    }
+    .stream-line {
+      font-family: 'Courier New', monospace; font-size: 13px;
+      color: rgba(255,255,255,.7); line-height: 2;
+      opacity: 0; display: block;
+      animation: fadeInLine 0.25s ease forwards;
+    }
+    .stream-line--callout { color: #60a5fa; }
+    .stream-line--result  { color: #f87171; font-weight: 700; font-size: 14px; }
+    .stream-line--success { color: #4ade80; font-weight: 700; font-size: 14px; }
+    @keyframes fadeInLine {
+      from { opacity: 0; transform: translateX(-6px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-card {
+      background: rgba(220,38,38,.05);
+      border: 2px solid rgba(220,38,38,.25);
+      border-radius: 12px; padding: 22px 28px;
+      display: none; animation: fadeInUp 0.35s ease;
+    }
+    .result-card.visible { display: block; }
+    .result-badge {
+      display: inline-block; padding: 3px 10px; border-radius: 4px;
+      font-size: 11px; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; margin-bottom: 12px;
+    }
+    .result-badge--high    { background: var(--man-red); color: #fff; }
+    .result-badge--success { background: #16a34a; color: #fff; }
+    .result-headline {
+      font-size: 20px; font-weight: 800;
+      color: var(--text-primary); letter-spacing: -0.3px; margin-bottom: 8px;
+    }
+    .result-body { font-size: 14px; color: var(--text-secondary); line-height: 1.65; }
+
+    /* ─── WORKFLOW LOG ─── */
+    .log-section { padding: 0 0 56px; }
+    .log-table-wrap {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-card); overflow: hidden;
+    }
+    .log-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .log-table th {
+      text-align: left; font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.6px;
+      color: var(--text-muted); padding: 14px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      background: var(--bg-section-alt);
+    }
+    .log-table td {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-secondary); vertical-align: middle;
+    }
+    .log-table tr:last-child td { border-bottom: none; }
+    .log-table tbody tr { transition: background 0.2s ease; }
+    .log-table tbody tr:hover { background: var(--bg-section-alt); }
+    .log-table tbody tr.tx-new { animation: slideInHighlight 2s ease forwards; }
+    @keyframes slideInHighlight {
+      0%   { background: rgba(0,102,204,.12); }
+      100% { background: transparent; }
+    }
+
+    .tx-link { color: var(--traton-blue); font-weight: 500; text-decoration: none; transition: color var(--transition); }
+    .tx-link:hover { color: #0052a8; text-decoration: underline; }
+    .tx-flow-cell { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+    .tx-flow-badge {
+      display: inline-block; padding: 2px 8px;
+      border-radius: 20px; font-size: 11px; font-weight: 700;
+    }
+    .tx-flow-badge--sales     { background: #e0e8f0; color: var(--scania-blue); }
+    .tx-flow-badge--marketing { background: #fff7e0; color: #b07800; }
+    .tx-flow-badge--default   { background: var(--bg-section-alt); color: var(--text-secondary); }
+
+    @media (max-width: 900px) {
+      .config-panel  { flex-direction: column; }
+      .tx-preview    { grid-template-columns: 1fr 1fr; }
+      .tx-flow-label { min-width: 100px; font-size: 12px; }
+    }
+    @media (max-width: 640px) {
+      .workflows-hero h1 { font-size: 28px; }
+      .tx-action         { flex-direction: column; align-items: flex-start; }
+      .tx-preview        { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── HEADER ─── -->
+  <header class="site-header">
+    <div class="header-inner container">
+      <a href="index.html" class="brand">
+        <div class="brand-logo">T</div>
+        <div>
+          <span class="brand-name">TRATON Group</span>
+          <span class="brand-subtitle">AI Agent Marketplace</span>
+        </div>
+      </a>
+      <nav class="site-nav">
+        <a href="index.html"       class="nav-link">Agents</a>
+        <a href="skills.html"      class="nav-link">Skills</a>
+        <a href="workflows.html"   class="nav-link active">Workflows</a>
+        <a href="index.html#about" class="nav-link">About</a>
+        <a href="innovation.html"  class="nav-link nav-link--highlight">Project Overview</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ─── HERO ─── -->
+  <div class="workflows-hero">
+    <div class="container">
+      <h1>Agent <span>Workflows</span></h1>
+      <p>Select an agent and a skill to build a cross-team workflow. Every invocation is governed by policy, logged in real time, and visible to IT and governance teams.</p>
+    </div>
+  </div>
+
+  <!-- ─── WORKFLOW BUILDER ─── -->
+  <section class="workflows-section">
+    <div class="container">
+
+      <div class="tx-panel">
+        <div class="panel-header">
+          <div class="panel-header-title">New Workflow</div>
+          <div class="panel-header-sub">Select an agent and a skill, then run the workflow to see a live cross-team invocation</div>
+        </div>
+
+        <!-- Dropdowns -->
+        <div class="config-panel">
+          <div class="config-group">
+            <label class="config-label" for="sel-agent">1 · Requesting agent</label>
+            <select id="sel-agent" class="form-control">
+              <option value="">Select an agent…</option>
+              <option value="agent-sales-001">Sales Account Agent (Sales · Scania)</option>
+              <option value="agent-sales-002">Sales Pipeline Agent (Sales · Scania)</option>
+              <option value="agent-marketing-001">Marketing Insights Agent (Marketing · Scania)</option>
+              <option value="agent-marketing-002">Marketing Campaign Agent (Marketing · Scania)</option>
+            </select>
+          </div>
+          <div class="config-group">
+            <label class="config-label" for="sel-skill">2 · Skill to invoke</label>
+            <select id="sel-skill" class="form-control">
+              <option value="">Select a skill…</option>
+              <option value="skill-churn-001">Predict customer churn risk (Marketing · Scania)</option>
+              <option value="skill-lead-001">Score lead quality (Marketing · Scania)</option>
+              <option value="skill-attr-001">Campaign attribution analysis (Marketing · Scania)</option>
+              <option value="skill-pipeline-001">Pipeline forecast (Sales · Scania)</option>
+              <option value="skill-health-001">Account health snapshot (Sales · Scania)</option>
+            </select>
+          </div>
+        </div>
+
+        <p class="select-hint" id="select-hint">Select an agent and a skill to configure your workflow</p>
+
+        <!-- Revealed once both dropdowns are filled -->
+        <div id="tx-details">
+
+          <!-- Workflow summary -->
+          <div class="tx-preview">
+            <div>
+              <div class="tx-preview-label">From</div>
+              <div class="tx-preview-val" id="preview-from">—</div>
+            </div>
+            <div>
+              <div class="tx-preview-label">To</div>
+              <div class="tx-preview-val" id="preview-to">—</div>
+            </div>
+            <div>
+              <div class="tx-preview-label">Type</div>
+              <div class="tx-preview-val" id="preview-type">—</div>
+            </div>
+            <div class="tx-preview-links" id="preview-links"></div>
+          </div>
+
+          <!-- Animated flow line -->
+          <div class="tx-flow">
+            <div class="tx-flow-label tx-flow-label--left" id="tx-label-from">—</div>
+            <div class="tx-track" id="tx-track">
+              <div class="tx-packet" id="tx-packet"></div>
+            </div>
+            <div class="tx-flow-label tx-flow-label--right" id="tx-label-to">—</div>
+          </div>
+
+          <div class="tx-action">
+            <button class="btn btn--primary btn--lg" id="btn-transact">Run workflow</button>
+            <p class="tx-sub" id="tx-sub-desc"></p>
+          </div>
+
+        </div><!-- /tx-details -->
+
+        <!-- Streaming panel — revealed on run -->
+        <div class="streaming-panel" id="streaming-panel">
+          <div class="stream-terminal" id="stream-terminal"></div>
+          <div class="result-card" id="result-card">
+            <div class="result-badge" id="result-badge">High Risk</div>
+            <div class="result-headline" id="result-headline">Acme Industries — €840k at risk</div>
+            <p class="result-body" id="result-body">Recommend escalation to senior account manager. Propose retention call within 7 days.</p>
+          </div>
+        </div>
+
+      </div><!-- /tx-panel -->
+
+    </div>
+  </section>
+
+  <!-- ─── WORKFLOW LOG ─── -->
+  <section class="log-section">
+    <div class="container">
+      <div class="section-header" style="margin-bottom:20px">
+        <div>
+          <h2 class="section-title">Workflow Log</h2>
+          <p class="section-subtitle">Every cross-team skill invocation, most recent first</p>
+        </div>
+      </div>
+      <div class="log-table-wrap">
+        <table class="log-table">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Requesting agent</th>
+              <th>Skill</th>
+              <th>Flow</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="tx-tbody">
+            <tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:32px">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>
+        <span>TRATON Group AI Agent Marketplace</span> &nbsp;·&nbsp;
+        Internal prototype &nbsp;·&nbsp;
+        Scania · MAN · Volkswagen Truck &amp; Bus
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    const DEFAULT_AGENT = 'agent-sales-001';
+    const DEFAULT_SKILL = 'skill-churn-001';
+
+    const HARDCODED_AGENTS = [
+      { id: 'agent-sales-001',     name: 'Sales Account Agent',      owner_team: 'Sales' },
+      { id: 'agent-sales-002',     name: 'Sales Pipeline Agent',     owner_team: 'Sales' },
+      { id: 'agent-marketing-001', name: 'Marketing Insights Agent', owner_team: 'Marketing' },
+      { id: 'agent-marketing-002', name: 'Marketing Campaign Agent', owner_team: 'Marketing' },
+    ];
+    const HARDCODED_SKILLS = [
+      { id: 'skill-churn-001',    name: 'Predict customer churn risk',   owner_team: 'Marketing' },
+      { id: 'skill-lead-001',     name: 'Score lead quality',            owner_team: 'Marketing' },
+      { id: 'skill-attr-001',     name: 'Campaign attribution analysis', owner_team: 'Marketing' },
+      { id: 'skill-pipeline-001', name: 'Pipeline forecast',             owner_team: 'Sales' },
+      { id: 'skill-health-001',   name: 'Account health snapshot',       owner_team: 'Sales' },
+    ];
+
+    let txLog = [];
+
+    const el    = id => document.getElementById(id);
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+    function escHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function teamBadgeClass(teamName) {
+      if (!teamName) return 'tx-flow-badge--default';
+      const n = teamName.toLowerCase();
+      if (n === 'sales')     return 'tx-flow-badge--sales';
+      if (n === 'marketing') return 'tx-flow-badge--marketing';
+      return 'tx-flow-badge--default';
+    }
+
+    function fmtTime(iso) {
+      if (!iso) return '—';
+      return new Date(iso).toLocaleString('en-GB', {
+        month: 'short', day: 'numeric',
+        hour: '2-digit', minute: '2-digit', hour12: false,
+      });
+    }
+
+    function renderLog(highlightFirst = false) {
+      const tbody = el('tx-tbody');
+      if (!txLog.length) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:32px">No workflows run yet.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = txLog.map((t, i) => {
+        const agentCell = t.agent_id
+          ? `<a href="agent-detail.html?id=${escHtml(t.agent_id)}" class="tx-link">${escHtml(t.agent_name || t.agent_id)}</a>`
+          : '<span style="color:var(--text-muted)">—</span>';
+        const skillCell = t.skill_id
+          ? `<a href="skill-detail.html?id=${escHtml(t.skill_id)}" class="tx-link">${escHtml(t.skill_name || t.skill_id)}</a>`
+          : '<span style="color:var(--text-muted)">—</span>';
+        const payerBadge = `<span class="tx-flow-badge ${teamBadgeClass(t.payer_name)}">${escHtml(t.payer_name || '—')}</span>`;
+        const payeeBadge = `<span class="tx-flow-badge ${teamBadgeClass(t.payee_name)}">${escHtml(t.payee_name || '—')}</span>`;
+        const rowClass   = (highlightFirst && i === 0) ? ' class="tx-new"' : '';
+        return `<tr${rowClass}>
+          <td style="color:var(--text-muted);font-size:12px;white-space:nowrap">${fmtTime(t.created_at)}</td>
+          <td>${agentCell}</td>
+          <td>${skillCell}</td>
+          <td><div class="tx-flow-cell">${payerBadge}<span style="color:var(--text-muted)">→</span>${payeeBadge}</div></td>
+          <td><span class="run-status run-status--success">${t.status || 'success'}</span></td>
+        </tr>`;
+      }).join('');
+    }
+
+    function updatePreview() {
+      const agentId = el('sel-agent').value;
+      const skillId = el('sel-skill').value;
+      const details = el('tx-details');
+      const hint    = el('select-hint');
+
+      if (!agentId || !skillId) {
+        details.classList.remove('visible');
+        details.style.display = 'none';
+        hint.style.display = '';
+        el('tx-label-from').textContent = '—';
+        el('tx-label-to').textContent   = '—';
+        el('tx-sub-desc').innerHTML = '';
+        return;
+      }
+
+      const agent = HARDCODED_AGENTS.find(a => a.id === agentId);
+      const skill = HARDCODED_SKILLS.find(s => s.id === skillId);
+      if (!agent || !skill) return;
+
+      const isXTeam = agent.owner_team !== skill.owner_team;
+      const txType  = isXTeam ? 'Cross-team' : 'Same-team';
+
+      el('tx-label-from').textContent = `${agent.owner_team} · Scania`;
+      el('tx-label-to').textContent   = `${skill.owner_team} · Scania`;
+
+      el('preview-from').textContent  = `${agent.owner_team} · Scania`;
+      el('preview-to').textContent    = `${skill.owner_team} · Scania`;
+      el('preview-type').textContent  = txType;
+      el('preview-links').innerHTML = `
+        <a href="agent-detail.html?id=${escHtml(agentId)}" class="tx-link" style="font-size:12px">View ${escHtml(agent.name)} →</a>
+        <a href="skill-detail.html?id=${escHtml(skillId)}" class="tx-link" style="font-size:12px">View ${escHtml(skill.name)} →</a>
+      `;
+      el('tx-sub-desc').innerHTML =
+        `<strong>${escHtml(agent.name)}</strong> calls <strong>${escHtml(skill.name)}</strong>`;
+
+      if (!details.classList.contains('visible')) {
+        hint.style.display = 'none';
+        details.style.display = 'block';
+        requestAnimationFrame(() => requestAnimationFrame(() => details.classList.add('visible')));
+      }
+    }
+
+    function getStreamLines(agentId, skillId) {
+      if (agentId === DEFAULT_AGENT && skillId === DEFAULT_SKILL) {
+        return [
+          { text: 'Sales Account Agent (Claude Code) starting task...',                         delay: 0   },
+          { text: 'Customer: Acme Industries, contract value €840,000, renewal in 60 days',    delay: 620 },
+          { text: '→ Calling Marketing team\'s churn-prediction skill',                         delay: 520, cls: 'stream-line--callout' },
+          { text: 'Pulling 12-month engagement data from CRM...',                              delay: 680 },
+          { text: 'Email opens down 64%, support tickets up 3x, NPS dropped from 8 to 4',     delay: 600 },
+          { text: 'Comparing against patterns from 200 churned accounts last year',            delay: 540 },
+          { text: 'Churn risk score: 78% — high',                                              delay: 820, cls: 'stream-line--result' },
+        ];
+      }
+      const agent = HARDCODED_AGENTS.find(a => a.id === agentId);
+      const skill = HARDCODED_SKILLS.find(s => s.id === skillId);
+      return [
+        { text: `${agent?.name || agentId} starting task...`,                                    delay: 0   },
+        { text: `Calling ${skill?.owner_team || 'team'}'s ${skill?.name || skillId} skill...`,   delay: 600, cls: 'stream-line--callout' },
+        { text: 'Fetching relevant context...',                                                  delay: 720 },
+        { text: 'Running analysis...',                                                           delay: 840 },
+        { text: 'Result generated.',                                                             delay: 700, cls: 'stream-line--success' },
+      ];
+    }
+
+    function applyResultCard(agentId, skillId) {
+      const rc = el('result-card');
+      if (agentId === DEFAULT_AGENT && skillId === DEFAULT_SKILL) {
+        rc.style.cssText = '';
+        el('result-badge').className      = 'result-badge result-badge--high';
+        el('result-badge').textContent    = 'High Risk';
+        el('result-headline').textContent = 'Acme Industries — €840k at risk';
+        el('result-body').textContent     = 'Recommend escalation to senior account manager. Propose retention call within 7 days.';
+      } else {
+        rc.style.cssText = 'background:rgba(22,163,74,.05);border-color:rgba(22,163,74,.25);';
+        const skill = HARDCODED_SKILLS.find(s => s.id === skillId);
+        el('result-badge').className      = 'result-badge result-badge--success';
+        el('result-badge').textContent    = 'Completed';
+        el('result-headline').textContent = `${skill?.name || skillId} — task complete`;
+        el('result-body').textContent     = 'Task completed. Recommendation generated. See log for details.';
+      }
+    }
+
+    async function streamLinesNow(lines) {
+      const terminal = el('stream-terminal');
+      const card     = el('result-card');
+
+      terminal.innerHTML = '';
+      card.classList.remove('visible');
+      el('streaming-panel').classList.add('visible');
+
+      for (const line of lines) {
+        await sleep(line.delay);
+        const span = document.createElement('span');
+        span.className = 'stream-line' + (line.cls ? ' ' + line.cls : '');
+        span.textContent = line.text;
+        terminal.appendChild(span);
+        span.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      await sleep(480);
+      card.classList.add('visible');
+      await sleep(900);
+    }
+
+    async function runWorkflow() {
+      const agentId = el('sel-agent').value;
+      const skillId = el('sel-skill').value;
+      if (!agentId || !skillId) return;
+
+      const agent = HARDCODED_AGENTS.find(a => a.id === agentId);
+      const skill = HARDCODED_SKILLS.find(s => s.id === skillId);
+      if (!agent || !skill) return;
+
+      const btn   = el('btn-transact');
+      const track = el('tx-track');
+      const pkt   = el('tx-packet');
+
+      btn.disabled = true;
+      btn.textContent = 'Running…';
+
+      applyResultCard(agentId, skillId);
+
+      // Fire API log (non-fatal)
+      const logPromise = fetch('/api/transactions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          payer_team_id: agent.owner_team === 'Sales' ? 'team-001' : 'team-002',
+          payee_team_id: skill.owner_team  === 'Sales' ? 'team-001' : 'team-002',
+          agent_id: agentId,
+          skill_id: skillId,
+          credits: 0,
+        }),
+      }).catch(() => null);
+
+      await Promise.all([streamLinesNow(getStreamLines(agentId, skillId)), logPromise]);
+
+      // Packet fly
+      pkt.classList.remove('flying');
+      void pkt.offsetHeight;
+      track.classList.add('lit');
+      pkt.classList.add('flying');
+
+      await sleep(1600);
+      track.classList.remove('lit');
+      pkt.classList.remove('flying');
+
+      // Refresh log
+      try {
+        const fresh = await fetch('/api/transactions');
+        if (fresh.ok) txLog = await fresh.json();
+      } catch (_) {
+        // Append locally if backend unavailable
+        txLog.unshift({
+          agent_id: agentId, agent_name: agent.name,
+          skill_id: skillId, skill_name: skill.name,
+          payer_name: agent.owner_team, payee_name: skill.owner_team,
+          status: 'success', created_at: new Date().toISOString(),
+        });
+      }
+      renderLog(true);
+
+      await sleep(500);
+      btn.disabled = false;
+      btn.textContent = 'Run workflow';
+    }
+
+    async function init() {
+      try {
+        const res = await fetch('/api/transactions');
+        if (res.ok) txLog = await res.json();
+      } catch (_) {}
+      renderLog(false);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      init();
+      el('sel-agent').addEventListener('change', updatePreview);
+      el('sel-skill').addEventListener('change', updatePreview);
+      el('btn-transact').addEventListener('click', runWorkflow);
+    });
+  </script>
+</body>
+</html>
