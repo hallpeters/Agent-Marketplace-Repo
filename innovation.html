@@ -312,7 +312,6 @@
       <nav class="site-nav">
         <a href="index.html"      class="nav-link">Agents</a>
         <a href="skills.html"     class="nav-link">Skills</a>
-        <a href="economy.html"    class="nav-link">Workflows</a>
         <a href="index.html#about" class="nav-link">About</a>
         <a href="innovation.html" class="nav-link nav-link--highlight active">Project Overview</a>
       </nav>
@@ -352,7 +351,7 @@
             <span class="bucket-num">2</span> Pain Point
           </div>
           <h4>Agents proliferate faster than governance can follow</h4>
-          <p>Shadow agents operate outside the central platform, human-credentialed agent activity is invisible, and there is no economic model for cross-team or cross-brand agent consumption.</p>
+          <p>Shadow agents operate outside the central platform and human-credentialed agent activity is invisible. There is no consistent registry or policy framework for discovering, approving, and governing agent usage across teams and brands.</p>
         </div>
 
       </div>
@@ -364,16 +363,16 @@
           <div class="card-eyebrow card-eyebrow--feature">
             <span class="bucket-num">3</span> Key Feature
           </div>
-          <h4>An agent economy layer with token-based reimbursement and governance</h4>
-          <p>A conceptual framework and reference architecture for an agent economy layer — token-based internal reimbursement between teams, extensible to brand-level, partner, and eventually open-marketplace agent transactions — complemented by observability and differentiated policy enforcement for agents vs humans.</p>
+          <h4>A governance and observability layer for the agent ecosystem</h4>
+          <p>A central registry with approval workflows, policy tagging, cross-brand visibility, and differentiated treatment for agents vs humans — making every agent discoverable, classifiable, and governable without requiring teams to give up autonomy.</p>
         </div>
 
         <div class="insight-card insight-card--risk">
           <div class="card-eyebrow card-eyebrow--risk">
             <span class="bucket-num">4</span> Biggest Risk This Sprint
           </div>
-          <h4>Stakeholders reject the economy framing as premature or theoretical</h4>
-          <p>That internal stakeholders redirect us back toward the observability-only problem they already feel, treating token-based reimbursement as a <strong>solution without a problem</strong> rather than the missing governance layer.</p>
+          <h4>Governance tooling is seen as overhead rather than enablement</h4>
+          <p>Teams actively building agents may resist a registry and approval layer if it adds friction without obvious near-term value — especially if Scania's internal platform already covers parts of this ground.</p>
         </div>
 
       </div>
@@ -385,11 +384,11 @@
         </div>
         <div class="experiment-inner" style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: center;">
           <div>
-            <h4>Two targeted stakeholder conversations with a one-page framework</h4>
-            <p>Pressure-test the agent economy concept in two further stakeholder conversations — one with the security/access control team, one with a business-unit PO — using a one-page framework as the artifact. Specifically ask whether the token/reimbursement logic resonates or feels like a solution without a problem.</p>
+            <h4>Demonstrate the governance layer to two internal stakeholders</h4>
+            <p>Run targeted conversations with the security/access control team and one business-unit PO, showing the live registry and approval flow. Test whether having a searchable, policy-tagged agent registry with approval states would change how they govern agent deployments today.</p>
           </div>
           <div class="experiment-box">
-            <div class="question">"Does a token-based internal reimbursement model solve a governance problem you actually have — or does it feel like a layer of complexity you wouldn't ask for?"</div>
+            <div class="question">"If you could see every agent running across your org right now — with its approval status, policy tags, and owner — what would you do differently with that information?"</div>
           </div>
         </div>
       </div>
@@ -460,28 +459,28 @@
           <div class="progress-dot progress-dot--done">✓</div>
           <div class="progress-content">
             <div class="progress-phase">Step 4 — Completed</div>
-            <div class="progress-title">Stakeholder interviews — critical learnings pivoted our scope direction</div>
-            <p class="progress-desc">Conducted one interview with a Scania agent expert and the main project POC. Faced access challenges reaching wider Scania employees due to internal blockers — a new outreach strategy is now in place using targeted messages via the intranet. Secured a 30-minute diagnostic call with a Scania AI strategist. Key finding: <strong>Scania is already building the skills and agent platform internally</strong>, which commoditizes our original registry wedge and required a scope pivot.</p>
+            <div class="progress-title">Stakeholder testing — economy framing didn't land, refocused on governance</div>
+            <p class="progress-desc">Conducted one interview with a Scania agent expert and the main project POC, and secured a 30-minute diagnostic call with a Scania AI strategist. The token-based reimbursement model was tested and <strong>seen as premature</strong> — stakeholders redirected back to the governance and observability gap as the real problem. Economy layer deprioritised; prototype refocused on registry and governance.</p>
             <div class="traton-feedback">
               <div class="feedback-item">
                 <div class="feedback-icon">💡</div>
                 <div>
-                  <div class="feedback-title">Skills are portable instructions; agents are the deciders that invoke them</div>
-                  <div class="feedback-body">Reuse is cheapest at the skills layer — the registry value is real, but it's a layer Scania is already building.</div>
+                  <div class="feedback-title">Scania is already building the skills and agent platform internally</div>
+                  <div class="feedback-body">Competing on discoverability alone is no longer defensible. The governance layer wrapping those agents — including shadow ones — is the real gap.</div>
                 </div>
               </div>
               <div class="feedback-item">
-                <div class="feedback-icon">⚠️</div>
+                <div class="feedback-icon">🔄</div>
                 <div>
-                  <div class="feedback-title">Scania is already building that registry internally</div>
-                  <div class="feedback-body">This commoditizes our original wedge. Competing on discoverability alone is no longer a defensible position.</div>
+                  <div class="feedback-title">Economic settlement layer set aside for now</div>
+                  <div class="feedback-body">Token-based reimbursement is preserved in version control for potential reintroduction if a future sprint validates the underlying problem.</div>
                 </div>
               </div>
               <div class="feedback-item">
                 <div class="feedback-icon">🎯</div>
                 <div>
-                  <div class="feedback-title">Durable value sits one layer up — governance and economics</div>
-                  <div class="feedback-body">The governance and economic layer wrapping every agent — including shadow ones — is where the real gap is. That is our new scope direction.</div>
+                  <div class="feedback-title">Refocused: registry + governance + policy enforcement</div>
+                  <div class="feedback-body">Making every agent discoverable, classifiable, and governable is the current core value proposition.</div>
                 </div>
               </div>
             </div>
@@ -647,7 +646,6 @@
         <p style="font-size: 15px; color: var(--text-secondary); line-height: 1.75; margin-bottom: 28px;">
           Explore the agent registry and the Agent Workflow Demo — watch real credit transactions flow between teams as agents call skills across brand boundaries.
         </p>
-        <a href="economy.html" class="btn btn--primary">See Agent Workflows →</a>
       </div>
     </div>
   </section>
