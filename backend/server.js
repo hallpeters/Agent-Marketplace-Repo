@@ -119,7 +119,7 @@ function fmtRun(r) {
 
 const POLICY_TAGS = [
   { tag: 'contains-pii',    description: 'Processes or outputs personally identifiable information' },
-  { tag: 'external-facing', description: 'Output may be shared outside TRATON Group' },
+  { tag: 'external-facing', description: 'Output may be shared outside the Group' },
   { tag: 'financial-data',  description: 'Involves financial records, pricing, or cost data' },
   { tag: 'internal-only',   description: 'For internal use only — not for suppliers or customers' },
   { tag: 'gdpr-sensitive',  description: 'Subject to GDPR data handling requirements' },
@@ -143,7 +143,7 @@ function seedIfEmpty() {
       category: 'procurement',
       instructions: `## Assess Supplier Risk
 
-You are a procurement risk analyst for TRATON Group. Given supplier data, evaluate risk across three dimensions:
+You are a procurement risk analyst for VehicleGroup. Given supplier data, evaluate risk across three dimensions:
 
 1. **Financial Stability** — Flag: >90-day payment term changes, credit downgrades, delayed statutory filings, negative EBITDA trend.
 2. **Geopolitical Exposure** — Flag suppliers domiciled in or with >30% revenue from conflict zones or countries subject to EU/US trade restrictions.
@@ -153,7 +153,7 @@ Return a JSON object with \`risk_score\` (0–100, higher = riskier), \`risk_lev
       input_schema: JSON.stringify({
         type: 'object',
         properties: {
-          supplier_id:       { type: 'string', description: 'TRATON supplier master ID' },
+          supplier_id:       { type: 'string', description: 'Group supplier master ID' },
           include_financials: { type: 'boolean', description: 'Pull latest financials from Supplier DB' }
         },
         required: ['supplier_id']
@@ -169,7 +169,7 @@ Return a JSON object with \`risk_score\` (0–100, higher = riskier), \`risk_lev
       }),
       owner_name: 'Annika Johansson',
       owner_team: 'Global Procurement',
-      owner_email: 'annika.johansson@scania.com',
+      owner_email: 'annika.johansson@atlas.com',
       policy_tags: JSON.stringify(['supplier-data', 'financial-data', 'internal-only']),
       version: '2.1.0',
       created_at: ago(120), updated_at: ago(14), last_reviewed_at: ago(14),
@@ -210,7 +210,7 @@ Return results for all lists checked, with the highest-confidence match highligh
       }),
       owner_name: 'Lars Bergström',
       owner_team: 'Group Compliance',
-      owner_email: 'lars.bergstrom@traton.com',
+      owner_email: 'lars.bergstrom@vehiclegroup.com',
       policy_tags: JSON.stringify(['regulatory', 'supplier-data', 'internal-only']),
       version: '1.3.0',
       created_at: ago(200), updated_at: ago(30), last_reviewed_at: ago(30),
@@ -251,7 +251,7 @@ Flag any ambiguous or missing requirements for human review.`,
       }),
       owner_name: 'Petra Heinemann',
       owner_team: 'Procurement Operations',
-      owner_email: 'petra.heinemann@man.eu',
+      owner_email: 'petra.heinemann@meridian.eu',
       policy_tags: JSON.stringify(['supplier-data', 'financial-data']),
       version: '1.0.0',
       created_at: ago(60), updated_at: ago(10), last_reviewed_at: null,
@@ -269,7 +269,7 @@ Analyse the provided warranty claims and produce a structured summary:
 
 1. **Cluster by fault code** — Group claims sharing the same primary DTC/fault code
 2. **Component attribution** — Map to component families: engine, gearbox, axle, cab, electrical, ADAS
-3. **Vehicle series breakdown** — Split by truck series (R, S, G, L for Scania; TGX, TGS, TGM for MAN)
+3. **Vehicle series breakdown** — Split by truck series (A-Series, B-Series, C-Series for Atlas; X-Series, S-Series, M-Series for Meridian)
 4. **Trend detection** — Flag clusters where claim rate increased >20% vs prior 30-day period
 5. **Escalation recommendation** — State whether engineering review is required and why
 
@@ -293,7 +293,7 @@ Output: executive summary paragraph + structured JSON breakdown.`,
       }),
       owner_name: 'Maria Santos',
       owner_team: 'Customer Quality',
-      owner_email: 'maria.santos@scania.com',
+      owner_email: 'maria.santos@atlas.com',
       policy_tags: JSON.stringify(['contains-pii', 'safety-critical', 'internal-only']),
       version: '1.2.0',
       created_at: ago(90), updated_at: ago(5), last_reviewed_at: ago(45),
@@ -336,7 +336,7 @@ Return the tier, rationale, and the recommended first-responder team.`,
       }),
       owner_name: 'Maria Santos',
       owner_team: 'Customer Quality',
-      owner_email: 'maria.santos@scania.com',
+      owner_email: 'maria.santos@atlas.com',
       policy_tags: JSON.stringify(['contains-pii', 'safety-critical']),
       version: '2.0.0',
       created_at: ago(150), updated_at: ago(21), last_reviewed_at: ago(21),
@@ -381,7 +381,7 @@ The notice must include:
       }),
       owner_name: 'Thomas Müller',
       owner_team: 'Product Safety & Quality',
-      owner_email: 'thomas.muller@man.eu',
+      owner_email: 'thomas.muller@meridian.eu',
       policy_tags: JSON.stringify(['regulatory', 'external-facing', 'safety-critical']),
       version: '1.1.0',
       created_at: ago(45), updated_at: ago(3), last_reviewed_at: null,
@@ -424,7 +424,7 @@ Sections:
       }),
       owner_name: 'Thomas Müller',
       owner_team: 'Product Safety & Quality',
-      owner_email: 'thomas.muller@man.eu',
+      owner_email: 'thomas.muller@meridian.eu',
       policy_tags: JSON.stringify(['supplier-data', 'regulatory', 'internal-only']),
       version: '1.0.0',
       created_at: ago(80), updated_at: ago(25), last_reviewed_at: ago(25),
@@ -468,7 +468,7 @@ Output: PASS/FAIL per section plus a full deviation report.`,
       }),
       owner_name: 'Erik Lindqvist',
       owner_team: 'Vehicle Engineering',
-      owner_email: 'erik.lindqvist@scania.com',
+      owner_email: 'erik.lindqvist@atlas.com',
       policy_tags: JSON.stringify(['internal-only', 'regulatory']),
       version: '1.0.0',
       created_at: ago(30), updated_at: ago(30), last_reviewed_at: null,
@@ -512,7 +512,7 @@ Sections:
       }),
       owner_name: 'Erik Lindqvist',
       owner_team: 'Vehicle Engineering',
-      owner_email: 'erik.lindqvist@scania.com',
+      owner_email: 'erik.lindqvist@atlas.com',
       policy_tags: JSON.stringify(['internal-only']),
       version: '0.3.0',
       created_at: ago(15), updated_at: ago(2), last_reviewed_at: null,
@@ -561,7 +561,7 @@ Output: compliance position and a regulatory filing template for the European En
       }),
       owner_name: 'Lars Bergström',
       owner_team: 'Group Compliance',
-      owner_email: 'lars.bergstrom@traton.com',
+      owner_email: 'lars.bergstrom@vehiclegroup.com',
       policy_tags: JSON.stringify(['regulatory', 'financial-data', 'external-facing']),
       version: '1.4.0',
       created_at: ago(180), updated_at: ago(60), last_reviewed_at: ago(60),
@@ -581,7 +581,7 @@ Generate a tailored onboarding checklist based on the supplier profile.
 - [ ] Company registration documents (Certificate of Incorporation)
 - [ ] Bank account verification
 - [ ] Quality certification (IATF 16949 or equivalent)
-- [ ] Signed TRATON Supplier Code of Conduct
+- [ ] Signed Group Supplier Code of Conduct
 - [ ] GDPR Data Processing Agreement
 
 **Additional items by supply category:**
@@ -611,7 +611,7 @@ Generate a tailored onboarding checklist based on the supplier profile.
       }),
       owner_name: 'Annika Johansson',
       owner_team: 'Global Procurement',
-      owner_email: 'annika.johansson@scania.com',
+      owner_email: 'annika.johansson@atlas.com',
       policy_tags: JSON.stringify(['supplier-data', 'internal-only']),
       version: '0.9.0',
       created_at: ago(20), updated_at: ago(1), last_reviewed_at: null,
@@ -648,7 +648,7 @@ See Confluence: Customer Ops → Escalation Playbook → Section 4.
       }),
       owner_name: 'Maria Santos',
       owner_team: 'Customer Quality',
-      owner_email: 'maria.santos@scania.com',
+      owner_email: 'maria.santos@atlas.com',
       policy_tags: JSON.stringify(['contains-pii', 'internal-only']),
       version: '1.0.0',
       created_at: ago(300), updated_at: ago(60), last_reviewed_at: ago(60),
@@ -661,8 +661,8 @@ See Confluence: Customer Ops → Escalation Playbook → Section 4.
     {
       id: 'tool-001',
       name: 'Supplier Database',
-      description: 'Read/write access to the TRATON global supplier master data system. Covers 14,000+ Tier 1 and 2 suppliers with financial, performance, and certification data.',
-      endpoint_url: 'https://api.internal.traton.com/supplier-db/v2',
+      description: 'Read/write access to the Group global supplier master data system. Covers 14,000+ Tier 1 and 2 suppliers with financial, performance, and certification data.',
+      endpoint_url: 'https://api.internal.vehiclegroup.com/supplier-db/v2',
       auth_type: 'oauth2',
       owner_team: 'Global Procurement IT',
       policy_tags: JSON.stringify(['supplier-data', 'financial-data', 'internal-only']),
@@ -685,7 +685,7 @@ See Confluence: Customer Ops → Escalation Playbook → Section 4.
     {
       id: 'tool-003',
       name: 'SharePoint Document Reader',
-      description: 'Retrieves and parses documents from TRATON SharePoint repositories. Supports PDF, Word, and Excel. Read-only access.',
+      description: 'Retrieves and parses documents from Group SharePoint repositories. Supports PDF, Word, and Excel. Read-only access.',
       endpoint_url: 'https://graph.microsoft.com/v1.0/sites/{siteId}/drive/items/{itemId}/content',
       auth_type: 'oauth2',
       owner_team: 'IT Workplace Services',
@@ -698,7 +698,7 @@ See Confluence: Customer Ops → Escalation Playbook → Section 4.
       id: 'tool-004',
       name: 'CRM Customer Lookup',
       description: 'Queries the Salesforce CRM for customer account data, contract status, vehicle fleet details, and open case history.',
-      endpoint_url: 'https://traton.my.salesforce.com/services/data/v57.0/sobjects',
+      endpoint_url: 'https://vehiclegroup.my.salesforce.com/services/data/v57.0/sobjects',
       auth_type: 'oauth2',
       owner_team: 'Sales & Customer Ops IT',
       policy_tags: JSON.stringify(['contains-pii', 'financial-data', 'internal-only']),
@@ -1013,6 +1013,6 @@ app.post('/api/agent-runs', (req, res) => {
 // ─── START ───────────────────────────────────────────────────────────────────
 
 app.listen(PORT, () => {
-  console.log(`TRATON AI Registry  →  http://localhost:${PORT}`);
+  console.log(`AI Agent Registry  →  http://localhost:${PORT}`);
   console.log(`Endpoints: /api/skills  /api/tools  /api/agents  /api/agent-runs  /api/policy-tags`);
 });

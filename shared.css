@@ -1,13 +1,22 @@
 /* ─── TOKENS ─── */
 :root {
-  --scania-blue:       #00305e;
-  --scania-amber:      #f0a500;
-  --man-red:           #cc0000;
-  --man-dark:          #1a1a1a;
-  --vwtb-blue:         #003b82;
-  --vwtb-cyan:         #00b0f0;
-  --traton-navy:       #002b6d;
-  --traton-blue:       #0066cc;
+  --brand-a-blue:      #1a4480;
+  --brand-a-amber:     #d97706;
+  --brand-b-red:       #dc2626;
+  --brand-b-dark:      #1a1a1a;
+  --brand-c-blue:      #1d4ed8;
+  --brand-c-cyan:      #0ea5e9;
+  --group-navy:        #1e3a5f;
+  --primary-blue:      #2563eb;
+  /* legacy aliases — kept for gradual migration */
+  --scania-blue:       var(--brand-a-blue);
+  --scania-amber:      var(--brand-a-amber);
+  --man-red:           var(--brand-b-red);
+  --man-dark:          var(--brand-b-dark);
+  --vwtb-blue:         var(--brand-c-blue);
+  --vwtb-cyan:         var(--brand-c-cyan);
+  --traton-navy:       var(--group-navy);
+  --traton-blue:       var(--primary-blue);
 
   --bg-body:           #f5f6f8;
   --bg-card:           #ffffff;
@@ -371,10 +380,10 @@ img { display: block; max-width: 100%; }
   letter-spacing: 0.4px;
   text-transform: uppercase;
 }
-.brand-badge--scania { background: var(--scania-blue); color: var(--scania-amber); }
-.brand-badge--man    { background: var(--man-red);     color: #fff; }
-.brand-badge--vwtb   { background: var(--vwtb-blue);   color: var(--vwtb-cyan); }
-.brand-badge--traton { background: var(--traton-navy); color: #7eb8ff; }
+.brand-badge--atlas    { background: var(--brand-a-blue); color: var(--brand-a-amber); }
+.brand-badge--meridian { background: var(--brand-b-red);  color: #fff; }
+.brand-badge--apex     { background: var(--brand-c-blue); color: var(--brand-c-cyan); }
+.brand-badge--group    { background: var(--group-navy);   color: #7eb8ff; }
 
 /* ─── TIER PILLS ─── */
 .tier-pill {

@@ -145,7 +145,7 @@ function fmtRun(r) {
 
 const POLICY_TAGS = [
   { tag: 'contains-pii',    description: 'Processes or outputs personally identifiable information' },
-  { tag: 'external-facing', description: 'Output may be shared outside TRATON Group' },
+  { tag: 'external-facing', description: 'Output may be shared outside the Group' },
   { tag: 'financial-data',  description: 'Involves financial records, pricing, or cost data' },
   { tag: 'internal-only',   description: 'For internal use only — not for suppliers or customers' },
   { tag: 'gdpr-sensitive',  description: 'Subject to GDPR data handling requirements' },
@@ -169,7 +169,7 @@ function seedIfEmpty() {
       category: 'procurement',
       instructions: `## Assess Supplier Risk
 
-You are a procurement risk analyst for TRATON Group. Given supplier data, evaluate risk across three dimensions:
+You are a procurement risk analyst for the Group. Given supplier data, evaluate risk across three dimensions:
 
 1. **Financial Stability** — Flag: >90-day payment term changes, credit downgrades, delayed statutory filings, negative EBITDA trend.
 2. **Geopolitical Exposure** — Flag suppliers domiciled in or with >30% revenue from conflict zones or countries subject to EU/US trade restrictions.
@@ -179,7 +179,7 @@ Return a JSON object with \`risk_score\` (0–100, higher = riskier), \`risk_lev
       input_schema: JSON.stringify({
         type: 'object',
         properties: {
-          supplier_id:       { type: 'string', description: 'TRATON supplier master ID' },
+          supplier_id:       { type: 'string', description: 'Group supplier master ID' },
           include_financials: { type: 'boolean', description: 'Pull latest financials from Supplier DB' }
         },
         required: ['supplier_id']
@@ -195,7 +195,7 @@ Return a JSON object with \`risk_score\` (0–100, higher = riskier), \`risk_lev
       }),
       owner_name: 'Annika Johansson',
       owner_team: 'Global Procurement',
-      owner_email: 'annika.johansson@scania.com',
+      owner_email: 'annika.johansson@atlas.com',
       policy_tags: JSON.stringify(['supplier-data', 'financial-data', 'internal-only']),
       version: '2.1.0',
       created_at: ago(120), updated_at: ago(14), last_reviewed_at: ago(14),
@@ -236,7 +236,7 @@ Return results for all lists checked, with the highest-confidence match highligh
       }),
       owner_name: 'Lars Bergström',
       owner_team: 'Group Compliance',
-      owner_email: 'lars.bergstrom@traton.com',
+      owner_email: 'lars.bergstrom@vehiclegroup.com',
       policy_tags: JSON.stringify(['regulatory', 'supplier-data', 'internal-only']),
       version: '1.3.0',
       created_at: ago(200), updated_at: ago(30), last_reviewed_at: ago(30),
@@ -277,7 +277,7 @@ Flag any ambiguous or missing requirements for human review.`,
       }),
       owner_name: 'Petra Heinemann',
       owner_team: 'Procurement Operations',
-      owner_email: 'petra.heinemann@man.eu',
+      owner_email: 'petra.heinemann@meridian.eu',
       policy_tags: JSON.stringify(['supplier-data', 'financial-data']),
       version: '1.0.0',
       created_at: ago(60), updated_at: ago(10), last_reviewed_at: null,
@@ -295,7 +295,7 @@ Analyse the provided warranty claims and produce a structured summary:
 
 1. **Cluster by fault code** — Group claims sharing the same primary DTC/fault code
 2. **Component attribution** — Map to component families: engine, gearbox, axle, cab, electrical, ADAS
-3. **Vehicle series breakdown** — Split by truck series (R, S, G, L for Scania; TGX, TGS, TGM for MAN)
+3. **Vehicle series breakdown** — Split by truck series (A-Series, B-Series, C-Series for Atlas; X-Series, S-Series, M-Series for Meridian)
 4. **Trend detection** — Flag clusters where claim rate increased >20% vs prior 30-day period
 5. **Escalation recommendation** — State whether engineering review is required and why
 
@@ -319,7 +319,7 @@ Output: executive summary paragraph + structured JSON breakdown.`,
       }),
       owner_name: 'Maria Santos',
       owner_team: 'Customer Quality',
-      owner_email: 'maria.santos@scania.com',
+      owner_email: 'maria.santos@atlas.com',
       policy_tags: JSON.stringify(['contains-pii', 'safety-critical', 'internal-only']),
       version: '1.2.0',
       created_at: ago(90), updated_at: ago(5), last_reviewed_at: ago(45),
@@ -362,7 +362,7 @@ Return the tier, rationale, and the recommended first-responder team.`,
       }),
       owner_name: 'Maria Santos',
       owner_team: 'Customer Quality',
-      owner_email: 'maria.santos@scania.com',
+      owner_email: 'maria.santos@atlas.com',
       policy_tags: JSON.stringify(['contains-pii', 'safety-critical']),
       version: '2.0.0',
       created_at: ago(150), updated_at: ago(21), last_reviewed_at: ago(21),
@@ -407,7 +407,7 @@ The notice must include:
       }),
       owner_name: 'Thomas Müller',
       owner_team: 'Product Safety & Quality',
-      owner_email: 'thomas.muller@man.eu',
+      owner_email: 'thomas.muller@meridian.eu',
       policy_tags: JSON.stringify(['regulatory', 'external-facing', 'safety-critical']),
       version: '1.1.0',
       created_at: ago(45), updated_at: ago(3), last_reviewed_at: null,
@@ -450,7 +450,7 @@ Sections:
       }),
       owner_name: 'Thomas Müller',
       owner_team: 'Product Safety & Quality',
-      owner_email: 'thomas.muller@man.eu',
+      owner_email: 'thomas.muller@meridian.eu',
       policy_tags: JSON.stringify(['supplier-data', 'regulatory', 'internal-only']),
       version: '1.0.0',
       created_at: ago(80), updated_at: ago(25), last_reviewed_at: ago(25),
@@ -494,7 +494,7 @@ Output: PASS/FAIL per section plus a full deviation report.`,
       }),
       owner_name: 'Erik Lindqvist',
       owner_team: 'Vehicle Engineering',
-      owner_email: 'erik.lindqvist@scania.com',
+      owner_email: 'erik.lindqvist@atlas.com',
       policy_tags: JSON.stringify(['internal-only', 'regulatory']),
       version: '1.0.0',
       created_at: ago(30), updated_at: ago(30), last_reviewed_at: null,
@@ -538,7 +538,7 @@ Sections:
       }),
       owner_name: 'Erik Lindqvist',
       owner_team: 'Vehicle Engineering',
-      owner_email: 'erik.lindqvist@scania.com',
+      owner_email: 'erik.lindqvist@atlas.com',
       policy_tags: JSON.stringify(['internal-only']),
       version: '0.3.0',
       created_at: ago(15), updated_at: ago(2), last_reviewed_at: null,
@@ -587,7 +587,7 @@ Output: compliance position and a regulatory filing template for the European En
       }),
       owner_name: 'Lars Bergström',
       owner_team: 'Group Compliance',
-      owner_email: 'lars.bergstrom@traton.com',
+      owner_email: 'lars.bergstrom@vehiclegroup.com',
       policy_tags: JSON.stringify(['regulatory', 'financial-data', 'external-facing']),
       version: '1.4.0',
       created_at: ago(180), updated_at: ago(60), last_reviewed_at: ago(60),
@@ -607,7 +607,7 @@ Generate a tailored onboarding checklist based on the supplier profile.
 - [ ] Company registration documents (Certificate of Incorporation)
 - [ ] Bank account verification
 - [ ] Quality certification (IATF 16949 or equivalent)
-- [ ] Signed TRATON Supplier Code of Conduct
+- [ ] Signed Group Supplier Code of Conduct
 - [ ] GDPR Data Processing Agreement
 
 **Additional items by supply category:**
@@ -637,7 +637,7 @@ Generate a tailored onboarding checklist based on the supplier profile.
       }),
       owner_name: 'Annika Johansson',
       owner_team: 'Global Procurement',
-      owner_email: 'annika.johansson@scania.com',
+      owner_email: 'annika.johansson@atlas.com',
       policy_tags: JSON.stringify(['supplier-data', 'internal-only']),
       version: '0.9.0',
       created_at: ago(20), updated_at: ago(1), last_reviewed_at: null,
@@ -674,7 +674,7 @@ See Confluence: Customer Ops → Escalation Playbook → Section 4.
       }),
       owner_name: 'Maria Santos',
       owner_team: 'Customer Quality',
-      owner_email: 'maria.santos@scania.com',
+      owner_email: 'maria.santos@atlas.com',
       policy_tags: JSON.stringify(['contains-pii', 'internal-only']),
       version: '1.0.0',
       created_at: ago(300), updated_at: ago(60), last_reviewed_at: ago(60),
@@ -687,8 +687,8 @@ See Confluence: Customer Ops → Escalation Playbook → Section 4.
     {
       id: 'tool-001',
       name: 'Supplier Database',
-      description: 'Read/write access to the TRATON global supplier master data system. Covers 14,000+ Tier 1 and 2 suppliers with financial, performance, and certification data.',
-      endpoint_url: 'https://api.internal.traton.com/supplier-db/v2',
+      description: 'Read/write access to the Group global supplier master data system. Covers 14,000+ Tier 1 and 2 suppliers with financial, performance, and certification data.',
+      endpoint_url: 'https://api.internal.vehiclegroup.com/supplier-db/v2',
       auth_type: 'oauth2',
       owner_team: 'Global Procurement IT',
       policy_tags: JSON.stringify(['supplier-data', 'financial-data', 'internal-only']),
@@ -711,7 +711,7 @@ See Confluence: Customer Ops → Escalation Playbook → Section 4.
     {
       id: 'tool-003',
       name: 'SharePoint Document Reader',
-      description: 'Retrieves and parses documents from TRATON SharePoint repositories. Supports PDF, Word, and Excel. Read-only access.',
+      description: 'Retrieves and parses documents from Group SharePoint repositories. Supports PDF, Word, and Excel. Read-only access.',
       endpoint_url: 'https://graph.microsoft.com/v1.0/sites/{siteId}/drive/items/{itemId}/content',
       auth_type: 'oauth2',
       owner_team: 'IT Workplace Services',
@@ -724,7 +724,7 @@ See Confluence: Customer Ops → Escalation Playbook → Section 4.
       id: 'tool-004',
       name: 'CRM Customer Lookup',
       description: 'Queries the Salesforce CRM for customer account data, contract status, vehicle fleet details, and open case history.',
-      endpoint_url: 'https://traton.my.salesforce.com/services/data/v57.0/sobjects',
+      endpoint_url: 'https://vehiclegroup.my.salesforce.com/services/data/v57.0/sobjects',
       auth_type: 'oauth2',
       owner_team: 'Sales & Customer Ops IT',
       policy_tags: JSON.stringify(['contains-pii', 'financial-data', 'internal-only']),
@@ -891,8 +891,8 @@ function seedTeamsIfEmpty() {
   // Marketing pays Sales: txn-002(25) + txn-005(35) = 60 → spend=940, Sales earns 60
   db.exec('BEGIN');
   try {
-    db.prepare('INSERT INTO teams VALUES (?,?,?,?,?)').run('team-001', 'Sales',     'Scania', 880,  60);
-    db.prepare('INSERT INTO teams VALUES (?,?,?,?,?)').run('team-002', 'Marketing', 'Scania', 940, 120);
+    db.prepare('INSERT INTO teams VALUES (?,?,?,?,?)').run('team-001', 'Sales',     'Atlas', 880,  60);
+    db.prepare('INSERT INTO teams VALUES (?,?,?,?,?)').run('team-002', 'Marketing', 'Atlas', 940, 120);
 
     const ins = db.prepare('INSERT INTO transactions VALUES (?,?,?,?,?,?,?,?)');
     ins.run('txn-001', 'team-001', 'team-002', 'agent-sales-001',      'skill-lead-001',     30, 'completed', ago(6));
@@ -933,7 +933,7 @@ function seedEconomySkillsIfEmpty() {
       instructions: `## Predict Customer Churn Risk\n\nAnalyse the provided account data and produce a churn risk score:\n\n1. **Engagement signals** — Email open rate trend (3-month), login frequency, feature adoption breadth\n2. **Support health** — Ticket volume trend, severity distribution, unresolved ticket age\n3. **Relationship health** — NPS trajectory, last executive sponsor contact, contract renewal proximity\n4. **Historical pattern match** — Compare against embedding similarity to 200 churned accounts\n\nReturn: risk_score (0–100), risk_tier (low/medium/high/critical), top_3_signals, recommended_action.`,
       input_schema: JSON.stringify({ type: 'object', properties: { account_id: { type: 'string' }, lookback_months: { type: 'number', default: 12 } }, required: ['account_id'] }),
       output_schema: JSON.stringify({ type: 'object', properties: { risk_score: { type: 'number' }, risk_tier: { type: 'string', enum: ['low','medium','high','critical'] }, top_3_signals: { type: 'array' }, recommended_action: { type: 'string' } } }),
-      owner_name: 'Sofia Andersson', owner_team: 'Marketing', owner_email: 'sofia.andersson@scania.com',
+      owner_name: 'Sofia Andersson', owner_team: 'Marketing', owner_email: 'sofia.andersson@atlas.com',
       policy_tags: JSON.stringify(['contains-pii', 'financial-data', 'internal-only']),
       version: '1.2.0', created_at: ago(45), updated_at: ago(3), last_reviewed_at: ago(3),
       approval_state: 'approved', used_by_agent_ids: JSON.stringify(['agent-sales-001']),
@@ -945,7 +945,7 @@ function seedEconomySkillsIfEmpty() {
       instructions: `## Lead Scoring\n\nEvaluate the inbound lead and return a quality score plus routing recommendation.\n\nFactors: company size, industry vertical, technology stack signals, website engagement depth, campaign source, match to ICP personas.`,
       input_schema: JSON.stringify({ type: 'object', properties: { lead_id: { type: 'string' }, include_intent_data: { type: 'boolean' } }, required: ['lead_id'] }),
       output_schema: JSON.stringify({ type: 'object', properties: { score: { type: 'number' }, grade: { type: 'string' }, routing: { type: 'string' } } }),
-      owner_name: 'Sofia Andersson', owner_team: 'Marketing', owner_email: 'sofia.andersson@scania.com',
+      owner_name: 'Sofia Andersson', owner_team: 'Marketing', owner_email: 'sofia.andersson@atlas.com',
       policy_tags: JSON.stringify(['contains-pii', 'internal-only']),
       version: '2.0.0', created_at: ago(90), updated_at: ago(10), last_reviewed_at: ago(10),
       approval_state: 'approved', used_by_agent_ids: JSON.stringify(['agent-sales-001']),
@@ -957,7 +957,7 @@ function seedEconomySkillsIfEmpty() {
       instructions: `## Campaign Revenue Attribution\n\nApply multi-touch attribution (linear, time-decay, and data-driven models) to the provided deal set.\n\nReturn: influenced_revenue per campaign, top_channel, attribution_model_comparison, confidence_band.`,
       input_schema: JSON.stringify({ type: 'object', properties: { deal_ids: { type: 'array', items: { type: 'string' } }, attribution_model: { type: 'string', enum: ['linear','time-decay','data-driven'], default: 'data-driven' } }, required: ['deal_ids'] }),
       output_schema: JSON.stringify({ type: 'object', properties: { campaign_attribution: { type: 'array' }, top_channel: { type: 'string' }, influenced_revenue_total: { type: 'number' } } }),
-      owner_name: 'Sofia Andersson', owner_team: 'Marketing', owner_email: 'sofia.andersson@scania.com',
+      owner_name: 'Sofia Andersson', owner_team: 'Marketing', owner_email: 'sofia.andersson@atlas.com',
       policy_tags: JSON.stringify(['financial-data', 'internal-only']),
       version: '1.1.0', created_at: ago(60), updated_at: ago(7), last_reviewed_at: ago(7),
       approval_state: 'approved', used_by_agent_ids: JSON.stringify([]),
@@ -969,7 +969,7 @@ function seedEconomySkillsIfEmpty() {
       instructions: `## Account Health Snapshot\n\nPull CRM data for the account and produce a structured brief:\n\n1. Revenue trend (last 3 years)\n2. Open pipeline (stage, value, probability)\n3. Key contacts and last touch dates\n4. Support case history summary\n5. Renewal schedule\n\nFormat as executive-readable markdown.`,
       input_schema: JSON.stringify({ type: 'object', properties: { account_id: { type: 'string' }, include_pipeline: { type: 'boolean', default: true } }, required: ['account_id'] }),
       output_schema: JSON.stringify({ type: 'object', properties: { health_brief: { type: 'string' }, health_score: { type: 'number' }, next_action: { type: 'string' } } }),
-      owner_name: 'Henrik Karlsson', owner_team: 'Sales', owner_email: 'henrik.karlsson@scania.com',
+      owner_name: 'Henrik Karlsson', owner_team: 'Sales', owner_email: 'henrik.karlsson@atlas.com',
       policy_tags: JSON.stringify(['contains-pii', 'financial-data', 'internal-only']),
       version: '1.0.0', created_at: ago(30), updated_at: ago(5), last_reviewed_at: null,
       approval_state: 'approved', used_by_agent_ids: JSON.stringify([]),
@@ -981,7 +981,7 @@ function seedEconomySkillsIfEmpty() {
       instructions: `## Sales Pipeline Forecast\n\nApply stage-weighted + rep-adjusted probability to the open pipeline:\n\n1. Pull all open opps in current quarter\n2. Weight by stage probability × rep close-rate adjustment\n3. Apply deal velocity adjustment (days in stage vs. average)\n4. Return best-case, commit, and most-likely forecasts with confidence interval.`,
       input_schema: JSON.stringify({ type: 'object', properties: { quarter: { type: 'string', description: 'e.g. 2026-Q2' }, rep_ids: { type: 'array', items: { type: 'string' } } }, required: ['quarter'] }),
       output_schema: JSON.stringify({ type: 'object', properties: { most_likely: { type: 'number' }, commit: { type: 'number' }, best_case: { type: 'number' }, confidence_pct: { type: 'number' } } }),
-      owner_name: 'Henrik Karlsson', owner_team: 'Sales', owner_email: 'henrik.karlsson@scania.com',
+      owner_name: 'Henrik Karlsson', owner_team: 'Sales', owner_email: 'henrik.karlsson@atlas.com',
       policy_tags: JSON.stringify(['financial-data', 'internal-only']),
       version: '1.3.0', created_at: ago(50), updated_at: ago(8), last_reviewed_at: ago(8),
       approval_state: 'approved', used_by_agent_ids: JSON.stringify([]),
@@ -1042,7 +1042,7 @@ function seedTierAgentsIfEmpty() {
   `);
 
   const agents = [
-    // Tier 1 — Scania (active)
+    // Tier 1 — Atlas (active)
     ['agent-sales-002', 'Sales Pipeline Agent',
      'Monitors open-pipeline deals for stall signals and triggers automated velocity nudges to sales reps.',
      'n8n', 'Henrik Karlsson', 'Sales',
@@ -1053,10 +1053,10 @@ function seedTierAgentsIfEmpty() {
      'power-automate', 'Sofia Andersson', 'Marketing',
      '[]', '[]', '["contains-pii","financial-data","internal-only"]',
      'approved', ago(20), ago(1), 'internal'],
-    // Tier 2 — TRATON Group (cross-brand)
+    // Tier 2 — Cross-Brand
     ['agent-quality-man-001', 'Quality Inspection Agent',
      'Automates factory floor quality inspection checklists and escalates non-conformances to the engineering review board.',
-     'n8n', 'Thomas Müller', 'Quality · MAN',
+     'n8n', 'Thomas Müller', 'Quality · Meridian',
      '[]', '[]', '["regulatory","internal-only"]',
      'approved', ago(15), ago(1), 'traton-group'],
     ['agent-engineering-intl-001', 'Engineering Spec Reviewer',
@@ -1066,7 +1066,7 @@ function seedTierAgentsIfEmpty() {
      'approved', ago(10), ago(2), 'traton-group'],
     ['agent-warranty-man-001', 'Warranty Triage Agent',
      'Triages inbound warranty claims, clusters them by fault pattern, and routes critical cases to the appropriate service team.',
-     'copilot-studio', 'Maria Santos', 'Customer Ops · MAN',
+     'copilot-studio', 'Maria Santos', 'Customer Ops · Meridian',
      '[]', '[]', '["contains-pii","safety-critical","internal-only"]',
      'approved', ago(8), ago(0.5), 'traton-group'],
     // Tier 3 — Partners and distributors
@@ -1123,12 +1123,12 @@ function seedCrossTierSkillsIfEmpty() {
   const skills = [
     {
       id: 'skill-xbrand-001', name: 'Cross-Brand Parts Sourcing',
-      description: 'Identifies shared components across Scania, MAN, and VW Truck & Bus platforms to consolidate procurement and reduce cost.',
+      description: 'Identifies shared components across Atlas, Meridian, and Apex Fleet platforms to consolidate procurement and reduce cost.',
       category: 'procurement',
-      instructions: `## Cross-Brand Parts Sourcing\n\nAnalyse part requests across all TRATON brands and identify consolidation opportunities.\n\n1. Match part specifications across brand-specific part numbering systems\n2. Flag shared-platform components eligible for joint procurement\n3. Calculate potential volume discounts and lead-time improvements\n4. Generate a consolidated sourcing recommendation report.`,
+      instructions: `## Cross-Brand Parts Sourcing\n\nAnalyse part requests across all Group brands and identify consolidation opportunities.\n\n1. Match part specifications across brand-specific part numbering systems\n2. Flag shared-platform components eligible for joint procurement\n3. Calculate potential volume discounts and lead-time improvements\n4. Generate a consolidated sourcing recommendation report.`,
       input_schema: JSON.stringify({ type: 'object', properties: { part_numbers: { type: 'array', items: { type: 'string' } }, brands: { type: 'array', items: { type: 'string' } } }, required: ['part_numbers'] }),
       output_schema: JSON.stringify({ type: 'object', properties: { matches: { type: 'array' }, savings_estimate_eur: { type: 'number' }, recommendation: { type: 'string' } } }),
-      owner_name: 'Group Procurement', owner_team: 'Group Procurement · TRATON', owner_email: 'procurement@traton.com',
+      owner_name: 'Group Procurement', owner_team: 'Group Procurement', owner_email: 'procurement@vehiclegroup.com',
       policy_tags: JSON.stringify(['supplier-data', 'financial-data', 'internal-only']),
       version: '1.0.0', created_at: ago(20), updated_at: ago(5), last_reviewed_at: ago(5),
       approval_state: 'approved', used_by_agent_ids: JSON.stringify([]), tier: 'traton-group',
@@ -1137,10 +1137,10 @@ function seedCrossTierSkillsIfEmpty() {
       id: 'skill-xbrand-002', name: 'Group Compliance Reporting',
       description: 'Aggregates regulatory compliance data across all group brands and generates consolidated EU reporting submissions.',
       category: 'compliance',
-      instructions: `## Group Compliance Reporting\n\nConsolidate compliance data from Scania, MAN, and VW Truck & Bus for group-level regulatory reporting.\n\n1. Aggregate fleet CO2 data by brand and sub-group\n2. Calculate group-level compliance position against EU HDV targets\n3. Generate filing documents for EEA and national authorities\n4. Flag brands at risk of non-compliance for executive escalation.`,
+      instructions: `## Group Compliance Reporting\n\nConsolidate compliance data from Atlas, Meridian, and Apex Fleet for group-level regulatory reporting.\n\n1. Aggregate fleet CO2 data by brand and sub-group\n2. Calculate group-level compliance position against EU HDV targets\n3. Generate filing documents for EEA and national authorities\n4. Flag brands at risk of non-compliance for executive escalation.`,
       input_schema: JSON.stringify({ type: 'object', properties: { reporting_period: { type: 'string' }, brands: { type: 'array', items: { type: 'string' } } }, required: ['reporting_period'] }),
       output_schema: JSON.stringify({ type: 'object', properties: { group_compliance_status: { type: 'string' }, brand_breakdown: { type: 'array' }, filing_package: { type: 'string' } } }),
-      owner_name: 'Lars Bergström', owner_team: 'Group Compliance · TRATON', owner_email: 'lars.bergstrom@traton.com',
+      owner_name: 'Lars Bergström', owner_team: 'Group Compliance', owner_email: 'lars.bergstrom@vehiclegroup.com',
       policy_tags: JSON.stringify(['regulatory', 'financial-data', 'external-facing']),
       version: '1.1.0', created_at: ago(30), updated_at: ago(10), last_reviewed_at: ago(10),
       approval_state: 'approved', used_by_agent_ids: JSON.stringify([]), tier: 'traton-group',
@@ -1149,10 +1149,10 @@ function seedCrossTierSkillsIfEmpty() {
       id: 'skill-partner-001', name: 'Multi-Modal Logistics Planning',
       description: 'Plans optimal multi-modal delivery routes combining road, rail, and sea freight for cross-border shipments.',
       category: 'procurement',
-      instructions: `## Multi-Modal Logistics Planning\n\nOptimise freight routes across transport modes for TRATON Group shipments.\n\n1. Evaluate road, rail, and sea freight options for the given origin-destination pair\n2. Calculate cost, transit time, and carbon footprint for each option\n3. Apply capacity and schedule constraints\n4. Return ranked route options with trade-off analysis.`,
+      instructions: `## Multi-Modal Logistics Planning\n\nOptimise freight routes across transport modes for Group shipments.\n\n1. Evaluate road, rail, and sea freight options for the given origin-destination pair\n2. Calculate cost, transit time, and carbon footprint for each option\n3. Apply capacity and schedule constraints\n4. Return ranked route options with trade-off analysis.`,
       input_schema: JSON.stringify({ type: 'object', properties: { origin: { type: 'string' }, destination: { type: 'string' }, cargo_weight_kg: { type: 'number' }, delivery_deadline: { type: 'string' } }, required: ['origin', 'destination', 'cargo_weight_kg'] }),
       output_schema: JSON.stringify({ type: 'object', properties: { routes: { type: 'array' }, recommended_route: { type: 'object' }, carbon_footprint_kg: { type: 'number' } } }),
-      owner_name: 'DHL Logistics Partner', owner_team: 'Logistics · DHL Partner', owner_email: 'traton@dhl.com',
+      owner_name: 'DHL Logistics Partner', owner_team: 'Logistics · DHL Partner', owner_email: 'fleet@dhl.com',
       policy_tags: JSON.stringify(['external-facing', 'financial-data']),
       version: '2.0.0', created_at: ago(10), updated_at: ago(3), last_reviewed_at: ago(3),
       approval_state: 'approved', used_by_agent_ids: JSON.stringify([]), tier: 'partners',
@@ -1161,7 +1161,7 @@ function seedCrossTierSkillsIfEmpty() {
       id: 'skill-mkt-001', name: 'Real-Time Technical Translation',
       description: 'Translates technical service documentation and parts catalogues across 24 languages with domain-specific automotive terminology.',
       category: 'communication',
-      instructions: `## Technical Translation\n\nTranslate automotive technical documents with high accuracy.\n\n1. Detect source language and validate technical terminology\n2. Apply TRATON-specific glossary and terminology database\n3. Produce target-language translation with consistency checks\n4. Flag ambiguous technical terms for human review.`,
+      instructions: `## Technical Translation\n\nTranslate automotive technical documents with high accuracy.\n\n1. Detect source language and validate technical terminology\n2. Apply Group-specific glossary and terminology database\n3. Produce target-language translation with consistency checks\n4. Flag ambiguous technical terms for human review.`,
       input_schema: JSON.stringify({ type: 'object', properties: { text: { type: 'string' }, source_language: { type: 'string' }, target_language: { type: 'string' }, document_type: { type: 'string', enum: ['service-manual', 'parts-catalogue', 'technical-bulletin', 'general'] } }, required: ['text', 'target_language'] }),
       output_schema: JSON.stringify({ type: 'object', properties: { translated_text: { type: 'string' }, confidence: { type: 'number' }, flagged_terms: { type: 'array' } } }),
       owner_name: 'Third Party', owner_team: 'Translation Services', owner_email: null,
@@ -1173,7 +1173,7 @@ function seedCrossTierSkillsIfEmpty() {
       id: 'skill-mkt-002', name: 'Contract Clause Extraction',
       description: 'Extracts and classifies key contract clauses — liability, termination, IP ownership, data processing — from supplier agreements.',
       category: 'compliance',
-      instructions: `## Contract Clause Extraction\n\nAnalyse supplier contracts and extract key clauses for legal review.\n\n1. Identify and extract liability caps, indemnification, and limitation clauses\n2. Flag non-standard termination provisions\n3. Extract IP ownership and data processing terms\n4. Cross-reference against TRATON standard contract template and highlight deviations.`,
+      instructions: `## Contract Clause Extraction\n\nAnalyse supplier contracts and extract key clauses for legal review.\n\n1. Identify and extract liability caps, indemnification, and limitation clauses\n2. Flag non-standard termination provisions\n3. Extract IP ownership and data processing terms\n4. Cross-reference against Group standard contract template and highlight deviations.`,
       input_schema: JSON.stringify({ type: 'object', properties: { document_url: { type: 'string' }, contract_type: { type: 'string', enum: ['supplier', 'partner', 'service', 'nda'] } }, required: ['document_url'] }),
       output_schema: JSON.stringify({ type: 'object', properties: { clauses: { type: 'array' }, deviations: { type: 'array' }, risk_summary: { type: 'string' } } }),
       owner_name: 'Third Party', owner_team: 'Legal Analytics', owner_email: null,
@@ -1429,6 +1429,6 @@ app.use(express.static(__dirname));
 // ─── START ───────────────────────────────────────────────────────────────────
 
 app.listen(PORT, () => {
-  console.log(`TRATON AI Registry  →  http://localhost:${PORT}`);
+  console.log(`AI Agent Registry  →  http://localhost:${PORT}`);
   console.log(`Endpoints: /api/skills  /api/tools  /api/agents  /api/agent-runs  /api/policy-tags`);
 });
