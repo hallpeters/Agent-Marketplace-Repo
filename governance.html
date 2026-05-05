@@ -64,14 +64,16 @@
     .kpi-cell--ok    .kpi-num { color: #16a34a; }
 
     /* ─── SECTION WRAPPER ─── */
-    .gov-body { padding: 0 0 64px; }
+    .gov-body { padding: 0 0 64px; overflow-x: hidden; }
 
-    /* ─── TWO-COLUMN LAYOUT ─── */
-    .gov-layout {
+    /* ─── AUDIT LOG GRID (bottom section) ─── */
+    .audit-grid {
       display: grid;
-      grid-template-columns: 1fr 360px;
-      gap: 24px;
-      align-items: start;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+    .audit-grid .audit-item:nth-child(odd) {
+      border-right: 1px solid var(--border-subtle);
     }
 
     /* ─── PANEL ─── */
@@ -434,13 +436,14 @@
     }
 
     @media (max-width: 1100px) {
-      .gov-layout { grid-template-columns: 1fr; }
       .kpi-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .kpi-cell:nth-child(3),
       .kpi-cell:nth-child(6) { border-right: none; }
       .kpi-cell:nth-child(4),
       .kpi-cell:nth-child(5),
       .kpi-cell:nth-child(6) { border-top: 1px solid var(--border-subtle); }
+      .audit-grid { grid-template-columns: 1fr; }
+      .audit-grid .audit-item:nth-child(odd) { border-right: none; }
     }
     @media (max-width: 640px) {
       .kpi-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -519,109 +522,97 @@
         </div>
       </div>
 
-      <!-- ─── MAIN LAYOUT ─── -->
-      <div class="gov-layout">
-
-        <!-- ─── LEFT: INVENTORY + RISK ─── -->
-        <div class="gov-left">
-
-          <!-- INVENTORY TABLE -->
-          <div class="gov-panel">
-            <div class="gov-panel-header">
-              <div>
-                <div class="gov-panel-title">Agent Inventory</div>
-                <div class="gov-panel-subtitle" id="inventory-count">18 agents</div>
-              </div>
-              <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-                <label style="font-size:11px;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px">Consumers</label>
-                <select id="filter-consumers" class="select-input" style="font-size:12px;padding:5px 10px">
-                  <option value="">All</option>
-                  <option value="cross">Cross-team only</option>
-                  <option value="10plus">10+ users</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="filter-row">
-              <input type="text" id="filter-search" class="search-input" placeholder="Search agents…" />
-              <select id="filter-brand" class="select-input">
-                <option value="">All brands</option>
-                <option value="a">Brand A — Heavy Trucks</option>
-                <option value="b">Brand B — Logistics</option>
-                <option value="c">Brand C — Bus &amp; Coach</option>
-                <option value="group">Group Functions</option>
-              </select>
-              <select id="filter-status" class="select-input">
-                <option value="">All statuses</option>
-                <option value="active">Active</option>
-                <option value="paused">Paused</option>
-                <option value="review">Pending Review</option>
-                <option value="deprecated">Deprecated</option>
-              </select>
-              <select id="filter-scope" class="select-input">
-                <option value="">All data scopes</option>
-                <option value="pii">Customer PII</option>
-                <option value="financial">Financial</option>
-                <option value="supplier">Supplier data</option>
-                <option value="internal">Internal docs</option>
-                <option value="public">Public</option>
-              </select>
-              <select id="filter-platform" class="select-input">
-                <option value="">All platforms</option>
-                <option value="central">Central platform</option>
-                <option value="shadow">Shadow / non-central</option>
-              </select>
-            </div>
-
-            <div class="inv-table-wrap">
-              <table class="inv-table" id="inv-table">
-                <thead>
-                  <tr>
-                    <th data-col="name">Agent <span class="sort-icon">↕</span></th>
-                    <th data-col="owner">Owner / Team <span class="sort-icon">↕</span></th>
-                    <th data-col="brand">Brand <span class="sort-icon">↕</span></th>
-                    <th data-col="status">Status <span class="sort-icon">↕</span></th>
-                    <th data-col="scopes">Data access</th>
-                    <th data-col="platform">Platform <span class="sort-icon">↕</span></th>
-                    <th data-col="consumers">Consumers <span class="sort-icon">↕</span></th>
-                    <th data-col="last_activity">Last active <span class="sort-icon">↕</span></th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="inv-body"></tbody>
-              </table>
-              <div id="inv-empty" class="table-empty" style="display:none">No agents match these filters.</div>
-            </div>
+      <!-- ─── INVENTORY TABLE ─── -->
+      <div class="gov-panel">
+        <div class="gov-panel-header">
+          <div>
+            <div class="gov-panel-title">Agent Inventory</div>
+            <div class="gov-panel-subtitle" id="inventory-count">18 agents</div>
           </div>
-
-          <!-- RISK SIGNALS -->
-          <div class="gov-panel">
-            <div class="gov-panel-header">
-              <div>
-                <div class="gov-panel-title">Risk Signals</div>
-                <div class="gov-panel-subtitle">Anomalies that require compliance attention</div>
-              </div>
-              <span style="background:#fee2e2;color:#dc2626;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px" id="risk-count">5 signals</span>
-            </div>
-            <div id="risk-list"></div>
-          </div>
-
-        </div><!-- /gov-left -->
-
-        <!-- ─── RIGHT: AUDIT LOG ─── -->
-        <div class="gov-right">
-          <div class="gov-panel">
-            <div class="gov-panel-header">
-              <div>
-                <div class="gov-panel-title">Audit Log</div>
-                <div class="gov-panel-subtitle">Recent governance events</div>
-              </div>
-            </div>
-            <div id="audit-list"></div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <label style="font-size:11px;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px">Consumers</label>
+            <select id="filter-consumers" class="select-input" style="font-size:12px;padding:5px 10px">
+              <option value="">All</option>
+              <option value="cross">Cross-team only</option>
+              <option value="10plus">10+ users</option>
+            </select>
           </div>
         </div>
 
-      </div><!-- /gov-layout -->
+        <div class="filter-row">
+          <input type="text" id="filter-search" class="search-input" placeholder="Search agents…" />
+          <select id="filter-brand" class="select-input">
+            <option value="">All brands</option>
+            <option value="a">Brand A — Heavy Trucks</option>
+            <option value="b">Brand B — Logistics</option>
+            <option value="c">Brand C — Bus &amp; Coach</option>
+            <option value="group">Group Functions</option>
+          </select>
+          <select id="filter-status" class="select-input">
+            <option value="">All statuses</option>
+            <option value="active">Active</option>
+            <option value="paused">Paused</option>
+            <option value="review">Pending Review</option>
+            <option value="deprecated">Deprecated</option>
+          </select>
+          <select id="filter-scope" class="select-input">
+            <option value="">All data scopes</option>
+            <option value="pii">Customer PII</option>
+            <option value="financial">Financial</option>
+            <option value="supplier">Supplier data</option>
+            <option value="internal">Internal docs</option>
+            <option value="public">Public</option>
+          </select>
+          <select id="filter-platform" class="select-input">
+            <option value="">All platforms</option>
+            <option value="central">Central platform</option>
+            <option value="shadow">Shadow / non-central</option>
+          </select>
+        </div>
+
+        <div class="inv-table-wrap">
+          <table class="inv-table" id="inv-table">
+            <thead>
+              <tr>
+                <th data-col="name">Agent <span class="sort-icon">↕</span></th>
+                <th data-col="owner">Owner / Team <span class="sort-icon">↕</span></th>
+                <th data-col="brand">Brand <span class="sort-icon">↕</span></th>
+                <th data-col="status">Status <span class="sort-icon">↕</span></th>
+                <th data-col="scopes">Data access</th>
+                <th data-col="platform">Platform <span class="sort-icon">↕</span></th>
+                <th data-col="consumers">Consumers <span class="sort-icon">↕</span></th>
+                <th data-col="last_activity">Last active <span class="sort-icon">↕</span></th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="inv-body"></tbody>
+          </table>
+          <div id="inv-empty" class="table-empty" style="display:none">No agents match these filters.</div>
+        </div>
+      </div>
+
+      <!-- ─── RISK SIGNALS ─── -->
+      <div class="gov-panel">
+        <div class="gov-panel-header">
+          <div>
+            <div class="gov-panel-title">Risk Signals</div>
+            <div class="gov-panel-subtitle">Anomalies that require compliance attention</div>
+          </div>
+          <span style="background:#fee2e2;color:#dc2626;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px" id="risk-count">5 signals</span>
+        </div>
+        <div id="risk-list"></div>
+      </div>
+
+      <!-- ─── AUDIT LOG ─── -->
+      <div class="gov-panel">
+        <div class="gov-panel-header">
+          <div>
+            <div class="gov-panel-title">Audit Log</div>
+            <div class="gov-panel-subtitle">Recent governance events</div>
+          </div>
+        </div>
+        <div class="audit-grid" id="audit-list"></div>
+      </div>
     </div><!-- /container -->
   </div><!-- /gov-body -->
 
