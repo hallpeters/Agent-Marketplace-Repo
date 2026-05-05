@@ -22,7 +22,7 @@
     /* ─── KPI STRIP ─── */
     .kpi-strip {
       display: grid;
-      grid-template-columns: repeat(6, 1fr);
+      grid-template-columns: repeat(6, minmax(0, 1fr));
       gap: 0;
       background: var(--bg-card);
       border: 1.5px solid var(--border-subtle);
@@ -32,19 +32,20 @@
       margin: 28px 0 32px;
     }
     .kpi-cell {
-      padding: 20px 22px;
+      padding: 18px 16px;
       border-right: 1px solid var(--border-subtle);
       position: relative;
+      min-width: 0;
     }
     .kpi-cell:last-child { border-right: none; }
     .kpi-label {
       font-size: 10px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.7px;
+      letter-spacing: 0.6px;
       color: var(--text-muted);
       margin-bottom: 6px;
-      white-space: nowrap;
+      line-height: 1.3;
     }
     .kpi-num {
       font-size: 30px;
@@ -274,12 +275,32 @@
     .risk-desc  { font-size: 12px; color: var(--text-muted); margin-top: 2px; line-height: 1.45; }
     .risk-agents { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
     .risk-agent-tag {
-      padding: 2px 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
       background: var(--bg-section-alt);
       border-radius: 4px;
       font-size: 11px;
-      color: var(--text-secondary);
-      border: 1px solid var(--border-subtle);
+      font-weight: 500;
+      color: var(--primary-blue);
+      border: 1px solid rgba(37,99,235,.2);
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+    .risk-agent-tag:hover {
+      background: #dbeafe;
+      border-color: var(--primary-blue);
+      color: #1e40af;
+    }
+    .risk-agent-note {
+      font-size: 10px;
+      font-weight: 400;
+      color: var(--text-muted);
+      background: var(--bg-body);
+      padding: 1px 5px;
+      border-radius: 3px;
     }
 
     /* ─── AUDIT LOG ─── */
@@ -414,12 +435,19 @@
 
     @media (max-width: 1100px) {
       .gov-layout { grid-template-columns: 1fr; }
-      .kpi-strip { grid-template-columns: repeat(3, 1fr); }
-      .kpi-cell:nth-child(3) { border-right: none; }
+      .kpi-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .kpi-cell:nth-child(3),
+      .kpi-cell:nth-child(6) { border-right: none; }
+      .kpi-cell:nth-child(4),
+      .kpi-cell:nth-child(5),
+      .kpi-cell:nth-child(6) { border-top: 1px solid var(--border-subtle); }
     }
-    @media (max-width: 700px) {
-      .kpi-strip { grid-template-columns: repeat(2, 1fr); }
-      .kpi-cell:nth-child(2) { border-right: none; }
+    @media (max-width: 640px) {
+      .kpi-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .kpi-cell:nth-child(2),
+      .kpi-cell:nth-child(4),
+      .kpi-cell:nth-child(6) { border-right: none; }
+      .kpi-cell:nth-child(n+3) { border-top: 1px solid var(--border-subtle); }
       .kpi-num { font-size: 24px; }
     }
   </style>
@@ -924,31 +952,49 @@
       icon: '👤', iconClass: 'risk-icon--red',
       title: 'Agents using human credentials',
       desc: 'These agents are authenticating with personal user accounts rather than service identities — creates audit gaps and access-control risk.',
-      agents: ['Driver Behaviour Scorer', 'HR Policy Q&A'],
+      agents: [
+        { id: 'a11', label: 'Driver Behaviour Scorer' },
+        { id: 'a06', label: 'HR Policy Q&A' },
+      ],
     },
     {
       icon: '?', iconClass: 'risk-icon--red',
       title: 'Agent with no registered owner',
       desc: 'No accountable party for policy violations, access changes, or incident response.',
-      agents: ['HR Policy Q&A'],
+      agents: [
+        { id: 'a06', label: 'HR Policy Q&A' },
+      ],
     },
     {
       icon: '⏱', iconClass: 'risk-icon--amber',
       title: 'Inactive 30+ days — deprecation candidates',
       desc: 'Agents with no recorded activity in over 30 days. Consider deprecating to reduce attack surface.',
-      agents: ['Dealer Inventory Monitor (38d)', 'Parts Availability Lookup (55d)', 'Training Content Curator (61d)'],
+      agents: [
+        { id: 'a10', label: 'Dealer Inventory Monitor', note: '38d' },
+        { id: 'a14', label: 'Parts Availability Lookup', note: '55d' },
+        { id: 'a16', label: 'Training Content Curator',  note: '61d' },
+      ],
     },
     {
       icon: '🔍', iconClass: 'risk-icon--amber',
       title: 'Cross-team spread without governance review',
       desc: 'These agents are consumed by 3+ teams but have not had a policy review in the last 90 days. Potential mis-ownership.',
-      agents: ['HR Policy Q&A', 'Customer Churn Predictor', 'Driver Behaviour Scorer'],
+      agents: [
+        { id: 'a06', label: 'HR Policy Q&A',             note: '6 teams' },
+        { id: 'a01', label: 'Customer Churn Predictor',  note: '4 teams' },
+        { id: 'a11', label: 'Driver Behaviour Scorer',   note: '3 teams' },
+      ],
     },
     {
       icon: '⚠', iconClass: 'risk-icon--purple',
       title: 'Non-central platform + sensitive data access',
       desc: 'Highest-risk combination: shadow agents accessing PII or financial data outside the governed platform.',
-      agents: ['Driver Behaviour Scorer (Bedrock + PII)', 'HR Policy Q&A (LangChain + PII)', 'Customer Email Responder (Amazon Q + PII)', 'Spend Analytics Agent (Custom Python + Financial)'],
+      agents: [
+        { id: 'a11', label: 'Driver Behaviour Scorer',    note: 'Bedrock + PII' },
+        { id: 'a06', label: 'HR Policy Q&A',              note: 'LangChain + PII' },
+        { id: 'a13', label: 'Customer Email Responder',   note: 'Amazon Q + PII' },
+        { id: 'a18', label: 'Spend Analytics Agent',      note: 'Custom Python + Financial' },
+      ],
     },
   ];
 
@@ -1276,15 +1322,31 @@
 
   function renderRiskSignals() {
     document.getElementById('risk-count').textContent = `${RISK_SIGNALS.length} signals`;
-    document.getElementById('risk-list').innerHTML = RISK_SIGNALS.map(r => `
-      <div class="risk-item">
-        <div class="risk-icon ${r.iconClass}">${r.icon}</div>
-        <div class="risk-body">
-          <div class="risk-title">${r.title}</div>
-          <div class="risk-desc">${r.desc}</div>
-          <div class="risk-agents">${r.agents.map(a => `<span class="risk-agent-tag">${a}</span>`).join('')}</div>
-        </div>
-      </div>`).join('');
+    const el = document.getElementById('risk-list');
+    el.innerHTML = RISK_SIGNALS.map(r => {
+      const tagHtml = r.agents.map(a =>
+        `<button class="risk-agent-tag" data-agent-id="${a.id}">
+          ${a.label}
+          ${a.note ? `<span class="risk-agent-note">${a.note}</span>` : ''}
+        </button>`
+      ).join('');
+      return `
+        <div class="risk-item">
+          <div class="risk-icon ${r.iconClass}">${r.icon}</div>
+          <div class="risk-body">
+            <div class="risk-title">${r.title}</div>
+            <div class="risk-desc">${r.desc}</div>
+            <div class="risk-agents">${tagHtml}</div>
+          </div>
+        </div>`;
+    }).join('');
+
+    el.querySelectorAll('.risk-agent-tag[data-agent-id]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const agent = AGENTS.find(a => a.id === btn.dataset.agentId);
+        if (agent) openModal(agent);
+      });
+    });
   }
 
   // ─── INIT ─────────────────────────────────────────────────────────────────────
