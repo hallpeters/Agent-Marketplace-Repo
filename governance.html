@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Governance — AI Agent Marketplace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+
+  <style>
+    /* ─── HERO ─── */
+    .gov-hero {
+      background: linear-gradient(135deg, var(--bg-header) 0%, #001a3a 100%);
+      padding: 40px 0 44px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .gov-hero h1 { font-size: 26px; font-weight: 800; color: #fff; letter-spacing: -0.5px; margin-bottom: 4px; }
+    .gov-hero p  { font-size: 14px; color: rgba(255,255,255,.5); line-height: 1.6; }
+
+    /* ─── KPI STRIP ─── */
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 0;
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+      margin: 28px 0 32px;
+    }
+    .kpi-cell {
+      padding: 18px 16px;
+      border-right: 1px solid var(--border-subtle);
+      position: relative;
+      min-width: 0;
+    }
+    .kpi-cell:last-child { border-right: none; }
+    .kpi-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .kpi-num {
+      font-size: 30px;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1;
+      letter-spacing: -1px;
+    }
+    .kpi-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+    .kpi-cell--warn  .kpi-num { color: #d97706; }
+    .kpi-cell--alert .kpi-num { color: #dc2626; }
+    .kpi-cell--ok    .kpi-num { color: #16a34a; }
+
+    /* ─── SECTION WRAPPER ─── */
+    .gov-body { padding: 0 0 64px; overflow-x: hidden; }
+
+    /* ─── AUDIT LOG GRID (bottom section) ─── */
+    .audit-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+    .audit-grid .audit-item:nth-child(odd) {
+      border-right: 1px solid var(--border-subtle);
+    }
+
+    /* ─── PANEL ─── */
+    .gov-panel {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .gov-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 24px 14px;
+      border-bottom: 1px solid var(--border-subtle);
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .gov-panel-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.2px;
+    }
+    .gov-panel-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    /* ─── FILTER ROW ─── */
+    .filter-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      padding: 14px 24px;
+      background: var(--bg-section-alt);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .filter-row .search-input { min-width: 180px; max-width: 220px; }
+
+    /* ─── INVENTORY TABLE ─── */
+    .inv-table-wrap { overflow-x: auto; }
+    .inv-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .inv-table th {
+      text-align: left;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text-muted);
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      background: var(--bg-section-alt);
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+    }
+    .inv-table th:hover { color: var(--text-secondary); }
+    .inv-table th.sorted { color: var(--primary-blue); }
+    .sort-icon { margin-left: 4px; font-size: 10px; opacity: 0.5; }
+    .inv-table th.sorted .sort-icon { opacity: 1; }
+    .inv-table td {
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      vertical-align: middle;
+      color: var(--text-secondary);
+    }
+    .inv-table tr:last-child td { border-bottom: none; }
+    .inv-table tr:hover td { background: rgba(37,99,235,.025); }
+
+    .agent-name-cell { font-weight: 600; color: var(--text-primary); }
+    .agent-owner-cell { line-height: 1.4; }
+    .owner-name { font-weight: 500; color: var(--text-primary); font-size: 13px; }
+    .owner-team { font-size: 11px; color: var(--text-muted); }
+
+    /* ─── STATUS CHIPS ─── */
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .status-chip::before {
+      content: '';
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: currentColor;
+      flex-shrink: 0;
+    }
+    .status-chip--active    { background: #dcfce7; color: #16a34a; }
+    .status-chip--paused    { background: #fef3c7; color: #d97706; }
+    .status-chip--deprecated { background: #fee2e2; color: #dc2626; }
+    .status-chip--review    { background: #dbeafe; color: #1d4ed8; }
+
+    /* ─── DATA SCOPE CHIPS ─── */
+    .scope-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+    .scope-chip {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .scope-chip--pii      { background: #fee2e2; color: #dc2626; }
+    .scope-chip--financial { background: #fef3c7; color: #92400e; }
+    .scope-chip--internal { background: #f3f4f6; color: #6b7280; }
+    .scope-chip--public   { background: #dcfce7; color: #166534; }
+    .scope-chip--supplier { background: #ede9fe; color: #6d28d9; }
+    .scope-chip--ops      { background: #e0f2fe; color: #0369a1; }
+
+    /* ─── PLATFORM CHIP ─── */
+    .platform-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .platform-chip--central   { background: #dbeafe; color: #1e40af; }
+    .platform-chip--shadow    { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+    .platform-chip--custom    { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+    /* ─── BRAND CELL ─── */
+    .brand-cell {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .brand-cell--a     { background: #1a4480; color: #d97706; }
+    .brand-cell--b     { background: #dc2626; color: #fff; }
+    .brand-cell--c     { background: #1d4ed8; color: #bae6fd; }
+    .brand-cell--group { background: #1e3a5f; color: #7eb8ff; }
+
+    /* ─── CONSUMERS CELL ─── */
+    .consumers-cell { font-size: 12px; white-space: nowrap; }
+    .consumers-cross { color: #7c3aed; font-weight: 600; }
+
+    /* ─── ACTION BUTTONS ─── */
+    .action-btns { display: flex; gap: 4px; }
+    .act-btn {
+      padding: 4px 10px;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1.5px solid transparent;
+      font-family: inherit;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+    .act-btn--pause      { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
+    .act-btn--pause:hover { background: #fde68a; }
+    .act-btn--investigate { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
+    .act-btn--investigate:hover { background: #fecaca; }
+    .act-btn--view       { background: var(--bg-section-alt); color: var(--text-secondary); border-color: var(--border-subtle); }
+    .act-btn--view:hover { border-color: var(--primary-blue); color: var(--primary-blue); }
+    .act-btn--resume     { background: #dcfce7; color: #166534; border-color: #86efac; }
+    .act-btn--resume:hover { background: #bbf7d0; }
+
+    /* ─── RISK SIGNALS ─── */
+    .risk-item {
+      display: flex;
+      gap: 12px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      align-items: flex-start;
+    }
+    .risk-item:last-child { border-bottom: none; }
+    .risk-icon {
+      width: 30px; height: 30px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .risk-icon--red    { background: #fee2e2; }
+    .risk-icon--amber  { background: #fef3c7; }
+    .risk-icon--purple { background: #ede9fe; }
+    .risk-body { flex: 1; min-width: 0; }
+    .risk-title { font-size: 13px; font-weight: 600; color: var(--text-primary); line-height: 1.35; }
+    .risk-desc  { font-size: 12px; color: var(--text-muted); margin-top: 2px; line-height: 1.45; }
+    .risk-agents { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+    .risk-agent-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      background: var(--bg-section-alt);
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--primary-blue);
+      border: 1px solid rgba(37,99,235,.2);
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+    .risk-agent-tag:hover {
+      background: #dbeafe;
+      border-color: var(--primary-blue);
+      color: #1e40af;
+    }
+    .risk-agent-note {
+      font-size: 10px;
+      font-weight: 400;
+      color: var(--text-muted);
+      background: var(--bg-body);
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    /* ─── AUDIT LOG ─── */
+    .audit-item {
+      display: flex;
+      gap: 10px;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      align-items: flex-start;
+    }
+    .audit-item:last-child { border-bottom: none; }
+    .audit-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 5px;
+    }
+    .audit-dot--approved   { background: #16a34a; }
+    .audit-dot--denied     { background: #dc2626; }
+    .audit-dot--warning    { background: #d97706; }
+    .audit-dot--registered { background: #2563eb; }
+    .audit-dot--paused     { background: #7c3aed; }
+    .audit-dot--review     { background: #0ea5e9; }
+    .audit-body { flex: 1; }
+    .audit-text { font-size: 12px; color: var(--text-secondary); line-height: 1.45; }
+    .audit-text strong { color: var(--text-primary); font-weight: 600; }
+    .audit-time { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+    /* ─── TOAST ─── */
+    #toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: #0d1117;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: 0 8px 32px rgba(0,0,0,.35);
+      z-index: 9999;
+      max-width: 360px;
+      line-height: 1.5;
+      transform: translateY(16px);
+      opacity: 0;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      pointer-events: none;
+    }
+    #toast.show { opacity: 1; transform: translateY(0); }
+
+    /* ─── MODAL ─── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.5);
+      z-index: 500;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal {
+      background: var(--bg-card);
+      border-radius: 16px;
+      box-shadow: 0 24px 64px rgba(0,0,0,.25);
+      width: 100%; max-width: 680px;
+      max-height: 80vh;
+      overflow-y: auto;
+      transform: translateY(16px);
+      transition: transform 0.2s ease;
+    }
+    .modal-overlay.open .modal { transform: translateY(0); }
+    .modal-header {
+      padding: 24px 28px 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+      position: sticky; top: 0; background: var(--bg-card); z-index: 1;
+    }
+    .modal-title { font-size: 18px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.3px; }
+    .modal-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+    .modal-close {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: var(--bg-section-alt);
+      color: var(--text-muted);
+      font-size: 18px; font-weight: 400;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; flex-shrink: 0;
+      border: none; font-family: inherit;
+      transition: var(--transition);
+    }
+    .modal-close:hover { background: var(--border-subtle); color: var(--text-primary); }
+    .modal-body { padding: 24px 28px 28px; }
+    .modal-section-title {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.7px;
+      color: var(--text-muted); margin-bottom: 12px; margin-top: 20px;
+    }
+    .modal-section-title:first-child { margin-top: 0; }
+    .modal-meta-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 14px; margin-bottom: 4px;
+    }
+    .modal-meta-item {}
+    .modal-meta-key { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-muted); margin-bottom: 3px; }
+    .modal-meta-val { font-size: 13px; color: var(--text-primary); }
+
+    .consumer-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .consumer-table th {
+      text-align: left; font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.6px;
+      color: var(--text-muted); padding: 6px 12px 8px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .consumer-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+    }
+    .consumer-table tr:last-child td { border-bottom: none; }
+    .consumer-table .pct-bar-wrap { display: flex; align-items: center; gap: 6px; }
+    .pct-bar { height: 4px; border-radius: 2px; background: var(--primary-blue); opacity: 0.7; min-width: 4px; }
+    .mis-owned { color: #d97706; font-weight: 600; font-size: 11px; }
+
+    /* ─── EMPTY STATE ─── */
+    .table-empty {
+      text-align: center;
+      padding: 36px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 1100px) {
+      .kpi-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .kpi-cell:nth-child(3),
+      .kpi-cell:nth-child(6) { border-right: none; }
+      .kpi-cell:nth-child(4),
+      .kpi-cell:nth-child(5),
+      .kpi-cell:nth-child(6) { border-top: 1px solid var(--border-subtle); }
+      .audit-grid { grid-template-columns: 1fr; }
+      .audit-grid .audit-item:nth-child(odd) { border-right: none; }
+    }
+    @media (max-width: 640px) {
+      .kpi-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .kpi-cell:nth-child(2),
+      .kpi-cell:nth-child(4),
+      .kpi-cell:nth-child(6) { border-right: none; }
+      .kpi-cell:nth-child(n+3) { border-top: 1px solid var(--border-subtle); }
+      .kpi-num { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── HEADER ─── -->
+  <header class="site-header">
+    <div class="header-inner container">
+      <a href="index.html" class="brand">
+        <div class="brand-logo">T</div>
+        <div>
+          <span class="brand-name">VehicleGroup</span>
+          <span class="brand-subtitle">AI Agent Marketplace</span>
+        </div>
+      </a>
+      <nav class="site-nav">
+        <a href="index.html"      class="nav-link">Agents</a>
+        <a href="skills.html"     class="nav-link">Skills</a>
+        <a href="workflows.html"  class="nav-link">Workflows</a>
+        <a href="governance.html" class="nav-link active nav-link--highlight">Governance</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ─── HERO ─── -->
+  <div class="gov-hero">
+    <div class="container">
+      <h1>Governance Dashboard</h1>
+      <p>Real-time view of every agent running across the organisation — ownership, data access, platform, and intervention controls.</p>
+    </div>
+  </div>
+
+  <!-- ─── BODY ─── -->
+  <div class="gov-body">
+    <div class="container">
+
+      <!-- ─── KPI STRIP ─── -->
+      <div class="kpi-strip">
+        <div class="kpi-cell kpi-cell--ok">
+          <div class="kpi-label">Total agents</div>
+          <div class="kpi-num" id="kpi-total">18</div>
+          <div class="kpi-sub">registered</div>
+        </div>
+        <div class="kpi-cell kpi-cell--ok">
+          <div class="kpi-label">Active</div>
+          <div class="kpi-num" id="kpi-active">11</div>
+          <div class="kpi-sub">running</div>
+        </div>
+        <div class="kpi-cell">
+          <div class="kpi-label">Paused</div>
+          <div class="kpi-num" id="kpi-paused">3</div>
+          <div class="kpi-sub">suspended</div>
+        </div>
+        <div class="kpi-cell">
+          <div class="kpi-label">Deprecated</div>
+          <div class="kpi-num" id="kpi-deprecated">2</div>
+          <div class="kpi-sub">end-of-life</div>
+        </div>
+        <div class="kpi-cell kpi-cell--warn">
+          <div class="kpi-label">Flagged for review</div>
+          <div class="kpi-num" id="kpi-review">4</div>
+          <div class="kpi-sub">need attention</div>
+        </div>
+        <div class="kpi-cell kpi-cell--alert">
+          <div class="kpi-label">Sensitive data access</div>
+          <div class="kpi-num" id="kpi-sensitive">7</div>
+          <div class="kpi-sub">PII or financial</div>
+        </div>
+      </div>
+
+      <!-- ─── INVENTORY TABLE ─── -->
+      <div class="gov-panel">
+        <div class="gov-panel-header">
+          <div>
+            <div class="gov-panel-title">Agent Inventory</div>
+            <div class="gov-panel-subtitle" id="inventory-count">18 agents</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <label style="font-size:11px;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px">Consumers</label>
+            <select id="filter-consumers" class="select-input" style="font-size:12px;padding:5px 10px">
+              <option value="">All</option>
+              <option value="cross">Cross-team only</option>
+              <option value="10plus">10+ users</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="filter-row">
+          <input type="text" id="filter-search" class="search-input" placeholder="Search agents…" />
+          <select id="filter-brand" class="select-input">
+            <option value="">All brands</option>
+            <option value="a">Brand A — Heavy Trucks</option>
+            <option value="b">Brand B — Logistics</option>
+            <option value="c">Brand C — Bus &amp; Coach</option>
+            <option value="group">Group Functions</option>
+          </select>
+          <select id="filter-status" class="select-input">
+            <option value="">All statuses</option>
+            <option value="active">Active</option>
+            <option value="paused">Paused</option>
+            <option value="review">Pending Review</option>
+            <option value="deprecated">Deprecated</option>
+          </select>
+          <select id="filter-scope" class="select-input">
+            <option value="">All data scopes</option>
+            <option value="pii">Customer PII</option>
+            <option value="financial">Financial</option>
+            <option value="supplier">Supplier data</option>
+            <option value="internal">Internal docs</option>
+            <option value="public">Public</option>
+          </select>
+          <select id="filter-platform" class="select-input">
+            <option value="">All platforms</option>
+            <option value="central">Central platform</option>
+            <option value="shadow">Shadow / non-central</option>
+          </select>
+        </div>
+
+        <div class="inv-table-wrap">
+          <table class="inv-table" id="inv-table">
+            <thead>
+              <tr>
+                <th data-col="name">Agent <span class="sort-icon">↕</span></th>
+                <th data-col="owner">Owner / Team <span class="sort-icon">↕</span></th>
+                <th data-col="brand">Brand <span class="sort-icon">↕</span></th>
+                <th data-col="status">Status <span class="sort-icon">↕</span></th>
+                <th data-col="scopes">Data access</th>
+                <th data-col="platform">Platform <span class="sort-icon">↕</span></th>
+                <th data-col="consumers">Consumers <span class="sort-icon">↕</span></th>
+                <th data-col="last_activity">Last active <span class="sort-icon">↕</span></th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="inv-body"></tbody>
+          </table>
+          <div id="inv-empty" class="table-empty" style="display:none">No agents match these filters.</div>
+        </div>
+      </div>
+
+      <!-- ─── RISK SIGNALS ─── -->
+      <div class="gov-panel">
+        <div class="gov-panel-header">
+          <div>
+            <div class="gov-panel-title">Risk Signals</div>
+            <div class="gov-panel-subtitle">Anomalies that require compliance attention</div>
+          </div>
+          <span style="background:#fee2e2;color:#dc2626;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px" id="risk-count">5 signals</span>
+        </div>
+        <div id="risk-list"></div>
+      </div>
+
+      <!-- ─── AUDIT LOG ─── -->
+      <div class="gov-panel">
+        <div class="gov-panel-header">
+          <div>
+            <div class="gov-panel-title">Audit Log</div>
+            <div class="gov-panel-subtitle">Recent governance events</div>
+          </div>
+        </div>
+        <div class="audit-grid" id="audit-list"></div>
+      </div>
+    </div><!-- /container -->
+  </div><!-- /gov-body -->
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>
+        <span>AI Agent Marketplace</span> &nbsp;·&nbsp;
+        Internal prototype &nbsp;·&nbsp;
+        Atlas · Meridian · Apex Fleet
+      </p>
+    </div>
+  </footer>
+
+  <!-- ─── TOAST ─── -->
+  <div id="toast"></div>
+
+  <!-- ─── DETAIL MODAL ─── -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title" id="modal-title">Agent Detail</div>
+          <div class="modal-subtitle" id="modal-subtitle"></div>
+        </div>
+        <button class="modal-close" id="modal-close">×</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <script>
+  // ─── MOCK DATA ───────────────────────────────────────────────────────────────
+
+  const AGENTS = [
+    {
+      id: 'a01',
+      name: 'Customer Churn Predictor',
+      owner: 'Lena Hartmann', team: 'CX Analytics',
+      brand: 'a', status: 'active',
+      scopes: ['pii', 'financial'],
+      platform: 'internal', platform_label: 'Internal Platform',
+      consumers_users: 34, consumers_teams: 4, cross_team: true,
+      last_activity_mins: 120,
+      flags: ['sensitive', 'cross-team'],
+      consumers_detail: [
+        { team: 'CX Analytics',  users: 12, last_access: '2h ago' },
+        { team: 'Sales Ops',     users: 9,  last_access: '4h ago' },
+        { team: 'Brand Strategy',users: 8,  last_access: '1d ago' },
+        { team: 'Group IT',      users: 5,  last_access: '3d ago' },
+      ]
+    },
+    {
+      id: 'a02',
+      name: 'Fleet Maintenance Scheduler',
+      owner: 'Marco Bianchi', team: 'After-Sales Ops',
+      brand: 'a', status: 'active',
+      scopes: ['internal', 'ops'],
+      platform: 'internal', platform_label: 'Internal Platform',
+      consumers_users: 18, consumers_teams: 2, cross_team: false,
+      last_activity_mins: 30,
+      flags: [],
+      consumers_detail: [
+        { team: 'After-Sales Ops', users: 14, last_access: '30m ago' },
+        { team: 'Dealer Network',  users: 4,  last_access: '2h ago' },
+      ]
+    },
+    {
+      id: 'a03',
+      name: 'Procurement Risk Analyst',
+      owner: 'Annika Johansson', team: 'Global Procurement',
+      brand: 'group', status: 'review',
+      scopes: ['supplier', 'financial'],
+      platform: 'internal', platform_label: 'Internal Platform',
+      consumers_users: 8, consumers_teams: 3, cross_team: true,
+      last_activity_mins: 60 * 6,
+      flags: ['sensitive', 'review'],
+      consumers_detail: [
+        { team: 'Global Procurement', users: 5, last_access: '6h ago' },
+        { team: 'Finance Control',    users: 2, last_access: '1d ago' },
+        { team: 'Legal',              users: 1, last_access: '2d ago' },
+      ]
+    },
+    {
+      id: 'a04',
+      name: 'Warranty Claim Router',
+      owner: 'Sophie Müller', team: 'Quality Assurance',
+      brand: 'b', status: 'active',
+      scopes: ['pii', 'internal'],
+      platform: 'n8n', platform_label: 'n8n',
+      consumers_users: 6, consumers_teams: 1, cross_team: false,
+      last_activity_mins: 60 * 3,
+      flags: ['shadow'],
+      consumers_detail: [
+        { team: 'Quality Assurance', users: 6, last_access: '3h ago' },
+      ]
+    },
+    {
+      id: 'a05',
+      name: 'Sales Proposal Generator',
+      owner: 'James Okafor', team: 'Sales Enablement',
+      brand: 'a', status: 'active',
+      scopes: ['financial', 'internal'],
+      platform: 'copilot', platform_label: 'Microsoft Copilot Studio',
+      consumers_users: 47, consumers_teams: 3, cross_team: true,
+      last_activity_mins: 15,
+      flags: ['sensitive'],
+      consumers_detail: [
+        { team: 'Sales Enablement', users: 28, last_access: '15m ago' },
+        { team: 'Account Mgmt',     users: 14, last_access: '1h ago' },
+        { team: 'Brand Strategy',   users: 5,  last_access: '3h ago' },
+      ]
+    },
+    {
+      id: 'a06',
+      name: 'HR Policy Q&A',
+      owner: null, team: 'Human Resources',
+      brand: 'group', status: 'review',
+      scopes: ['pii', 'internal'],
+      platform: 'langchain', platform_label: 'LangChain (custom)',
+      consumers_users: 142, consumers_teams: 6, cross_team: true,
+      last_activity_mins: 60 * 2,
+      flags: ['no-owner', 'shadow', 'sensitive', 'review'],
+      consumers_detail: [
+        { team: 'Human Resources', users: 40, last_access: '2h ago' },
+        { team: 'Brand A Ops',     users: 35, last_access: '2h ago' },
+        { team: 'Brand B Ops',     users: 28, last_access: '3h ago' },
+        { team: 'Brand C Ops',     users: 22, last_access: '4h ago' },
+        { team: 'Group IT',        users: 12, last_access: '5h ago' },
+        { team: 'Legal',           users: 5,  last_access: '1d ago' },
+      ]
+    },
+    {
+      id: 'a07',
+      name: 'Supplier Sanctions Screener',
+      owner: 'Lars Bergström', team: 'Group Compliance',
+      brand: 'group', status: 'active',
+      scopes: ['supplier', 'financial'],
+      platform: 'internal', platform_label: 'Internal Platform',
+      consumers_users: 5, consumers_teams: 2, cross_team: true,
+      last_activity_mins: 60 * 48,
+      flags: ['sensitive'],
+      consumers_detail: [
+        { team: 'Group Compliance', users: 3, last_access: '2d ago' },
+        { team: 'Procurement',      users: 2, last_access: '3d ago' },
+      ]
+    },
+    {
+      id: 'a08',
+      name: 'Bus Route Optimiser',
+      owner: 'Fatima El-Amin', team: 'Transport Planning',
+      brand: 'c', status: 'active',
+      scopes: ['ops', 'internal'],
+      platform: 'powerautomate', platform_label: 'Power Automate',
+      consumers_users: 11, consumers_teams: 2, cross_team: false,
+      last_activity_mins: 60 * 1,
+      flags: ['shadow'],
+      consumers_detail: [
+        { team: 'Transport Planning', users: 8, last_access: '1h ago' },
+        { team: 'Driver Ops',         users: 3, last_access: '2h ago' },
+      ]
+    },
+    {
+      id: 'a09',
+      name: 'Contract Clause Extractor',
+      owner: 'Thomas Müller', team: 'Legal',
+      brand: 'group', status: 'active',
+      scopes: ['financial', 'internal'],
+      platform: 'azurefoundry', platform_label: 'Azure AI Foundry',
+      consumers_users: 9, consumers_teams: 2, cross_team: true,
+      last_activity_mins: 60 * 5,
+      flags: ['sensitive'],
+      consumers_detail: [
+        { team: 'Legal',    users: 7, last_access: '5h ago' },
+        { team: 'Finance',  users: 2, last_access: '1d ago' },
+      ]
+    },
+    {
+      id: 'a10',
+      name: 'Dealer Inventory Monitor',
+      owner: 'Erik Lindqvist', team: 'Dealer Development',
+      brand: 'a', status: 'paused',
+      scopes: ['internal', 'ops'],
+      platform: 'n8n', platform_label: 'n8n',
+      consumers_users: 3, consumers_teams: 1, cross_team: false,
+      last_activity_mins: 60 * 24 * 38,
+      flags: ['inactive', 'shadow'],
+      consumers_detail: [
+        { team: 'Dealer Development', users: 3, last_access: '38d ago' },
+      ]
+    },
+    {
+      id: 'a11',
+      name: 'Driver Behaviour Scorer',
+      owner: 'Maria Santos', team: 'Fleet Analytics',
+      brand: 'b', status: 'active',
+      scopes: ['pii', 'ops'],
+      platform: 'bedrock', platform_label: 'Bedrock Agents',
+      consumers_users: 22, consumers_teams: 3, cross_team: true,
+      last_activity_mins: 60 * 4,
+      flags: ['sensitive', 'shadow', 'cross-team'],
+      consumers_detail: [
+        { team: 'Fleet Analytics',   users: 12, last_access: '4h ago' },
+        { team: 'Insurance Ops',     users: 7,  last_access: '6h ago' },
+        { team: 'Brand B Compliance',users: 3,  last_access: '2d ago' },
+      ]
+    },
+    {
+      id: 'a12',
+      name: 'Invoice Matching Agent',
+      owner: 'Petra Heinemann', team: 'Finance Control',
+      brand: 'b', status: 'active',
+      scopes: ['financial'],
+      platform: 'internal', platform_label: 'Internal Platform',
+      consumers_users: 14, consumers_teams: 2, cross_team: false,
+      last_activity_mins: 60 * 2,
+      flags: ['sensitive'],
+      consumers_detail: [
+        { team: 'Finance Control', users: 10, last_access: '2h ago' },
+        { team: 'Accounts Payable',users: 4,  last_access: '3h ago' },
+      ]
+    },
+    {
+      id: 'a13',
+      name: 'Customer Email Responder',
+      owner: 'Yuki Tanaka', team: 'Customer Support',
+      brand: 'c', status: 'active',
+      scopes: ['pii', 'internal'],
+      platform: 'amazonq', platform_label: 'Amazon Q',
+      consumers_users: 8, consumers_teams: 1, cross_team: false,
+      last_activity_mins: 60,
+      flags: ['sensitive', 'shadow'],
+      consumers_detail: [
+        { team: 'Customer Support', users: 8, last_access: '1h ago' },
+      ]
+    },
+    {
+      id: 'a14',
+      name: 'Parts Availability Lookup',
+      owner: 'Marco Bianchi', team: 'After-Sales Ops',
+      brand: 'a', status: 'deprecated',
+      scopes: ['internal'],
+      platform: 'custompython', platform_label: 'Custom Python',
+      consumers_users: 0, consumers_teams: 0, cross_team: false,
+      last_activity_mins: 60 * 24 * 55,
+      flags: ['inactive'],
+      consumers_detail: []
+    },
+    {
+      id: 'a15',
+      name: 'Regulatory Change Monitor',
+      owner: 'Lars Bergström', team: 'Group Compliance',
+      brand: 'group', status: 'active',
+      scopes: ['internal', 'public'],
+      platform: 'internal', platform_label: 'Internal Platform',
+      consumers_users: 6, consumers_teams: 3, cross_team: true,
+      last_activity_mins: 60 * 24,
+      flags: [],
+      consumers_detail: [
+        { team: 'Group Compliance', users: 3, last_access: '1d ago' },
+        { team: 'Legal',            users: 2, last_access: '1d ago' },
+        { team: 'Product Policy',   users: 1, last_access: '2d ago' },
+      ]
+    },
+    {
+      id: 'a16',
+      name: 'Training Content Curator',
+      owner: 'Sofie Andersen', team: 'L&D',
+      brand: 'group', status: 'deprecated',
+      scopes: ['internal'],
+      platform: 'powerautomate', platform_label: 'Power Automate',
+      consumers_users: 0, consumers_teams: 0, cross_team: false,
+      last_activity_mins: 60 * 24 * 61,
+      flags: ['inactive', 'shadow'],
+      consumers_detail: []
+    },
+    {
+      id: 'a17',
+      name: 'Route Emissions Calculator',
+      owner: 'Fatima El-Amin', team: 'Sustainability',
+      brand: 'c', status: 'paused',
+      scopes: ['ops', 'public'],
+      platform: 'langchain', platform_label: 'LangChain (custom)',
+      consumers_users: 4, consumers_teams: 2, cross_team: false,
+      last_activity_mins: 60 * 24 * 12,
+      flags: ['shadow'],
+      consumers_detail: [
+        { team: 'Sustainability', users: 3, last_access: '12d ago' },
+        { team: 'Transport Ops',  users: 1, last_access: '14d ago' },
+      ]
+    },
+    {
+      id: 'a18',
+      name: 'Spend Analytics Agent',
+      owner: 'Annika Johansson', team: 'Finance Strategy',
+      brand: 'group', status: 'paused',
+      scopes: ['financial', 'supplier'],
+      platform: 'custompython', platform_label: 'Custom Python',
+      consumers_users: 7, consumers_teams: 2, cross_team: true,
+      last_activity_mins: 60 * 24 * 4,
+      flags: ['sensitive', 'shadow', 'review'],
+      consumers_detail: [
+        { team: 'Finance Strategy', users: 5, last_access: '4d ago' },
+        { team: 'Procurement',      users: 2, last_access: '5d ago' },
+      ]
+    },
+  ];
+
+  const AUDIT_EVENTS = [
+    { type: 'approved',   text: '<strong>Customer Churn Predictor</strong> approved by <strong>L. Bergström</strong> for production use', time: '2h ago' },
+    { type: 'denied',     text: 'Policy check failed: <strong>HR Policy Q&A</strong> attempted access to restricted cross-brand PII scope', time: '4h ago' },
+    { type: 'paused',     text: '<strong>Dealer Inventory Monitor</strong> paused by <strong>E. Lindqvist</strong> — pending security review', time: '5h ago' },
+    { type: 'warning',    text: '<strong>Driver Behaviour Scorer</strong> flagged — using human credentials for Bedrock API access', time: '6h ago' },
+    { type: 'registered', text: 'New agent registered: <strong>Spend Analytics Agent</strong> — awaiting policy assignment', time: '1d ago' },
+    { type: 'review',     text: '<strong>Procurement Risk Analyst</strong> submitted for compliance review by <strong>A. Johansson</strong>', time: '1d ago' },
+    { type: 'denied',     text: 'Policy check failed: <strong>Spend Analytics Agent</strong> attempted write access to financial records — denied', time: '1d ago' },
+    { type: 'approved',   text: '<strong>Contract Clause Extractor</strong> policy review completed — approved with data minimisation condition', time: '2d ago' },
+    { type: 'paused',     text: '<strong>Route Emissions Calculator</strong> auto-paused — no activity in 12 days', time: '2d ago' },
+    { type: 'warning',    text: '<strong>Invoice Matching Agent</strong> accessed financial records outside scheduled window — logged', time: '2d ago' },
+    { type: 'registered', text: 'New agent registered: <strong>Customer Email Responder</strong> via Amazon Q — no policy tags assigned', time: '3d ago' },
+    { type: 'review',     text: '<strong>HR Policy Q&A</strong> flagged for governance review — no registered owner', time: '3d ago' },
+    { type: 'approved',   text: '<strong>Regulatory Change Monitor</strong> annual review completed — policy confirmed', time: '4d ago' },
+    { type: 'denied',     text: 'Registration rejected: unnamed agent from Brand B team — missing owner and scope declarations', time: '5d ago' },
+  ];
+
+  const RISK_SIGNALS = [
+    {
+      icon: '👤', iconClass: 'risk-icon--red',
+      title: 'Agents using human credentials',
+      desc: 'These agents are authenticating with personal user accounts rather than service identities — creates audit gaps and access-control risk.',
+      agents: [
+        { id: 'a11', label: 'Driver Behaviour Scorer' },
+        { id: 'a06', label: 'HR Policy Q&A' },
+      ],
+    },
+    {
+      icon: '?', iconClass: 'risk-icon--red',
+      title: 'Agent with no registered owner',
+      desc: 'No accountable party for policy violations, access changes, or incident response.',
+      agents: [
+        { id: 'a06', label: 'HR Policy Q&A' },
+      ],
+    },
+    {
+      icon: '⏱', iconClass: 'risk-icon--amber',
+      title: 'Inactive 30+ days — deprecation candidates',
+      desc: 'Agents with no recorded activity in over 30 days. Consider deprecating to reduce attack surface.',
+      agents: [
+        { id: 'a10', label: 'Dealer Inventory Monitor', note: '38d' },
+        { id: 'a14', label: 'Parts Availability Lookup', note: '55d' },
+        { id: 'a16', label: 'Training Content Curator',  note: '61d' },
+      ],
+    },
+    {
+      icon: '🔍', iconClass: 'risk-icon--amber',
+      title: 'Cross-team spread without governance review',
+      desc: 'These agents are consumed by 3+ teams but have not had a policy review in the last 90 days. Potential mis-ownership.',
+      agents: [
+        { id: 'a06', label: 'HR Policy Q&A',             note: '6 teams' },
+        { id: 'a01', label: 'Customer Churn Predictor',  note: '4 teams' },
+        { id: 'a11', label: 'Driver Behaviour Scorer',   note: '3 teams' },
+      ],
+    },
+    {
+      icon: '⚠', iconClass: 'risk-icon--purple',
+      title: 'Non-central platform + sensitive data access',
+      desc: 'Highest-risk combination: shadow agents accessing PII or financial data outside the governed platform.',
+      agents: [
+        { id: 'a11', label: 'Driver Behaviour Scorer',    note: 'Bedrock + PII' },
+        { id: 'a06', label: 'HR Policy Q&A',              note: 'LangChain + PII' },
+        { id: 'a13', label: 'Customer Email Responder',   note: 'Amazon Q + PII' },
+        { id: 'a18', label: 'Spend Analytics Agent',      note: 'Custom Python + Financial' },
+      ],
+    },
+  ];
+
+  // ─── UTILS ───────────────────────────────────────────────────────────────────
+
+  const CENTRAL_PLATFORMS = ['internal'];
+
+  function isPlatformShadow(p) { return !CENTRAL_PLATFORMS.includes(p); }
+
+  function relTime(mins) {
+    if (mins < 60)        return `${mins}m ago`;
+    if (mins < 60 * 24)  return `${Math.round(mins / 60)}h ago`;
+    const days = Math.round(mins / 60 / 24);
+    return `${days}d ago`;
+  }
+
+  function scopeChipHtml(s) {
+    const map = {
+      pii:      ['pii',      'Customer PII'],
+      financial:['financial','Financial'],
+      supplier: ['supplier', 'Supplier data'],
+      internal: ['internal', 'Internal docs'],
+      public:   ['public',   'Public'],
+      ops:      ['ops',      'Ops data'],
+    };
+    const [cls, label] = map[s] || ['internal', s];
+    return `<span class="scope-chip scope-chip--${cls}">${label}</span>`;
+  }
+
+  function brandCellHtml(brand) {
+    const map = {
+      a:     ['a',     'Brand A'],
+      b:     ['b',     'Brand B'],
+      c:     ['c',     'Brand C'],
+      group: ['group', 'Group'],
+    };
+    const [cls, label] = map[brand] || ['group', brand];
+    return `<span class="brand-cell brand-cell--${cls}">${label}</span>`;
+  }
+
+  function platformChipHtml(agent) {
+    if (agent.platform === 'internal') {
+      return `<span class="platform-chip platform-chip--central">${agent.platform_label}</span>`;
+    }
+    const customPlatforms = ['custompython', 'langchain'];
+    const cls = customPlatforms.includes(agent.platform) ? 'custom' : 'shadow';
+    return `<span class="platform-chip platform-chip--${cls}">${agent.platform_label}</span>`;
+  }
+
+  function statusChipHtml(status) {
+    const map = {
+      active:     'Active',
+      paused:     'Paused',
+      deprecated: 'Deprecated',
+      review:     'Pending Review',
+    };
+    return `<span class="status-chip status-chip--${status}">${map[status] || status}</span>`;
+  }
+
+  function consumersHtml(agent) {
+    if (agent.consumers_users === 0) return `<span style="color:var(--text-muted);font-size:12px">No consumers</span>`;
+    let html = `${agent.consumers_users} user${agent.consumers_users !== 1 ? 's' : ''} · ${agent.consumers_teams} team${agent.consumers_teams !== 1 ? 's' : ''}`;
+    if (agent.cross_team) html += ` <span class="consumers-cross" title="Cross-team usage">✕</span>`;
+    return `<span class="consumers-cell">${html}</span>`;
+  }
+
+  let toastTimer = null;
+  function showToast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
+  }
+
+  // ─── MODAL ───────────────────────────────────────────────────────────────────
+
+  function openModal(agent) {
+    document.getElementById('modal-title').textContent = agent.name;
+    document.getElementById('modal-subtitle').textContent = `${agent.owner || 'No owner assigned'} · ${agent.team}`;
+
+    const total = agent.consumers_users;
+    const consumerRows = agent.consumers_detail.length === 0
+      ? '<tr><td colspan="4" style="color:var(--text-muted);font-size:12px;padding:16px">No consumers recorded.</td></tr>'
+      : agent.consumers_detail.map(c => {
+          const pct = total > 0 ? Math.round(c.users / total * 100) : 0;
+          const isMajority = pct >= 50 && c.team !== agent.team;
+          return `
+            <tr>
+              <td style="font-weight:500;color:var(--text-primary)">${c.team}</td>
+              <td>${c.users} user${c.users !== 1 ? 's' : ''}</td>
+              <td>
+                <div class="pct-bar-wrap">
+                  <div class="pct-bar" style="width:${Math.max(pct, 4)}px"></div>
+                  <span style="font-size:11px;color:var(--text-muted)">${pct}%</span>
+                </div>
+              </td>
+              <td>${c.last_access} ${isMajority ? '<span class="mis-owned">⚠ mis-owned?</span>' : ''}</td>
+            </tr>`;
+        }).join('');
+
+    const scopeHtml = agent.scopes.map(scopeChipHtml).join(' ');
+    const shadowWarning = isPlatformShadow(agent.platform)
+      ? `<div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;padding:10px 14px;font-size:12px;color:#92400e;margin-top:12px">⚠ This agent runs on a <strong>non-central platform</strong> (${agent.platform_label}). It may not be subject to standard policy controls.</div>` : '';
+
+    document.getElementById('modal-body').innerHTML = `
+      <div class="modal-section-title">Overview</div>
+      <div class="modal-meta-grid">
+        <div class="modal-meta-item">
+          <div class="modal-meta-key">Owner</div>
+          <div class="modal-meta-val">${agent.owner || '<span style="color:#dc2626">No owner assigned</span>'}</div>
+        </div>
+        <div class="modal-meta-item">
+          <div class="modal-meta-key">Team</div>
+          <div class="modal-meta-val">${agent.team}</div>
+        </div>
+        <div class="modal-meta-item">
+          <div class="modal-meta-key">Status</div>
+          <div class="modal-meta-val">${statusChipHtml(agent.status)}</div>
+        </div>
+        <div class="modal-meta-item">
+          <div class="modal-meta-key">Brand</div>
+          <div class="modal-meta-val">${brandCellHtml(agent.brand)}</div>
+        </div>
+        <div class="modal-meta-item">
+          <div class="modal-meta-key">Platform</div>
+          <div class="modal-meta-val">${platformChipHtml(agent)}</div>
+        </div>
+        <div class="modal-meta-item">
+          <div class="modal-meta-key">Last activity</div>
+          <div class="modal-meta-val">${relTime(agent.last_activity_mins)}</div>
+        </div>
+      </div>
+
+      <div class="modal-section-title" style="margin-top:18px">Data access scope</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px">${scopeHtml}</div>
+      ${shadowWarning}
+
+      <div class="modal-section-title" style="margin-top:20px">Consumer breakdown</div>
+      <p style="font-size:12px;color:var(--text-muted);margin-bottom:10px">
+        ${total} total user${total !== 1 ? 's' : ''} across ${agent.consumers_teams} team${agent.consumers_teams !== 1 ? 's' : ''}.
+        ${agent.cross_team ? ' <span style="color:#7c3aed;font-weight:600">Cross-team usage detected.</span>' : ''}
+      </p>
+      <table class="consumer-table">
+        <thead>
+          <tr>
+            <th>Team</th><th>Users</th><th>Share</th><th>Last access</th>
+          </tr>
+        </thead>
+        <tbody>${consumerRows}</tbody>
+      </table>
+    `;
+
+    document.getElementById('modal-overlay').classList.add('open');
+  }
+
+  document.getElementById('modal-close').addEventListener('click', () => {
+    document.getElementById('modal-overlay').classList.remove('open');
+  });
+  document.getElementById('modal-overlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('modal-overlay'))
+      document.getElementById('modal-overlay').classList.remove('open');
+  });
+
+  // ─── TABLE RENDER ─────────────────────────────────────────────────────────────
+
+  let sortCol = 'name', sortDir = 1;
+
+  function getFilteredAgents() {
+    const q         = document.getElementById('filter-search').value.toLowerCase();
+    const brand     = document.getElementById('filter-brand').value;
+    const status    = document.getElementById('filter-status').value;
+    const scope     = document.getElementById('filter-scope').value;
+    const platform  = document.getElementById('filter-platform').value;
+    const consumers = document.getElementById('filter-consumers').value;
+
+    return AGENTS.filter(a => {
+      if (q && !a.name.toLowerCase().includes(q) && !(a.owner || '').toLowerCase().includes(q) && !a.team.toLowerCase().includes(q)) return false;
+      if (brand  && a.brand !== brand) return false;
+      if (status && a.status !== status) return false;
+      if (scope  && !a.scopes.includes(scope)) return false;
+      if (platform === 'central' && isPlatformShadow(a.platform)) return false;
+      if (platform === 'shadow'  && !isPlatformShadow(a.platform)) return false;
+      if (consumers === 'cross'  && !a.cross_team) return false;
+      if (consumers === '10plus' && a.consumers_users < 10) return false;
+      return true;
+    });
+  }
+
+  function sortAgents(agents) {
+    return [...agents].sort((a, b) => {
+      let av, bv;
+      if      (sortCol === 'name')          { av = a.name;                bv = b.name; }
+      else if (sortCol === 'owner')         { av = a.owner || '';         bv = b.owner || ''; }
+      else if (sortCol === 'brand')         { av = a.brand;               bv = b.brand; }
+      else if (sortCol === 'status')        { av = a.status;              bv = b.status; }
+      else if (sortCol === 'platform')      { av = a.platform_label;      bv = b.platform_label; }
+      else if (sortCol === 'consumers')     { av = a.consumers_users;     bv = b.consumers_users; }
+      else if (sortCol === 'last_activity') { av = a.last_activity_mins;  bv = b.last_activity_mins; }
+      else                                  { av = a.name;                bv = b.name; }
+
+      if (typeof av === 'string') return av.localeCompare(bv) * sortDir;
+      return (av - bv) * sortDir;
+    });
+  }
+
+  function renderTable() {
+    const filtered = getFilteredAgents();
+    const sorted   = sortAgents(filtered);
+    const body     = document.getElementById('inv-body');
+    const empty    = document.getElementById('inv-empty');
+
+    document.getElementById('inventory-count').textContent =
+      `${filtered.length} agent${filtered.length !== 1 ? 's' : ''}`;
+
+    // update sort indicators
+    document.querySelectorAll('.inv-table th').forEach(th => {
+      th.classList.toggle('sorted', th.dataset.col === sortCol);
+      const icon = th.querySelector('.sort-icon');
+      if (icon) icon.textContent = th.dataset.col === sortCol ? (sortDir === 1 ? '↑' : '↓') : '↕';
+    });
+
+    if (sorted.length === 0) {
+      body.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+
+    body.innerHTML = sorted.map(agent => {
+      const scopeHtml   = agent.scopes.map(scopeChipHtml).join('');
+      const isShadow    = isPlatformShadow(agent.platform);
+      const shadowFlag  = isShadow ? ' <span title="Non-central platform" style="color:#d97706;font-size:10px">⚠</span>' : '';
+      const resumeOrPause = agent.status === 'paused'
+        ? `<button class="act-btn act-btn--resume" onclick="actionResume('${agent.id}')">Resume</button>`
+        : agent.status === 'active'
+          ? `<button class="act-btn act-btn--pause" onclick="actionPause('${agent.id}')">Pause</button>`
+          : '';
+
+      return `
+        <tr>
+          <td class="agent-name-cell">${agent.name}</td>
+          <td class="agent-owner-cell">
+            <div class="owner-name">${agent.owner || '<span style="color:#dc2626">Unassigned</span>'}</div>
+            <div class="owner-team">${agent.team}</div>
+          </td>
+          <td>${brandCellHtml(agent.brand)}</td>
+          <td>${statusChipHtml(agent.status)}</td>
+          <td><div class="scope-chips">${scopeHtml}</div></td>
+          <td>${platformChipHtml(agent)}${shadowFlag}</td>
+          <td>${consumersHtml(agent)}</td>
+          <td style="white-space:nowrap;font-size:12px;color:var(--text-muted)">${relTime(agent.last_activity_mins)}</td>
+          <td>
+            <div class="action-btns">
+              ${resumeOrPause}
+              <button class="act-btn act-btn--investigate" onclick="actionInvestigate('${agent.id}')">Investigate</button>
+              <button class="act-btn act-btn--view" onclick="actionView('${agent.id}')">View</button>
+            </div>
+          </td>
+        </tr>`;
+    }).join('');
+  }
+
+  // ─── ACTIONS ─────────────────────────────────────────────────────────────────
+
+  function actionPause(id) {
+    const agent = AGENTS.find(a => a.id === id);
+    if (!agent) return;
+    agent.status = 'paused';
+    showToast(`Pause request queued for "${agent.name}" — pending confirmation from agent owner.`);
+    renderTable();
+  }
+  function actionResume(id) {
+    const agent = AGENTS.find(a => a.id === id);
+    if (!agent) return;
+    agent.status = 'active';
+    showToast(`Resume request queued for "${agent.name}" — agent will restart within 60 seconds.`);
+    renderTable();
+  }
+  function actionInvestigate(id) {
+    const agent = AGENTS.find(a => a.id === id);
+    if (!agent) return;
+    showToast(`Investigation initiated for "${agent.name}" — a governance case has been opened and the owner notified.`);
+  }
+  function actionView(id) {
+    const agent = AGENTS.find(a => a.id === id);
+    if (agent) openModal(agent);
+  }
+
+  // ─── SORT HEADERS ────────────────────────────────────────────────────────────
+
+  document.querySelectorAll('.inv-table th[data-col]').forEach(th => {
+    th.addEventListener('click', () => {
+      if (sortCol === th.dataset.col) sortDir *= -1;
+      else { sortCol = th.dataset.col; sortDir = 1; }
+      renderTable();
+    });
+  });
+
+  // ─── FILTER LISTENERS ────────────────────────────────────────────────────────
+
+  ['filter-search','filter-brand','filter-status','filter-scope','filter-platform','filter-consumers'].forEach(id => {
+    document.getElementById(id).addEventListener('input', renderTable);
+    document.getElementById(id).addEventListener('change', renderTable);
+  });
+
+  // ─── AUDIT LOG ───────────────────────────────────────────────────────────────
+
+  function renderAuditLog() {
+    const colorMap = {
+      approved: 'approved', denied: 'denied', warning: 'warning',
+      registered: 'registered', paused: 'paused', review: 'review',
+    };
+    document.getElementById('audit-list').innerHTML = AUDIT_EVENTS.map(e => `
+      <div class="audit-item">
+        <div class="audit-dot audit-dot--${colorMap[e.type] || 'registered'}"></div>
+        <div class="audit-body">
+          <div class="audit-text">${e.text}</div>
+          <div class="audit-time">${e.time}</div>
+        </div>
+      </div>`).join('');
+  }
+
+  // ─── RISK SIGNALS ────────────────────────────────────────────────────────────
+
+  function renderRiskSignals() {
+    document.getElementById('risk-count').textContent = `${RISK_SIGNALS.length} signals`;
+    const el = document.getElementById('risk-list');
+    el.innerHTML = RISK_SIGNALS.map(r => {
+      const tagHtml = r.agents.map(a =>
+        `<button class="risk-agent-tag" data-agent-id="${a.id}">
+          ${a.label}
+          ${a.note ? `<span class="risk-agent-note">${a.note}</span>` : ''}
+        </button>`
+      ).join('');
+      return `
+        <div class="risk-item">
+          <div class="risk-icon ${r.iconClass}">${r.icon}</div>
+          <div class="risk-body">
+            <div class="risk-title">${r.title}</div>
+            <div class="risk-desc">${r.desc}</div>
+            <div class="risk-agents">${tagHtml}</div>
+          </div>
+        </div>`;
+    }).join('');
+
+    el.querySelectorAll('.risk-agent-tag[data-agent-id]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const agent = AGENTS.find(a => a.id === btn.dataset.agentId);
+        if (agent) openModal(agent);
+      });
+    });
+  }
+
+  // ─── INIT ─────────────────────────────────────────────────────────────────────
+
+  renderTable();
+  renderAuditLog();
+  renderRiskSignals();
+  </script>
+</body>
+</html>
