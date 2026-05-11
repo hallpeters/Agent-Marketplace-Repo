@@ -346,23 +346,9 @@
           <div class="panel-header-sub">Select an agent and a skill, then run the workflow to see a live cross-team invocation</div>
         </div>
 
-        <!-- Team balances -->
-        <div class="mini-teams-row">
-          <div class="mini-team-card mini-team-card--sales" id="card-sales">
-            <div class="mini-team-name">Sales</div>
-            <div class="mini-stats">
-              <div class="mini-stat"><span class="mini-stat-label">Spend budget</span><div><span class="mini-stat-val" id="spend-sales">—</span> <span class="mini-stat-unit">tokens</span></div></div>
-              <div class="mini-stat"><span class="mini-stat-label">Earnings</span><div><span class="mini-stat-val" id="earn-sales">—</span> <span class="mini-stat-unit">tokens</span></div></div>
-            </div>
-          </div>
-          <div class="mini-team-card mini-team-card--marketing" id="card-marketing">
-            <div class="mini-team-name">Marketing</div>
-            <div class="mini-stats">
-              <div class="mini-stat"><span class="mini-stat-label">Spend budget</span><div><span class="mini-stat-val" id="spend-marketing">—</span> <span class="mini-stat-unit">tokens</span></div></div>
-              <div class="mini-stat"><span class="mini-stat-label">Earnings</span><div><span class="mini-stat-val" id="earn-marketing">—</span> <span class="mini-stat-unit">tokens</span></div></div>
-            </div>
-          </div>
-        </div>
+        <!-- Hidden balance targets for JS ticking animation -->
+        <div style="display:none" id="card-sales"><span id="spend-sales"></span><span id="earn-sales"></span></div>
+        <div style="display:none" id="card-marketing"><span id="spend-marketing"></span><span id="earn-marketing"></span></div>
 
         <!-- Dropdowns -->
         <div class="config-panel">
