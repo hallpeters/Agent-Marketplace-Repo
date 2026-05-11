@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Run Agent — AI Agent Marketplace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+
+  <style>
+    /* ─── PAGE LAYOUT ─── */
+    .runner-hero {
+      background: linear-gradient(135deg, var(--bg-header) 0%, #003580 100%);
+      padding: 40px 0 48px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .runner-hero-inner { display: flex; align-items: flex-start; gap: 20px; flex-wrap: wrap; }
+    .runner-icon {
+      width: 56px; height: 56px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800; letter-spacing: -0.5px;
+      color: #fff; flex-shrink: 0;
+    }
+    .runner-hero-meta { flex: 1; }
+    .runner-hero-name { font-size: 28px; font-weight: 800; color: #fff; letter-spacing: -0.5px; margin-bottom: 6px; }
+    .runner-hero-desc { font-size: 14px; color: rgba(255,255,255,.6); line-height: 1.65; max-width: 560px; }
+    .runner-hero-badges { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; align-items: center; }
+
+    /* ─── FORM ─── */
+    .runner-form-section { padding: 48px 0 32px; }
+    .runner-form { background: #fff; border-radius: 14px; box-shadow: var(--shadow-card); padding: 32px; max-width: 680px; }
+    .form-field { margin-bottom: 20px; }
+    .form-field:last-of-type { margin-bottom: 0; }
+    .form-label { display: block; font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; }
+    .form-input, .form-textarea, .form-select {
+      width: 100%; border: 1.5px solid var(--border-subtle);
+      border-radius: 8px; padding: 10px 14px;
+      font-size: 14px; font-family: inherit;
+      outline: none; transition: border-color 150ms, box-shadow 150ms;
+      background: #fafafa; color: var(--text-primary);
+    }
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      border-color: var(--primary-blue);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+    }
+    .form-textarea { resize: vertical; line-height: 1.6; min-height: 120px; }
+    .form-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; cursor: pointer; }
+    .form-actions { display: flex; gap: 10px; margin-top: 28px; align-items: center; }
+    .spinner {
+      display: none; width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,.3); border-top-color: #fff;
+      border-radius: 50%; animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .btn--running .spinner { display: inline-block; }
+    .btn--running { display: flex; align-items: center; gap: 8px; }
+
+    /* ─── RESULTS ─── */
+    .results-section { padding: 0 0 64px; }
+    .results-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 720px) { .results-grid { grid-template-columns: 1fr; } }
+
+    .result-panel {
+      background: #fff; border-radius: 14px;
+      box-shadow: var(--shadow-card); padding: 24px;
+    }
+    .result-panel-title {
+      font-size: 13px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.6px; color: var(--text-muted);
+      margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+    }
+    .result-panel-title .panel-count {
+      background: var(--border-subtle); color: var(--text-muted);
+      border-radius: 20px; font-size: 11px; padding: 1px 7px; font-weight: 600;
+    }
+    .result-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .result-list li {
+      font-size: 14px; color: var(--text-primary); line-height: 1.55;
+      padding: 10px 12px; background: var(--bg-body); border-radius: 8px;
+      border-left: 3px solid var(--border-subtle);
+    }
+    .result-list--decisions li { border-left-color: var(--primary-blue); }
+    .result-list--actions li   { border-left-color: #16a34a; }
+    .result-list--questions li { border-left-color: #d97706; }
+    .result-empty { font-size: 13px; color: var(--text-muted); font-style: italic; }
+
+    /* Risks panel */
+    .panel--risks {
+      background: #fffbeb;
+      border: 1.5px solid #fcd34d;
+    }
+    .panel--risks .result-panel-title { color: #92400e; }
+    .panel--risks .result-list li {
+      background: #fef3c7; border-left-color: #f59e0b; color: #78350f;
+    }
+
+    /* Governance / sensitive panel */
+    .panel--governance {
+      grid-column: 1 / -1;
+      background: #fff5f5;
+      border: 2px solid #fca5a5;
+    }
+    .panel--governance .result-panel-title { color: #991b1b; font-size: 14px; }
+    .panel--governance .result-list li {
+      background: #fee2e2; border-left-color: #dc2626; color: #7f1d1d;
+    }
+    .governance-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.8px; background: #dc2626; color: #fff;
+      border-radius: 5px; padding: 3px 8px;
+    }
+
+    /* Email draft panel */
+    .panel--email {
+      grid-column: 1 / -1;
+      border: 1.5px solid #bfdbfe;
+      background: #eff6ff;
+    }
+    .panel--email .result-panel-title { color: #1e40af; }
+    .email-subject {
+      font-size: 15px; font-weight: 700; color: var(--text-primary);
+      margin-bottom: 12px; padding-bottom: 12px;
+      border-bottom: 1px solid #bfdbfe;
+    }
+    .email-subject-label { font-size: 11px; font-weight: 600; color: #1e40af; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
+    .email-body {
+      font-size: 13px; color: var(--text-secondary); line-height: 1.75;
+      white-space: pre-wrap; background: #fff; border-radius: 8px;
+      padding: 16px; border: 1px solid #bfdbfe; margin-bottom: 16px;
+      max-height: 320px; overflow-y: auto;
+    }
+    .email-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+    /* Confirmation banner */
+    .confirm-banner {
+      display: none; align-items: center; gap: 10px;
+      background: #dcfce7; border: 1.5px solid #86efac;
+      border-radius: 8px; padding: 12px 16px;
+      font-size: 14px; font-weight: 600; color: #15803d;
+      margin-top: 12px;
+    }
+    .confirm-banner.visible { display: flex; }
+
+    /* Disabled state */
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    /* ─── BACK LINK ─── */
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; color: rgba(255,255,255,.5);
+      margin-bottom: 20px;
+      transition: color 150ms;
+    }
+    .back-link:hover { color: rgba(255,255,255,.8); }
+
+    /* ─── DATA CLASSIFICATION PILL ─── */
+    .data-class-pill {
+      display: inline-block; font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.6px;
+      padding: 3px 9px; border-radius: 20px;
+    }
+    .data-class-pill--internal   { background: #f3f4f6; color: #6b7280; }
+    .data-class-pill--confidential { background: #fef3c7; color: #d97706; }
+    .data-class-pill--restricted   { background: #fee2e2; color: #dc2626; }
+
+    /* ─── RESEARCH DISCLOSURE ─── */
+    .research-disclosure { background:#fffbeb; border-bottom:2px solid #f59e0b; padding:14px 0; }
+    .research-disclosure-inner { display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+    .research-badge { display:inline-block; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:#92400e; background:#fde68a; border:1px solid #f59e0b; border-radius:4px; padding:3px 8px; white-space:nowrap; flex-shrink:0; }
+    .research-text { font-size:13px; color:#78350f; line-height:1.55; }
+    .research-text strong { font-weight:600; color:#451a03; }
+
+    /* ─── NOT FOUND ─── */
+    .not-found { padding: 80px 0; text-align: center; }
+    .not-found h2 { font-size: 22px; font-weight: 700; margin-bottom: 10px; }
+    .not-found p { font-size: 14px; color: var(--text-muted); }
+  </style>
+</head>
+
+<body>
+
+  <!-- ─── RESEARCH DISCLOSURE ─── -->
+  <div class="research-disclosure">
+    <div class="container">
+      <div class="research-disclosure-inner">
+        <span class="research-badge">Research Prototype</span>
+        <p class="research-text">
+          This is a student research prototype developed as part of
+          <strong>Navigating AI: Strategy and Impact</strong> at
+          <strong>Stockholm School of Economics</strong>.
+          Built for research and stakeholder feedback purposes only.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── HEADER ─── -->
+  <header class="site-header">
+    <div class="header-inner container">
+      <a href="index.html" class="brand">
+        <div class="brand-logo">T</div>
+        <div>
+          <span class="brand-name">VehicleGroup</span>
+          <span class="brand-subtitle">AI Agent Marketplace</span>
+        </div>
+      </a>
+      <nav class="site-nav">
+        <a href="index.html"      class="nav-link active">Agents</a>
+        <a href="skills.html"     class="nav-link">Skills</a>
+        <a href="workflows.html"  class="nav-link">Workflows</a>
+        <a href="governance.html" class="nav-link nav-link--highlight">Governance</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ─── HERO ─── -->
+  <div class="runner-hero" id="runner-hero">
+    <div class="container">
+      <a href="index.html" class="back-link">← Back to Registry</a>
+      <div class="runner-hero-inner" id="hero-inner">
+        <div style="color:rgba(255,255,255,.5);font-size:14px">Loading…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── FORM ─── -->
+  <section class="runner-form-section" id="form-section" style="display:none">
+    <div class="container">
+      <div class="runner-form">
+        <h2 style="font-size:17px;font-weight:700;margin-bottom:4px;color:var(--text-primary)">Run Agent</h2>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:24px" id="form-desc">Fill in the fields below and submit.</p>
+        <form id="agent-form" onsubmit="submitAgentForm(event)">
+          <div id="form-fields"></div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn--primary" id="submit-btn">
+              <span class="spinner" id="submit-spinner"></span>
+              <span id="submit-label">Submit</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── RESULTS ─── -->
+  <section class="results-section" id="results-section" style="display:none">
+    <div class="container">
+      <h2 style="font-size:20px;font-weight:700;margin-bottom:24px;color:var(--text-primary)">Results</h2>
+
+      <div class="results-grid" id="results-grid">
+        <!-- Decisions -->
+        <div class="result-panel">
+          <div class="result-panel-title">
+            Decisions
+            <span class="panel-count" id="count-decisions">0</span>
+          </div>
+          <ul class="result-list result-list--decisions" id="list-decisions">
+            <li class="result-empty">None</li>
+          </ul>
+        </div>
+
+        <!-- Action Items -->
+        <div class="result-panel">
+          <div class="result-panel-title">
+            Action Items
+            <span class="panel-count" id="count-actions">0</span>
+          </div>
+          <ul class="result-list result-list--actions" id="list-actions">
+            <li class="result-empty">None</li>
+          </ul>
+        </div>
+
+        <!-- Open Questions -->
+        <div class="result-panel">
+          <div class="result-panel-title">
+            Open Questions
+            <span class="panel-count" id="count-questions">0</span>
+          </div>
+          <ul class="result-list result-list--questions" id="list-questions">
+            <li class="result-empty">None</li>
+          </ul>
+        </div>
+
+        <!-- Risks -->
+        <div class="result-panel panel--risks">
+          <div class="result-panel-title">
+            ⚠ Risks
+            <span class="panel-count" id="count-risks">0</span>
+          </div>
+          <ul class="result-list" id="list-risks">
+            <li class="result-empty">None identified</li>
+          </ul>
+        </div>
+
+        <!-- Governance: Sensitive Content -->
+        <div class="result-panel panel--governance" id="panel-governance" style="display:none">
+          <div class="result-panel-title">
+            <span class="governance-badge">⚑ Governance</span>
+            Sensitive Content Flagged
+            <span class="panel-count" id="count-sensitive">0</span>
+          </div>
+          <ul class="result-list" id="list-sensitive"></ul>
+        </div>
+
+        <!-- Email Draft -->
+        <div class="result-panel panel--email" id="panel-email" style="display:none">
+          <div class="result-panel-title">
+            ✉ Email Draft
+          </div>
+          <div class="email-subject-label">Subject</div>
+          <div class="email-subject" id="email-subject"></div>
+          <div style="font-size:11px;font-weight:600;color:#1e40af;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px">Body</div>
+          <div class="email-body" id="email-body"></div>
+          <div class="email-actions">
+            <button class="btn btn--primary" id="approve-btn" onclick="approveAndSend()">Approve &amp; Send</button>
+            <span style="font-size:12px;color:#1e40af">Sends via the agent endpoint with <code style="background:#dbeafe;padding:1px 4px;border-radius:3px">approved: true</code></span>
+          </div>
+          <div class="confirm-banner" id="confirm-banner">
+            ✓ Email sent successfully.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── NOT FOUND ─── -->
+  <div class="not-found" id="not-found" style="display:none">
+    <div class="container">
+      <h2>Agent not found</h2>
+      <p>No local agent with this ID. <a href="index.html" style="color:var(--primary-blue)">Return to registry</a>.</p>
+    </div>
+  </div>
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>
+        <span>AI Agent Marketplace</span> &nbsp;·&nbsp;
+        Internal prototype &nbsp;·&nbsp;
+        Atlas · Meridian · Apex Fleet
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    const LS_KEY = 'ai_marketplace_agents';
+
+    const RUNTIME_META = {
+      'n8n':            { label: 'n8n',           abbrev: 'n8n', bg: '#f0510f' },
+      'copilot-studio': { label: 'Copilot Studio', abbrev: 'CS',  bg: '#0078d4' },
+      'claude-code':    { label: 'Claude Code',    abbrev: 'CC',  bg: '#7c3aed' },
+      'power-automate': { label: 'Power Automate', abbrev: 'PA',  bg: '#0066ff' },
+      'external':       { label: 'External',       abbrev: 'EX',  bg: '#6b7280' },
+    };
+
+    function runtimeMeta(r) {
+      return RUNTIME_META[r] || { label: r || 'Unknown', abbrev: (r || '??').slice(0, 2).toUpperCase(), bg: '#6b7280' };
+    }
+
+    function getParam(name) {
+      return new URLSearchParams(location.search).get(name);
+    }
+
+    function getLocalAgents() {
+      try { return JSON.parse(localStorage.getItem(LS_KEY) || '[]'); } catch { return []; }
+    }
+
+    let manifest = null;
+    let lastPayload = null;
+
+    function init() {
+      const id = getParam('id');
+      if (!id) { showNotFound(); return; }
+
+      const agents = getLocalAgents();
+      manifest = agents.find(a => a.id === id);
+      if (!manifest) { showNotFound(); return; }
+
+      renderHero();
+      renderForm();
+      document.getElementById('form-section').style.display = '';
+    }
+
+    function showNotFound() {
+      document.getElementById('not-found').style.display = '';
+    }
+
+    function renderHero() {
+      const rm = runtimeMeta(manifest.platform || 'external');
+      const dc = manifest.data_classification || 'internal';
+      const dcClass = ['confidential','restricted'].includes(dc) ? dc : 'internal';
+
+      document.title = manifest.name + ' — AI Agent Marketplace';
+
+      document.getElementById('hero-inner').innerHTML = `
+        <div class="runner-icon" style="background:${rm.bg}">${rm.abbrev}</div>
+        <div class="runner-hero-meta">
+          <div class="runner-hero-name">${manifest.name}</div>
+          <div class="runner-hero-desc">${manifest.description || ''}</div>
+          <div class="runner-hero-badges">
+            <span class="runtime-pill" style="background:${rm.bg}22;color:${rm.bg};border:1.5px solid ${rm.bg}55;display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700">${rm.label}</span>
+            <span class="data-class-pill data-class-pill--${dcClass}">${dc}</span>
+            ${manifest.owner ? `<span style="font-size:12px;color:rgba(255,255,255,.4)">Owner: ${manifest.owner}</span>` : ''}
+          </div>
+        </div>`;
+    }
+
+    function renderForm() {
+      const fields = manifest.inputs || [];
+      const container = document.getElementById('form-fields');
+      container.innerHTML = fields.map(f => renderField(f)).join('');
+      document.getElementById('form-desc').textContent =
+        `Submits to: ${manifest.endpoint}`;
+    }
+
+    function renderField(f) {
+      const id = 'field-' + f.name;
+      if (f.type === 'textarea') {
+        return `<div class="form-field">
+          <label class="form-label" for="${id}">${f.label || f.name}</label>
+          <textarea class="form-textarea" id="${id}" name="${f.name}" rows="6" placeholder="${f.label || f.name}"></textarea>
+        </div>`;
+      }
+      if (f.type === 'select' && Array.isArray(f.options)) {
+        const opts = f.options.map(o => `<option value="${o}">${o}</option>`).join('');
+        return `<div class="form-field">
+          <label class="form-label" for="${id}">${f.label || f.name}</label>
+          <select class="form-select" id="${id}" name="${f.name}">${opts}</select>
+        </div>`;
+      }
+      return `<div class="form-field">
+        <label class="form-label" for="${id}">${f.label || f.name}</label>
+        <input class="form-input" type="text" id="${id}" name="${f.name}" placeholder="${f.label || f.name}" />
+      </div>`;
+    }
+
+    function collectFormValues() {
+      const fields = manifest.inputs || [];
+      const values = {};
+      fields.forEach(f => {
+        const el = document.getElementById('field-' + f.name);
+        if (el) values[f.name] = el.value;
+      });
+      return values;
+    }
+
+    async function submitAgentForm(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submit-btn');
+      const label = document.getElementById('submit-label');
+      const spinner = document.getElementById('submit-spinner');
+
+      btn.disabled = true;
+      btn.classList.add('btn--running');
+      label.textContent = 'Running…';
+      spinner.style.display = 'inline-block';
+
+      const payload = collectFormValues();
+      lastPayload = payload;
+
+      try {
+        const res = await fetch(manifest.endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        renderResults(data);
+        document.getElementById('results-section').style.display = '';
+        document.getElementById('results-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } catch (err) {
+        alert('Error calling agent: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.classList.remove('btn--running');
+        label.textContent = 'Submit';
+        spinner.style.display = 'none';
+      }
+    }
+
+    function renderList(listId, countId, items, emptyText) {
+      const el = document.getElementById(listId);
+      const cEl = document.getElementById(countId);
+      const arr = Array.isArray(items) ? items : [];
+      cEl.textContent = arr.length;
+      if (arr.length === 0) {
+        el.innerHTML = `<li class="result-empty">${emptyText}</li>`;
+      } else {
+        el.innerHTML = arr.map(item => `<li>${item}</li>`).join('');
+      }
+    }
+
+    function renderResults(data) {
+      renderList('list-decisions', 'count-decisions', data.decisions, 'None recorded');
+      renderList('list-actions',   'count-actions',   data.action_items, 'None');
+      renderList('list-questions', 'count-questions', data.open_questions, 'None');
+      renderList('list-risks',     'count-risks',     data.risks, 'None identified');
+
+      const sensitive = Array.isArray(data.sensitive_content) ? data.sensitive_content : [];
+      const govPanel = document.getElementById('panel-governance');
+      if (sensitive.length > 0) {
+        govPanel.style.display = '';
+        renderList('list-sensitive', 'count-sensitive', sensitive, '');
+      } else {
+        govPanel.style.display = 'none';
+      }
+
+      const emailDraft = data.email_draft;
+      const emailPanel = document.getElementById('panel-email');
+      if (emailDraft && (emailDraft.subject || emailDraft.body)) {
+        emailPanel.style.display = '';
+        document.getElementById('email-subject').textContent = emailDraft.subject || '(no subject)';
+        document.getElementById('email-body').textContent = emailDraft.body || '';
+        document.getElementById('approve-btn').disabled = false;
+        document.getElementById('confirm-banner').classList.remove('visible');
+      } else {
+        emailPanel.style.display = 'none';
+      }
+    }
+
+    async function approveAndSend() {
+      const btn = document.getElementById('approve-btn');
+      btn.disabled = true;
+      btn.textContent = 'Sending…';
+
+      const payload = { ...(lastPayload || {}), approved: true };
+
+      try {
+        const res = await fetch(manifest.endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        btn.textContent = 'Sent';
+        document.getElementById('confirm-banner').classList.add('visible');
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = 'Approve & Send';
+        alert('Error sending: ' + err.message);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

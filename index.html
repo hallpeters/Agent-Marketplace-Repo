@@ -87,6 +87,45 @@
       .hero-text h1 { font-size: 28px; }
       .agent-grid { grid-template-columns: 1fr; }
     }
+
+    /* ─── ADD AGENT MODAL ─── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.5);
+      z-index: 1000;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 200ms ease;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: auto; }
+    .modal-box {
+      background: #fff; border-radius: 16px;
+      width: 100%; max-width: 600px;
+      max-height: 90vh; overflow-y: auto;
+      padding: 32px;
+      box-shadow: 0 8px 48px rgba(0,0,0,.25);
+      transform: translateY(10px);
+      transition: transform 200ms ease;
+    }
+    .modal-overlay.open .modal-box { transform: translateY(0); }
+    .modal-title { font-size: 20px; font-weight: 700; margin-bottom: 6px; color: var(--text-primary); }
+    .modal-subtitle { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.6; }
+    .modal-field { margin-bottom: 18px; }
+    .modal-field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-secondary); }
+    .modal-field textarea {
+      width: 100%; border: 1.5px solid var(--border-subtle);
+      border-radius: 8px; padding: 12px;
+      font-size: 12px; font-family: 'Menlo', 'Consolas', 'Monaco', monospace;
+      line-height: 1.55;
+      resize: vertical; outline: none;
+      transition: border-color 150ms;
+      background: #fafafa;
+    }
+    .modal-field textarea:focus { border-color: var(--primary-blue); background: #fff; }
+    .modal-error { color: #dc2626; font-size: 13px; margin-bottom: 14px; padding: 10px 12px; background: #fee2e2; border-radius: 6px; display: none; }
+    .modal-error.visible { display: block; }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; padding-top: 4px; }
   /* ─── RESEARCH DISCLOSURE BANNER ─── */
   .research-disclosure {
     background: #fffbeb;
@@ -204,6 +243,7 @@
             <option value="partners">Partners</option>
             <option value="marketplace">Marketplace</option>
           </select>
+          <button class="btn btn--primary" onclick="openAddAgentModal()" style="white-space:nowrap">+ Add Agent</button>
         </div>
       </div>
       <div id="agent-grid" class="agent-grid">
@@ -211,6 +251,38 @@
       </div>
     </div>
   </section>
+
+  <!-- ─── ADD AGENT MODAL ─── -->
+  <div class="modal-overlay" id="add-agent-overlay">
+    <div class="modal-box">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+        <div class="modal-title">Add Agent to Marketplace</div>
+        <button onclick="closeAddAgentModal()" style="font-size:22px;color:var(--text-muted);padding:2px 6px;line-height:1">×</button>
+      </div>
+      <p class="modal-subtitle">Paste a JSON manifest. Required fields: <code style="font-size:11px;background:#f3f4f6;padding:1px 4px;border-radius:3px">id, name, endpoint, inputs[]</code>. The agent is saved locally in your browser and appears in the registry immediately.</p>
+      <div class="modal-field">
+        <label for="manifest-input">Agent Manifest (JSON)</label>
+        <textarea id="manifest-input" rows="18" placeholder='{
+  "id": "my-agent-001",
+  "name": "My Agent",
+  "owner": "your-name",
+  "description": "What this agent does.",
+  "platform": "n8n",
+  "endpoint": "https://...",
+  "inputs": [
+    { "name": "notes", "type": "textarea", "label": "Meeting notes" }
+  ],
+  "permissions": [],
+  "data_classification": "internal"
+}'></textarea>
+      </div>
+      <div class="modal-error" id="manifest-error"></div>
+      <div class="modal-actions">
+        <button class="btn btn--secondary" onclick="closeAddAgentModal()">Cancel</button>
+        <button class="btn btn--primary" onclick="saveAgentManifest()">Add to Registry</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ─── FOOTER ─── -->
   <footer class="site-footer">
@@ -225,6 +297,74 @@
 
   <script>
     const API = '/api';
+    const LS_KEY = 'ai_marketplace_agents';
+
+    /* === LOCAL AGENT STORAGE === */
+    function getLocalAgents() {
+      try { return JSON.parse(localStorage.getItem(LS_KEY) || '[]'); } catch { return []; }
+    }
+    function saveLocalAgents(agents) {
+      localStorage.setItem(LS_KEY, JSON.stringify(agents));
+    }
+    function openAddAgentModal() {
+      document.getElementById('add-agent-overlay').classList.add('open');
+      document.getElementById('manifest-input').focus();
+    }
+    function closeAddAgentModal() {
+      document.getElementById('add-agent-overlay').classList.remove('open');
+      const errEl = document.getElementById('manifest-error');
+      errEl.textContent = '';
+      errEl.classList.remove('visible');
+    }
+    function saveAgentManifest() {
+      const raw = document.getElementById('manifest-input').value.trim();
+      const errEl = document.getElementById('manifest-error');
+      errEl.classList.remove('visible');
+      let m;
+      try { m = JSON.parse(raw); } catch(e) {
+        errEl.textContent = 'Invalid JSON: ' + e.message;
+        errEl.classList.add('visible');
+        return;
+      }
+      const required = ['id', 'name', 'endpoint', 'inputs'];
+      const missing = required.filter(f => !m[f]);
+      if (missing.length) {
+        errEl.textContent = 'Missing required fields: ' + missing.join(', ');
+        errEl.classList.add('visible');
+        return;
+      }
+      if (!Array.isArray(m.inputs)) {
+        errEl.textContent = '"inputs" must be an array';
+        errEl.classList.add('visible');
+        return;
+      }
+      const agents = getLocalAgents();
+      const idx = agents.findIndex(a => a.id === m.id);
+      if (idx >= 0) { agents[idx] = m; } else { agents.push(m); }
+      saveLocalAgents(agents);
+      document.getElementById('manifest-input').value = '';
+      closeAddAgentModal();
+      mergeLocalAgents();
+      renderAgents();
+    }
+    function mergeLocalAgents() {
+      const locals = getLocalAgents().map(m => ({
+        id: m.id,
+        name: m.name,
+        description: m.description || '',
+        runtime: m.platform || 'external',
+        owner_name: m.owner || '',
+        owner_team: m.owner || '',
+        approval_state: 'approved',
+        tier: m.tier || 'marketplace',
+        skills_used: [],
+        _local: true,
+      }));
+      allAgents = allAgents.filter(a => !a._local).concat(locals);
+    }
+    function runAgent(id) {
+      window.location.href = 'agent-runner.html?id=' + encodeURIComponent(id);
+    }
 
     /* === REGISTRY === */
     let allAgents = [];
@@ -279,13 +419,20 @@
 
         populateRuntimeFilter(uniqueRuntimes);
         initFilters();
+        mergeLocalAgents();
         renderAgents();
       } catch (e) {
-        grid.innerHTML = `
-          <div class="state-message state-message--error" style="grid-column:1/-1">
-            <h3>⚠️ Backend not running</h3>
-            <p>Start the API server with: <code>npm start</code> (port 3001)</p>
-          </div>`;
+        mergeLocalAgents();
+        if (allAgents.length > 0) {
+          initFilters();
+          renderAgents();
+        } else {
+          grid.innerHTML = `
+            <div class="state-message state-message--error" style="grid-column:1/-1">
+              <h3>⚠️ Backend not running</h3>
+              <p>Start the API server with: <code>npm start</code> (port 3001)</p>
+            </div>`;
+        }
       }
     }
 
@@ -358,7 +505,10 @@
           <p class="agent-description">${a.description || ''}</p>
           ${skillsHtml}
           <div class="card-actions">
-            <a href="agent-detail.html?id=${a.id}" class="btn btn--secondary">View Details</a>
+            ${a._local
+              ? `<button class="btn btn--primary" onclick="runAgent('${a.id}')">Run Agent</button>`
+              : `<a href="agent-detail.html?id=${a.id}" class="btn btn--secondary">View Details</a>`
+            }
           </div>
         </div>`;
     }
@@ -427,6 +577,9 @@
       fetchAgents();
       initScrollObserver();
       initNavSmooth();
+      document.getElementById('add-agent-overlay').addEventListener('click', function(e) {
+        if (e.target === this) closeAddAgentModal();
+      });
     });
   </script>
 </body>
