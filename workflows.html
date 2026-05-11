@@ -284,6 +284,45 @@
 
     /* ─── CREDITS PILL ─── */
     .tx-credits-pill { display: inline-block; background: var(--bg-section-alt); border: 1.5px solid var(--border-subtle); border-radius: 20px; padding: 3px 12px; font-size: 13px; font-weight: 700; color: var(--primary-blue); }
+
+    /* ─── BALANCE CARDS (revealed on dropdown select) ─── */
+    .balance-cards {
+      display: none; gap: 12px; margin-bottom: 20px;
+      opacity: 0; transition: opacity 0.3s ease;
+    }
+    .balance-cards.visible { display: flex; }
+    .balance-cards.shown   { opacity: 1; }
+    .balance-card {
+      flex: 1; border-radius: 10px; padding: 16px 20px;
+      border: 1.5px solid var(--border-subtle);
+      background: var(--bg-section-alt);
+      position: relative; overflow: hidden;
+    }
+    .balance-card--payer { border-left: 4px solid var(--brand-a-blue); }
+    .balance-card--payee { border-left: 4px solid var(--brand-a-amber); }
+    .balance-card-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-muted); margin-bottom: 10px; }
+    .balance-card-name  { font-size: 13px; font-weight: 700; color: var(--text-secondary); margin-bottom: 10px; }
+    .balance-stats { display: flex; gap: 24px; }
+    .balance-stat { position: relative; }
+    .balance-stat-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-muted); margin-bottom: 2px; }
+    .balance-stat-val { font-size: 22px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.5px; line-height: 1; }
+    .balance-stat-unit { font-size: 11px; color: var(--text-muted); margin-left: 2px; }
+
+    /* ─── DELTA BADGE ─── */
+    .delta-badge {
+      position: absolute; top: -4px; right: -4px;
+      font-size: 14px; font-weight: 800; border-radius: 8px;
+      padding: 4px 10px; pointer-events: none;
+      animation: deltaFloat 2s ease forwards;
+    }
+    .delta-badge--minus { background: #fee2e2; color: #dc2626; }
+    .delta-badge--plus  { background: #dcfce7; color: #16a34a; }
+    @keyframes deltaFloat {
+      0%   { opacity: 0; transform: translateY(4px) scale(0.85); }
+      15%  { opacity: 1; transform: translateY(0)   scale(1); }
+      70%  { opacity: 1; transform: translateY(-8px); }
+      100% { opacity: 0; transform: translateY(-20px); }
+    }
   </style>
 </head>
 <body>
@@ -346,9 +385,34 @@
           <div class="panel-header-sub">Select an agent and a skill, then run the workflow to see a live cross-team invocation</div>
         </div>
 
-        <!-- Hidden balance targets for JS ticking animation -->
-        <div style="display:none" id="card-sales"><span id="spend-sales"></span><span id="earn-sales"></span></div>
-        <div style="display:none" id="card-marketing"><span id="spend-marketing"></span><span id="earn-marketing"></span></div>
+        <!-- Balance cards — revealed once dropdowns are filled -->
+        <div class="balance-cards" id="balance-cards">
+          <div class="balance-card balance-card--payer" id="card-payer">
+            <div class="balance-card-label">Spending team</div>
+            <div class="balance-card-name" id="card-payer-name">—</div>
+            <div class="balance-stats">
+              <div class="balance-stat">
+                <div class="balance-stat-label">Spend budget</div>
+                <div><span class="balance-stat-val" id="spend-payer">—</span><span class="balance-stat-unit">tokens</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="balance-card balance-card--payee" id="card-payee">
+            <div class="balance-card-label">Earning team</div>
+            <div class="balance-card-name" id="card-payee-name">—</div>
+            <div class="balance-stats">
+              <div class="balance-stat">
+                <div class="balance-stat-label">Earnings</div>
+                <div><span class="balance-stat-val" id="earn-payee">—</span><span class="balance-stat-unit">tokens</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hidden sinks so existing renderBalances() IDs don't error -->
+        <span style="display:none" id="spend-sales"></span><span style="display:none" id="earn-sales"></span>
+        <span style="display:none" id="spend-marketing"></span><span style="display:none" id="earn-marketing"></span>
+        <span style="display:none" id="card-sales"></span><span style="display:none" id="card-marketing"></span>
 
         <!-- Dropdowns -->
         <div class="config-panel">
@@ -580,6 +644,7 @@
         el('tx-label-from').textContent = '—'; el('tx-label-to').textContent = '—';
         el('tx-credits-pill').textContent = '— tokens';
         el('tx-sub-desc').innerHTML = '';
+        el('balance-cards').classList.remove('visible', 'shown');
         return;
       }
 
@@ -589,6 +654,8 @@
 
       const isXTeam = agent.owner_team !== skill.owner_team;
       const credits = isXTeam ? 50 : 10;
+      const payerTeamId = agent.owner_team === 'Sales' ? 'team-001' : 'team-002';
+      const payeeTeamId = skill.owner_team  === 'Sales' ? 'team-001' : 'team-002';
 
       el('tx-label-from').textContent  = `${agent.owner_team} · Atlas`;
       el('tx-label-to').textContent    = `${skill.owner_team} · Atlas`;
@@ -600,6 +667,15 @@
         <a href="agent-detail.html?id=${escHtml(agentId)}" class="tx-link" style="font-size:12px">View ${escHtml(agent.name)} →</a>
         <a href="skill-detail.html?id=${escHtml(skillId)}" class="tx-link" style="font-size:12px">View ${escHtml(skill.name)} →</a>`;
       el('tx-sub-desc').innerHTML = `<strong>${escHtml(agent.name)}</strong> calls <strong>${escHtml(skill.name)}</strong> &nbsp;·&nbsp; ${credits} tokens`;
+
+      // Reveal balance cards
+      el('card-payer-name').textContent = `${agent.owner_team} · Atlas`;
+      el('card-payee-name').textContent = `${skill.owner_team} · Atlas`;
+      el('spend-payer').textContent = fmt(teams[payerTeamId]?.spend_budget);
+      el('earn-payee').textContent  = fmt(teams[payeeTeamId]?.earnings_balance);
+      const bc = el('balance-cards');
+      bc.classList.add('visible');
+      requestAnimationFrame(() => requestAnimationFrame(() => bc.classList.add('shown')));
 
       if (!details.classList.contains('visible')) {
         hint.style.display = 'none'; details.style.display = 'block';
@@ -708,36 +784,44 @@
       pkt.classList.remove('flying'); void pkt.offsetHeight;
       track.classList.add('lit'); pkt.classList.add('flying');
 
-      if (result?.payer && result?.payee) {
-        const spendElId = payerTeamId === 'team-001' ? 'spend-sales' : 'spend-marketing';
-        const earnElId  = payeeTeamId === 'team-001' ? 'earn-sales'  : 'earn-marketing';
-        const spendCard = payerTeamId === 'team-001' ? 'card-sales'  : 'card-marketing';
-        const earnCard  = payeeTeamId === 'team-001' ? 'card-sales'  : 'card-marketing';
+      await sleep(1600);
+      track.classList.remove('lit'); pkt.classList.remove('flying');
 
-        const oldSpend = teams[payerTeamId]?.spend_budget      ?? 0;
-        const oldEarn  = teams[payeeTeamId]?.earnings_balance  ?? 0;
+      if (result?.payer && result?.payee) {
+        const oldSpend = teams[payerTeamId]?.spend_budget     ?? 0;
+        const oldEarn  = teams[payeeTeamId]?.earnings_balance ?? 0;
         teams[payerTeamId] = result.payer;
         teams[payeeTeamId] = result.payee;
 
-        const spendEl = el(spendElId);
-        const earnEl  = el(earnElId);
-        spendEl.classList.add('flash-down'); earnEl.classList.add('flash-up');
-        el(spendCard).classList.add('pulse-spend');
-        if (spendCard !== earnCard) el(earnCard).classList.add('pulse-earn');
+        // Tick the visible balance cards
+        const spendEl = el('spend-payer');
+        const earnEl  = el('earn-payee');
         tickNumber(spendEl, oldSpend, result.payer.spend_budget);
         tickNumber(earnEl,  oldEarn,  result.payee.earnings_balance);
+
+        // Flash the cards
+        el('card-payer').classList.add('pulse-spend');
+        el('card-payee').classList.add('pulse-earn');
+
+        // Delta badges
+        function showDelta(parentEl, amount, type) {
+          const badge = document.createElement('span');
+          badge.className = `delta-badge delta-badge--${type}`;
+          badge.textContent = (type === 'plus' ? '+' : '−') + amount + ' tokens';
+          parentEl.style.position = 'relative';
+          parentEl.appendChild(badge);
+          badge.addEventListener('animationend', () => badge.remove());
+        }
+        showDelta(el('card-payer'), credits, 'minus');
+        showDelta(el('card-payee'), credits, 'plus');
+
+        // Hero card update
         if (payerTeamId === 'team-001') tickNumber(el('hero-spend-sales'), oldSpend, result.payer.spend_budget);
         if (payeeTeamId === 'team-001') tickNumber(el('hero-earn-sales'),  oldEarn,  result.payee.earnings_balance);
 
-        await sleep(1600);
-        track.classList.remove('lit'); pkt.classList.remove('flying');
-        await sleep(500);
-        spendEl.classList.remove('flash-down'); earnEl.classList.remove('flash-up');
-        el(spendCard).classList.remove('pulse-spend');
-        if (spendCard !== earnCard) el(earnCard).classList.remove('pulse-earn');
-      } else {
-        await sleep(1600);
-        track.classList.remove('lit'); pkt.classList.remove('flying');
+        await sleep(2000);
+        el('card-payer').classList.remove('pulse-spend');
+        el('card-payee').classList.remove('pulse-earn');
       }
 
       // Refresh log
