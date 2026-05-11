@@ -374,8 +374,18 @@
       try { return JSON.parse(localStorage.getItem(LS_KEY) || '[]'); } catch { return []; }
     }
 
+    const SUBMIT_STEPS = [
+      'Calling agent...',
+      'Reading meeting notes...',
+      'Extracting decisions and action items...',
+      'Drafting email...',
+      'Finalizing...',
+    ];
+    const APPROVE_STEPS = ['Sending email...', 'Confirming delivery...'];
+
     let manifest = null;
     let lastPayload = null;
+    let lastResponse = null;
 
     function init() {
       const id = getParam('id');
@@ -461,8 +471,17 @@
 
       btn.disabled = true;
       btn.classList.add('btn--running');
-      label.textContent = 'Running…';
       spinner.style.display = 'inline-block';
+
+      let stepIdx = 0;
+      label.textContent = SUBMIT_STEPS[0];
+      const stepInterval = setInterval(() => {
+        stepIdx = (stepIdx + 1) % SUBMIT_STEPS.length;
+        label.textContent = SUBMIT_STEPS[stepIdx];
+      }, 1500);
+      const slowTimer = setTimeout(() => {
+        label.textContent = 'Still working — n8n cloud can be slow on cold starts.';
+      }, 30000);
 
       const payload = collectFormValues();
       lastPayload = payload;
@@ -475,12 +494,15 @@
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
+        lastResponse = data;
         renderResults(data);
         document.getElementById('results-section').style.display = '';
         document.getElementById('results-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
       } catch (err) {
         alert('Error calling agent: ' + err.message);
       } finally {
+        clearInterval(stepInterval);
+        clearTimeout(slowTimer);
         btn.disabled = false;
         btn.classList.remove('btn--running');
         label.textContent = 'Submit';
@@ -531,9 +553,24 @@
     async function approveAndSend() {
       const btn = document.getElementById('approve-btn');
       btn.disabled = true;
-      btn.textContent = 'Sending…';
 
-      const payload = { ...(lastPayload || {}), approved: true };
+      let approveIdx = 0;
+      btn.textContent = APPROVE_STEPS[0];
+      const approveInterval = setInterval(() => {
+        approveIdx = (approveIdx + 1) % APPROVE_STEPS.length;
+        btn.textContent = APPROVE_STEPS[approveIdx];
+      }, 1500);
+
+      const payload = {
+        ...(lastPayload || {}),
+        approved: true,
+        email_draft:       lastResponse?.email_draft,
+        decisions:         lastResponse?.decisions,
+        action_items:      lastResponse?.action_items,
+        open_questions:    lastResponse?.open_questions,
+        risks:             lastResponse?.risks,
+        sensitive_content: lastResponse?.sensitive_content,
+      };
 
       try {
         const res = await fetch(manifest.endpoint, {
@@ -542,9 +579,11 @@
           body: JSON.stringify(payload),
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        clearInterval(approveInterval);
         btn.textContent = 'Sent';
         document.getElementById('confirm-banner').classList.add('visible');
       } catch (err) {
+        clearInterval(approveInterval);
         btn.disabled = false;
         btn.textContent = 'Approve & Send';
         alert('Error sending: ' + err.message);
