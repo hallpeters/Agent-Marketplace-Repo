@@ -1,0 +1,221 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "meeting-agent",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "94902032-779a-4d8a-b838-6dd3115c995b",
+      "name": "Webhook",
+      "webhookId": "27da16df-faf3-4179-9d95-65a1320fdcdc"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ decisions: $('Code').item.json.decisions, action_items: $('Code').item.json.action_items, open_questions: $('Code').item.json.open_questions, risks: $('Code').item.json.risks, sensitive_content: $('Code').item.json.sensitive_content, email_draft: $('Code').item.json.email_draft, approved: $('Code').item.json.approved }) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1152,
+        32
+      ],
+      "id": "9b0c0aed-400a-4a53-999d-ffc29277870f",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are a meeting workflow agent in TRATON's internal agent marketplace.\n\nContext preset: {{ $('Webhook').item.json.body.preset }}\nEmail recipients: {{ $('Webhook').item.json.body.recipients }}\n\nMeeting notes to analyze:\n{{ $('Webhook').item.json.body.notes }}\n\nExtract and return ONLY a JSON object (no preamble, no markdown fencing, no explanation before or after) with this exact shape:\n{\n  \"decisions\": [\"...\"],\n  \"action_items\": [{\"task\": \"...\", \"owner\": \"...\", \"due_date\": \"...\"}],\n  \"open_questions\": [\"...\"],\n  \"risks\": [\"...\"],\n  \"sensitive_content\": [\"...\"],\n  \"email_draft\": {\n    \"subject\": \"...\",\n    \"body\": \"...\"\n  }\n}\n\nRules:\n- Ground every item in the notes; do not invent details.\n- For action items without explicit owners, mark owner as \"unassigned\".\n- For action items without explicit due dates, mark due_date as \"unspecified\".\n- Email body should be concise, scannable, suitable for the preset context.\n- Flag anything that looks confidential (financials, legal, personnel, IP) in sensitive_content.\n- Return only valid JSON. No prose before or after. Do not wrap in markdown code blocks."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "7fbdda88-5a88-4e8d-b010-2ec7b4b8beb8",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "JmH3QJDcrMIuuPDs",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "90cb4fa2-95a3-4c9c-bae8-3fd6d861ea70",
+              "leftValue": "={{ $json.approved }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        768,
+        0
+      ],
+      "id": "5d1cf961-65ad-4156-a090-3e22a8cc38e7",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Code').item.json.recipients }}",
+        "subject": "={{ $('Code').item.json.email_draft.subject }}",
+        "emailType": "text",
+        "message": "={{ $('Code').item.json.email_draft.body }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        976,
+        -80
+      ],
+      "id": "37830c91-f62b-4b7f-bf39-b9e9999fc5da",
+      "name": "Send a message",
+      "webhookId": "cca471c0-ae74-4779-873f-a81f855d49c5",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "pfaFWRdpa9YNUj6E",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const upstream = $input.all()[0].json;\n\nlet raw;\nif (upstream.output && upstream.output[0] && upstream.output[0].content) {\n  raw = upstream.output[0].content[0].text;\n} else if (upstream.content && upstream.content[0]) {\n  raw = upstream.content[0].text;\n} else {\n  throw new Error('Unexpected upstream shape. Keys: ' + Object.keys(upstream).join(', '));\n}\n\nconst parsed = JSON.parse(raw);\nconst webhookBody = $('Webhook').item.json.body;\n\nreturn [{\n  json: {\n    ...parsed,\n    approved: webhookBody.approved === true,\n    recipients: webhookBody.recipients,\n    preset: webhookBody.preset\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        0
+      ],
+      "id": "65873c7a-d376-4194-bf9a-f91f02370e88",
+      "name": "Code"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "9a97367d-b658-4943-9f0e-86270e35f5d6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f24b21657f8901cce07eff039ccd1bd1bab4289be4a10d4a0e2ef2079239f299"
+  },
+  "id": "lKLumWVaavwRP22M",
+  "tags": []
+}
