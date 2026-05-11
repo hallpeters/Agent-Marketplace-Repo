@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agent Workflows — TRATON AI Marketplace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+
+  <style>
+    /* ─── HERO ─── */
+    .economy-hero {
+      background: linear-gradient(135deg, var(--bg-header) 0%, #003580 100%);
+      padding: 48px 0 56px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .hero-split {
+      display: grid; grid-template-columns: 1fr 320px;
+      gap: 40px; align-items: center;
+    }
+    .economy-hero h1 {
+      font-size: 36px; font-weight: 800; color: #fff;
+      letter-spacing: -1px; line-height: 1.2; margin-bottom: 10px;
+    }
+    .economy-hero h1 span { color: #60a5fa; }
+    .economy-hero p {
+      font-size: 15px; color: rgba(255,255,255,.6);
+      max-width: 420px; line-height: 1.7; margin: 0;
+    }
+
+    /* Hero Sales card */
+    .hero-team-card {
+      background: rgba(255,255,255,.08);
+      border: 1.5px solid rgba(255,255,255,.14);
+      border-left: 4px solid #60a5fa;
+      border-radius: 12px; padding: 20px 22px;
+    }
+    .hero-team-badge {
+      display: block; font-size: 9px; font-weight: 800;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      color: #60a5fa; margin-bottom: 5px;
+    }
+    .hero-team-name {
+      font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 14px;
+    }
+    .hero-team-brand { font-weight: 400; color: rgba(255,255,255,.5); }
+    .hero-token-row { display: flex; gap: 28px; }
+    .hero-token-item { display: flex; flex-direction: column; gap: 3px; }
+    .hero-token-label {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.5px; color: rgba(255,255,255,.45);
+    }
+    .hero-token-val { display: flex; align-items: baseline; gap: 4px; }
+    .hero-num {
+      font-size: 22px; font-weight: 800; color: #fff;
+      font-variant-numeric: tabular-nums; transition: color 0.6s ease;
+    }
+    .hero-num.flash-down { color: #f87171; }
+    .hero-num.flash-up   { color: #4ade80; }
+    .hero-token-unit { font-size: 11px; color: rgba(255,255,255,.4); }
+
+    /* ─── MAIN SECTION ─── */
+    .economy-section { padding: 56px 0 40px; }
+
+    /* ─── NETWORK TIERS ─── */
+    .network-tiers {
+      display: flex; flex-direction: column;
+      gap: 10px; margin-bottom: 20px;
+    }
+
+    .tier {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+    }
+    .tier--active  { border-color: rgba(0,102,204,.3); }
+    .tier--future  { opacity: 0.65; }
+
+    .tier-header {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 11px 20px;
+      background: var(--bg-section-alt);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .tier-name { font-size: 12px; font-weight: 700; color: var(--text-primary); }
+
+    .tier-status {
+      font-size: 9px; font-weight: 700;
+      letter-spacing: 0.9px; text-transform: uppercase;
+      padding: 3px 8px; border-radius: 4px;
+    }
+    .tier-status--active { background: rgba(22,163,74,.12); color: #16a34a; }
+    .tier-status--future { background: transparent; color: var(--text-muted); border: 1px solid var(--border-subtle); }
+
+    /* ─── BALANCE STRIP ─── */
+    .balance-strip {
+      display: flex; align-items: center;
+      padding: 14px 20px; gap: 12px;
+    }
+
+    .bs-team {
+      flex: 1; padding: 10px 14px;
+      border-radius: 8px;
+      border: 1.5px solid transparent;
+      transition: box-shadow 0.4s ease, border-color 0.4s ease;
+    }
+    .bs-team--sales     { border-left: 3px solid var(--scania-blue);  background: rgba(0,56,130,.04); }
+    .bs-team--marketing { border-left: 3px solid var(--scania-amber); background: rgba(255,183,0,.04); }
+
+    .bs-team.pulse-spend {
+      box-shadow: 0 0 0 2px rgba(220,38,38,.25);
+      border-color: rgba(220,38,38,.4);
+    }
+    .bs-team.pulse-earn {
+      box-shadow: 0 0 0 2px rgba(22,163,74,.25);
+      border-color: rgba(22,163,74,.4);
+    }
+
+    .bs-team-name {
+      font-size: 15px; font-weight: 700;
+      color: var(--text-primary); margin-bottom: 4px;
+    }
+    .bs-brand { font-size: 13px; font-weight: 400; color: var(--text-muted); }
+
+    .bs-stats {
+      display: flex; align-items: center;
+      gap: 5px; font-size: 13px;
+    }
+    .bs-stat-label { font-size: 11px; color: var(--text-muted); }
+    .bs-num {
+      font-weight: 700; color: var(--text-primary);
+      font-variant-numeric: tabular-nums;
+      transition: color 0.6s ease;
+      display: inline-block; min-width: 24px;
+    }
+    .bs-num.flash-down { color: var(--man-red); }
+    .bs-num.flash-up   { color: var(--status-active); }
+    .bs-sep { color: var(--border-subtle); margin: 0 2px; }
+    .bs-placeholder { font-size: 11px; color: var(--text-muted); font-style: italic; }
+
+    .bs-center {
+      flex: 0 0 64px; display: flex;
+      align-items: center; padding: 0 8px;
+    }
+    .bs-line {
+      flex: 1; height: 2px;
+      background: var(--border-subtle);
+      border-radius: 1px; position: relative;
+    }
+    .bs-line::after {
+      content: ''; position: absolute;
+      right: -5px; top: -4px;
+      border: 5px solid transparent;
+      border-left-color: var(--border-subtle);
+      border-right: 0;
+    }
+
+    /* ─── CONFIG PANEL ─── */
+    .config-panel {
+      display: flex; gap: 16px;
+      margin-bottom: 20px; align-items: flex-end;
+    }
+    .config-group { flex: 1; }
+    .config-label {
+      display: block; font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.6px;
+      color: var(--text-muted); margin-bottom: 6px;
+    }
+
+    /* ─── TX PREVIEW ─── */
+    .tx-preview {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      background: var(--bg-section-alt);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 14px 20px;
+      margin-bottom: 24px;
+      align-items: start;
+    }
+    .tx-preview-label {
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.6px;
+      color: var(--text-muted); margin-bottom: 4px;
+    }
+    .tx-preview-val {
+      font-size: 13px; font-weight: 600;
+      color: var(--text-primary); line-height: 1.3;
+    }
+    .tx-preview-links {
+      grid-column: 1/-1; display: flex; gap: 20px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-subtle);
+      margin-top: 2px;
+    }
+
+    /* ─── TRANSACTION PANEL ─── */
+    .tx-panel {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-card);
+      padding: 32px; margin-bottom: 48px;
+    }
+
+    /* ─── PANEL HEADER ─── */
+    .panel-header {
+      margin-bottom: 22px; padding-bottom: 18px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .panel-header-title {
+      font-size: 17px; font-weight: 800;
+      color: var(--text-primary); letter-spacing: -0.3px; margin-bottom: 3px;
+    }
+    .panel-header-sub { font-size: 13px; color: var(--text-muted); }
+
+    /* ─── MINI BALANCE STRIP (inside tx-details) ─── */
+    .mini-balance-strip {
+      display: flex; gap: 10px; margin-bottom: 20px;
+    }
+    .mini-team-card {
+      flex: 1; display: flex; align-items: center; justify-content: space-between;
+      padding: 9px 14px; border-radius: 8px;
+      border: 1.5px solid transparent;
+      transition: box-shadow 0.4s ease, border-color 0.4s ease;
+      font-size: 12px;
+    }
+    .mini-team-card--sales {
+      background: rgba(0,56,130,.04);
+      border-color: rgba(0,56,130,.12);
+      border-left: 3px solid var(--scania-blue);
+    }
+    .mini-team-card--marketing {
+      background: rgba(255,183,0,.04);
+      border-color: rgba(255,183,0,.15);
+      border-left: 3px solid var(--scania-amber);
+    }
+    .mini-team-card.pulse-spend {
+      box-shadow: 0 0 0 2px rgba(220,38,38,.25);
+      border-color: rgba(220,38,38,.4);
+    }
+    .mini-team-card.pulse-earn {
+      box-shadow: 0 0 0 2px rgba(22,163,74,.25);
+      border-color: rgba(22,163,74,.4);
+    }
+    .mini-team-name { font-weight: 700; color: var(--text-primary); }
+    .mini-team-stats { display: flex; align-items: center; gap: 6px; color: var(--text-muted); }
+    .mini-stat-val {
+      font-weight: 700; color: var(--text-primary);
+      font-variant-numeric: tabular-nums;
+      transition: color 0.6s ease; display: inline-block;
+    }
+    .mini-stat-val.flash-down { color: var(--man-red); }
+    .mini-stat-val.flash-up   { color: var(--status-active); }
+
+    /* ─── TX FLOW ─── */
+    .tx-flow {
+      display: flex; align-items: center;
+      gap: 16px; margin-bottom: 28px;
+    }
+    .tx-flow-label {
+      font-size: 13px; font-weight: 600;
+      color: var(--text-secondary); white-space: nowrap; min-width: 140px;
+    }
+    .tx-flow-label--right { text-align: left; }
+    .tx-flow-label--left  { text-align: right; }
+
+    /* ─── PROGRESSIVE DISCLOSURE ─── */
+    #tx-details {
+      display: none; opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+    #tx-details.visible { opacity: 1; }
+    .select-hint {
+      font-size: 13px; color: var(--text-muted);
+      font-style: italic; margin: 4px 0 28px;
+      text-align: center;
+    }
+
+    .tx-track {
+      flex: 1; height: 3px;
+      background: var(--border-subtle);
+      border-radius: 2px; position: relative;
+      overflow: visible;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+    .tx-track.lit {
+      background: linear-gradient(90deg, var(--scania-blue) 0%, var(--traton-blue) 50%, var(--scania-amber) 100%);
+      box-shadow: 0 0 10px rgba(0,102,204,.4);
+    }
+
+    .tx-packet {
+      position: absolute; top: -8px; left: 0;
+      width: 19px; height: 19px; border-radius: 50%;
+      background: var(--traton-blue);
+      box-shadow: 0 0 16px rgba(0,102,204,.9), 0 0 32px rgba(0,102,204,.4);
+      opacity: 0; transform: translateX(-50%); pointer-events: none;
+    }
+    .tx-packet.flying {
+      animation: pktFly 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+    @keyframes pktFly {
+      0%   { left: 0%;   opacity: 0; transform: translateX(-50%) scale(0.4); }
+      6%   { opacity: 1; transform: translateX(-50%) scale(1); }
+      92%  { opacity: 1; transform: translateX(-50%) scale(1); }
+      100% { left: 100%; opacity: 0; transform: translateX(-50%) scale(0.4); }
+    }
+
+    .tx-credits-pill {
+      position: absolute; top: -30px; left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px; font-weight: 700; color: #fff;
+      background: var(--traton-blue); padding: 3px 10px;
+      border-radius: 20px; white-space: nowrap;
+      opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
+    }
+    .tx-track.lit .tx-credits-pill { opacity: 1; }
+
+    .tx-action { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+    .tx-sub { font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
+    .tx-sub strong { color: var(--text-primary); }
+
+    /* ─── STREAMING PANEL ─── */
+    .streaming-panel {
+      margin-top: 28px; padding-top: 28px;
+      border-top: 1px solid var(--border-subtle); display: none;
+    }
+    .streaming-panel.visible { display: block; }
+
+    .stream-terminal {
+      background: #0d1117; border-radius: 10px;
+      padding: 20px 24px; margin-bottom: 16px;
+    }
+    .stream-line {
+      font-family: 'Courier New', monospace; font-size: 13px;
+      color: rgba(255,255,255,.7); line-height: 2;
+      opacity: 0; display: block;
+      animation: fadeInLine 0.25s ease forwards;
+    }
+    .stream-line--callout { color: #60a5fa; }
+    .stream-line--result  { color: #f87171; font-weight: 700; font-size: 14px; }
+    .stream-line--success { color: #4ade80; font-weight: 700; font-size: 14px; }
+    @keyframes fadeInLine {
+      from { opacity: 0; transform: translateX(-6px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-card {
+      background: rgba(220,38,38,.05);
+      border: 2px solid rgba(220,38,38,.25);
+      border-radius: 12px; padding: 22px 28px;
+      display: none; animation: fadeInUp 0.35s ease;
+    }
+    .result-card.visible { display: block; }
+    .result-badge {
+      display: inline-block; padding: 3px 10px; border-radius: 4px;
+      font-size: 11px; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; margin-bottom: 12px;
+    }
+    .result-badge--high    { background: var(--man-red); color: #fff; }
+    .result-badge--success { background: #16a34a; color: #fff; }
+    .result-headline {
+      font-size: 20px; font-weight: 800;
+      color: var(--text-primary); letter-spacing: -0.3px; margin-bottom: 8px;
+    }
+    .result-body { font-size: 14px; color: var(--text-secondary); line-height: 1.65; }
+
+    /* ─── TRANSACTION LOG ─── */
+    .log-section { padding: 0 0 56px; }
+    .log-table-wrap {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-card); overflow: hidden;
+    }
+    .log-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .log-table th {
+      text-align: left; font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.6px;
+      color: var(--text-muted); padding: 14px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      background: var(--bg-section-alt);
+    }
+    .log-table td {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-secondary); vertical-align: middle;
+    }
+    .log-table tr:last-child td { border-bottom: none; }
+    .log-table tbody tr { transition: background 0.2s ease; }
+    .log-table tbody tr:hover { background: var(--bg-section-alt); }
+    .log-table tbody tr.tx-new { animation: slideInHighlight 2s ease forwards; }
+    @keyframes slideInHighlight {
+      0%   { background: rgba(0,102,204,.12); }
+      100% { background: transparent; }
+    }
+
+    .tx-link { color: var(--traton-blue); font-weight: 500; text-decoration: none; transition: color var(--transition); }
+    .tx-link:hover { color: #0052a8; text-decoration: underline; }
+
+    .tx-flow-cell { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+    .tx-flow-badge {
+      display: inline-block; padding: 2px 8px;
+      border-radius: 20px; font-size: 11px; font-weight: 700;
+    }
+    .tx-flow-badge--sales     { background: #e0e8f0; color: var(--scania-blue); }
+    .tx-flow-badge--marketing { background: #fff7e0; color: #b07800; }
+    .tx-flow-badge--default   { background: var(--bg-section-alt); color: var(--text-secondary); }
+
+    .tx-credits-val {
+      font-weight: 700; font-variant-numeric: tabular-nums;
+      color: var(--text-primary); font-size: 14px;
+    }
+
+    /* ─── FUTURE STATE TIERS ─── */
+    .future-tiers-section {
+      padding: 56px 0 48px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    /* ─── EXPLAINER ─── */
+    .explainer-section { padding: 56px 0; background: var(--bg-section-alt); }
+    .explainer-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 20px; margin-top: 32px;
+    }
+    .explainer-card {
+      background: var(--bg-card); border-radius: 12px;
+      border: 1.5px solid var(--border-subtle); padding: 24px;
+    }
+    .explainer-icon { font-size: 28px; margin-bottom: 14px; }
+    .explainer-text { font-size: 14px; color: var(--text-secondary); line-height: 1.65; }
+    .explainer-text strong { color: var(--text-primary); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 960px) {
+      .hero-split { grid-template-columns: 1fr; }
+      .hero-team-card { max-width: 340px; }
+    }
+    @media (max-width: 900px) {
+      .balance-strip  { flex-wrap: wrap; }
+      .explainer-grid { grid-template-columns: 1fr 1fr; }
+      .config-panel   { flex-direction: column; }
+      .tx-preview     { grid-template-columns: 1fr 1fr; }
+      .tx-flow-label  { min-width: 100px; font-size: 12px; }
+      .mini-balance-strip { flex-direction: column; }
+    }
+    @media (max-width: 640px) {
+      .economy-hero h1 { font-size: 28px; }
+      .explainer-grid  { grid-template-columns: 1fr; }
+      .tx-action       { flex-direction: column; align-items: flex-start; }
+      .tx-preview      { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ─── HEADER ─── -->
+  <header class="site-header">
+    <div class="header-inner container">
+      <a href="index.html" class="brand">
+        <div class="brand-logo">T</div>
+        <div>
+          <span class="brand-name">TRATON Group</span>
+          <span class="brand-subtitle">AI Agent Marketplace</span>
+        </div>
+      </a>
+      <nav class="site-nav">
+        <a href="index.html"       class="nav-link">Agents</a>
+        <a href="skills.html"      class="nav-link">Skills</a>
+        <a href="economy.html"     class="nav-link active">Workflows</a>
+        <a href="index.html#about" class="nav-link">About</a>
+        <a href="innovation.html"  class="nav-link nav-link--highlight">Project Overview</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ─── HERO ─── -->
+  <div class="economy-hero">
+    <div class="container">
+      <div class="hero-split">
+        <div class="hero-copy">
+          <h1>Agent <span>Workflows</span></h1>
+          <p>Build and run cross-team agent workflows. Your agents invoke skills owned by other teams — every call is priced in tokens, governed by policy, and logged in real time.</p>
+        </div>
+        <div class="hero-your-team">
+          <div class="hero-team-card">
+            <span class="hero-team-badge">Your team</span>
+            <div class="hero-team-name">Sales <span class="hero-team-brand">· Scania</span></div>
+            <div class="hero-token-row">
+              <div class="hero-token-item">
+                <span class="hero-token-label">Spend budget</span>
+                <div class="hero-token-val">
+                  <span class="hero-num" id="hero-spend-sales">—</span>
+                  <span class="hero-token-unit">tokens</span>
+                </div>
+              </div>
+              <div class="hero-token-item">
+                <span class="hero-token-label">Earnings</span>
+                <div class="hero-token-val">
+                  <span class="hero-num" id="hero-earn-sales">—</span>
+                  <span class="hero-token-unit">tokens</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── MAIN SECTION ─── -->
+  <section class="economy-section">
+    <div class="container">
+
+      <!-- ─── WORKFLOW BUILDER PANEL ─── -->
+      <div class="tx-panel">
+
+        <div class="panel-header">
+          <div class="panel-header-title">New Workflow</div>
+          <div class="panel-header-sub">Select an agent and a skill, then run the workflow to see a live cross-team transaction</div>
+        </div>
+
+        <!-- Step 1 & 2: dropdowns -->
+        <div class="config-panel">
+          <div class="config-group">
+            <label class="config-label" for="sel-agent">1 · Requesting agent</label>
+            <select id="sel-agent" class="form-control">
+              <option value="">Select an agent…</option>
+              <option value="agent-sales-001">Sales Account Agent (Sales · Scania)</option>
+              <option value="agent-sales-002">Sales Pipeline Agent (Sales · Scania)</option>
+              <option value="agent-marketing-001">Marketing Insights Agent (Marketing · Scania)</option>
+              <option value="agent-marketing-002">Marketing Campaign Agent (Marketing · Scania)</option>
+            </select>
+          </div>
+          <div class="config-group">
+            <label class="config-label" for="sel-skill">2 · Skill to invoke</label>
+            <select id="sel-skill" class="form-control">
+              <option value="">Select a skill…</option>
+              <option value="skill-churn-001">Predict customer churn risk (Marketing · Scania)</option>
+              <option value="skill-lead-001">Score lead quality (Marketing · Scania)</option>
+              <option value="skill-attr-001">Campaign attribution analysis (Marketing · Scania)</option>
+              <option value="skill-pipeline-001">Pipeline forecast (Sales · Scania)</option>
+              <option value="skill-health-001">Account health snapshot (Sales · Scania)</option>
+            </select>
+          </div>
+        </div>
+
+        <p class="select-hint" id="select-hint">Select an agent and a skill to configure your workflow</p>
+
+        <!-- Revealed once both dropdowns are filled -->
+        <div id="tx-details">
+
+          <!-- Transaction summary -->
+          <div class="tx-preview" id="tx-preview">
+            <div>
+              <div class="tx-preview-label">From</div>
+              <div class="tx-preview-val" id="preview-from">—</div>
+            </div>
+            <div>
+              <div class="tx-preview-label">To</div>
+              <div class="tx-preview-val" id="preview-to">—</div>
+            </div>
+            <div>
+              <div class="tx-preview-label">Token cost</div>
+              <div class="tx-preview-val" id="preview-credits">—</div>
+            </div>
+            <div>
+              <div class="tx-preview-label">Type</div>
+              <div class="tx-preview-val" id="preview-type">—</div>
+            </div>
+            <div class="tx-preview-links" id="preview-links"></div>
+          </div>
+
+          <!-- Animated flow line -->
+          <div class="tx-flow">
+            <div class="tx-flow-label tx-flow-label--left" id="tx-label-from">—</div>
+            <div class="tx-track" id="tx-track">
+              <div class="tx-packet" id="tx-packet"></div>
+              <div class="tx-credits-pill" id="tx-credits-pill">— tokens</div>
+            </div>
+            <div class="tx-flow-label tx-flow-label--right" id="tx-label-to">—</div>
+          </div>
+
+          <!-- Mini balance cards (under the line, above button) -->
+          <div class="mini-balance-strip">
+            <div class="mini-team-card mini-team-card--sales" id="card-sales">
+              <span class="mini-team-name">Sales · Scania</span>
+              <div class="mini-team-stats">
+                <span>Spend</span>
+                <span class="mini-stat-val" id="spend-sales">—</span>
+                <span style="color:var(--border-subtle)">·</span>
+                <span>Earn</span>
+                <span class="mini-stat-val" id="earn-sales">—</span>
+                <span style="color:var(--text-muted);font-size:10px">tokens</span>
+              </div>
+            </div>
+            <div class="mini-team-card mini-team-card--marketing" id="card-marketing">
+              <span class="mini-team-name">Marketing · Scania</span>
+              <div class="mini-team-stats">
+                <span>Spend</span>
+                <span class="mini-stat-val" id="spend-marketing">—</span>
+                <span style="color:var(--border-subtle)">·</span>
+                <span>Earn</span>
+                <span class="mini-stat-val" id="earn-marketing">—</span>
+                <span style="color:var(--text-muted);font-size:10px">tokens</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tx-action">
+            <button class="btn btn--primary btn--lg" id="btn-transact">
+              Run workflow
+            </button>
+            <p class="tx-sub" id="tx-sub-desc"></p>
+          </div>
+
+        </div><!-- /tx-details -->
+
+        <!-- Streaming panel — revealed on run -->
+        <div class="streaming-panel" id="streaming-panel">
+          <div class="stream-terminal" id="stream-terminal"></div>
+          <div class="result-card" id="result-card">
+            <div class="result-badge" id="result-badge">High Risk</div>
+            <div class="result-headline" id="result-headline">Acme Industries — €840k at risk</div>
+            <p class="result-body" id="result-body">Recommend escalation to senior account manager. Propose retention call within 7 days.</p>
+          </div>
+        </div>
+
+      </div><!-- /tx-panel -->
+
+    </div><!-- /container -->
+  </section>
+
+  <!-- ─── TRANSACTION LOG ─── -->
+  <section class="log-section">
+    <div class="container">
+      <div class="section-header" style="margin-bottom:20px">
+        <div>
+          <h2 class="section-title">Workflow Log</h2>
+          <p class="section-subtitle">Every cross-team skill invocation, most recent first</p>
+        </div>
+      </div>
+      <div class="log-table-wrap">
+        <table class="log-table">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Requesting agent</th>
+              <th>Skill</th>
+              <th>Flow</th>
+              <th>Credits</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="tx-tbody">
+            <tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:32px">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FUTURE STATE TIERS ─── -->
+  <section class="future-tiers-section">
+    <div class="container">
+      <div class="section-header" style="margin-bottom:28px">
+        <div>
+          <h2 class="section-title">Expanding the workflow network</h2>
+          <p class="section-subtitle">The same token-based workflow model extends outward as Scania grows the agent ecosystem beyond internal Scania teams.</p>
+        </div>
+      </div>
+      <div class="network-tiers">
+
+        <!-- Tier 2: TRATON Group (cross-brand) — FUTURE STATE -->
+        <div class="tier tier--future">
+          <div class="tier-header">
+            <div class="tier-name">TRATON Group (cross-brand)</div>
+            <span class="tier-status tier-status--future">Future State</span>
+          </div>
+          <div class="balance-strip">
+            <div class="bs-team">
+              <div class="bs-team-name">Quality <span class="bs-brand">· MAN</span></div>
+              <div class="bs-stats"><span class="bs-stat-label">Spend</span> <span class="bs-num">—</span></div>
+            </div>
+            <div class="bs-center"><div class="bs-line"></div></div>
+            <div class="bs-team">
+              <div class="bs-team-name">Engineering <span class="bs-brand">· International</span></div>
+              <div class="bs-stats"><span class="bs-stat-label">Spend</span> <span class="bs-num">—</span></div>
+            </div>
+          </div>
+        </div><!-- /tier-2 -->
+
+        <!-- Tier 3: Partners and distributors — FUTURE STATE -->
+        <div class="tier tier--future">
+          <div class="tier-header">
+            <div class="tier-name">Partners and distributors</div>
+            <span class="tier-status tier-status--future">Future State</span>
+          </div>
+          <div class="balance-strip">
+            <div class="bs-team">
+              <div class="bs-team-name">Logistics partner <span class="bs-brand">· Partner</span></div>
+              <div class="bs-stats bs-placeholder">External partner agent — verified via TRATON partner programme</div>
+            </div>
+          </div>
+        </div><!-- /tier-3 -->
+
+        <!-- Tier 4: Open agent marketplace — FUTURE STATE -->
+        <div class="tier tier--future">
+          <div class="tier-header">
+            <div class="tier-name">Open agent marketplace</div>
+            <span class="tier-status tier-status--future">Future State</span>
+          </div>
+          <div class="balance-strip">
+            <div class="bs-team">
+              <div class="bs-team-name">Third-party specialist agents <span class="bs-brand">· Open</span></div>
+              <div class="bs-stats bs-placeholder">Curated external providers — same credit rails, governed access</div>
+            </div>
+          </div>
+        </div><!-- /tier-4 -->
+
+      </div><!-- /network-tiers -->
+    </div>
+  </section>
+
+  <!-- ─── EXPLAINER ─── -->
+  <section class="explainer-section">
+    <div class="container">
+      <h2 class="section-title">How workflow pricing works</h2>
+      <div class="explainer-grid">
+        <div class="explainer-card">
+          <div class="explainer-icon">📉</div>
+          <p class="explainer-text"><strong>Spend budget decreases</strong> each time your agents invoke a skill owned by another team.</p>
+        </div>
+        <div class="explainer-card">
+          <div class="explainer-icon">📈</div>
+          <p class="explainer-text"><strong>Earnings increase</strong> whenever another team's agents call a skill your team owns.</p>
+        </div>
+        <div class="explainer-card">
+          <div class="explainer-icon">🔄</div>
+          <p class="explainer-text"><strong>At month-end</strong>, your earnings convert into next month's spend budget — rewarding teams that build reusable skills.</p>
+        </div>
+        <div class="explainer-card">
+          <div class="explainer-icon">⭐</div>
+          <p class="explainer-text"><strong>Best skill-builders</strong> earn more capacity. <strong>Best at reuse</strong> spend less — the model is self-balancing.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>
+        <span>TRATON Group AI Agent Marketplace</span> &nbsp;·&nbsp;
+        Internal prototype &nbsp;·&nbsp;
+        Scania · MAN · Volkswagen Truck &amp; Bus
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    const DEFAULT_AGENT = 'agent-sales-001';
+    const DEFAULT_SKILL = 'skill-churn-001';
+
+    const HARDCODED_AGENTS = [
+      { id: 'agent-sales-001',     name: 'Sales Account Agent',      owner_team: 'Sales' },
+      { id: 'agent-sales-002',     name: 'Sales Pipeline Agent',     owner_team: 'Sales' },
+      { id: 'agent-marketing-001', name: 'Marketing Insights Agent', owner_team: 'Marketing' },
+      { id: 'agent-marketing-002', name: 'Marketing Campaign Agent', owner_team: 'Marketing' },
+    ];
+    const HARDCODED_SKILLS = [
+      { id: 'skill-churn-001',    name: 'Predict customer churn risk',   owner_team: 'Marketing' },
+      { id: 'skill-lead-001',     name: 'Score lead quality',            owner_team: 'Marketing' },
+      { id: 'skill-attr-001',     name: 'Campaign attribution analysis', owner_team: 'Marketing' },
+      { id: 'skill-pipeline-001', name: 'Pipeline forecast',             owner_team: 'Sales' },
+      { id: 'skill-health-001',   name: 'Account health snapshot',       owner_team: 'Sales' },
+    ];
+
+    let teams      = {};
+    let txData     = [];
+    let agentsData = HARDCODED_AGENTS;
+    let skillsData = HARDCODED_SKILLS;
+
+    const el    = id => document.getElementById(id);
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+    function fmt(n) { return typeof n === 'number' ? n.toLocaleString('en-GB') : '—'; }
+
+    function escHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function tickNumber(element, from, to, duration = 900) {
+      const start = performance.now();
+      const range = to - from;
+      function step(now) {
+        const t    = Math.min((now - start) / duration, 1);
+        const ease = 1 - Math.pow(1 - t, 3);
+        element.textContent = Math.round(from + range * ease).toLocaleString('en-GB');
+        if (t < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    function teamIdFor(teamName) {
+      const t = Object.values(teams).find(t => t.name === teamName);
+      return t ? t.id : null;
+    }
+
+    /* ── render ── */
+    function renderBalances() {
+      const safe = (id, val) => { const e = el(id); if (e) e.textContent = fmt(val); };
+      safe('spend-sales',      teams['team-001']?.spend_budget);
+      safe('earn-sales',       teams['team-001']?.earnings_balance);
+      safe('spend-marketing',  teams['team-002']?.spend_budget);
+      safe('earn-marketing',   teams['team-002']?.earnings_balance);
+      safe('hero-spend-sales', teams['team-001']?.spend_budget);
+      safe('hero-earn-sales',  teams['team-001']?.earnings_balance);
+    }
+
+    function teamBadgeClass(teamName) {
+      if (!teamName) return 'tx-flow-badge--default';
+      const n = teamName.toLowerCase();
+      if (n === 'sales')     return 'tx-flow-badge--sales';
+      if (n === 'marketing') return 'tx-flow-badge--marketing';
+      return 'tx-flow-badge--default';
+    }
+
+    function fmtTime(iso) {
+      if (!iso) return '—';
+      const d = new Date(iso);
+      return d.toLocaleString('en-GB', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
+    }
+
+    function renderLog(highlightFirst = false) {
+      const tbody = el('tx-tbody');
+      if (!txData.length) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:32px">No transactions yet.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = txData.map((t, i) => {
+        const agentCell = t.agent_id
+          ? `<a href="agent-detail.html?id=${t.agent_id}" class="tx-link">${escHtml(t.agent_name || t.agent_id)}</a>`
+          : '<span style="color:var(--text-muted)">—</span>';
+        const skillCell = t.skill_id
+          ? `<a href="skill-detail.html?id=${t.skill_id}" class="tx-link">${escHtml(t.skill_name || t.skill_id)}</a>`
+          : '<span style="color:var(--text-muted)">—</span>';
+        const payerBadge = `<span class="tx-flow-badge ${teamBadgeClass(t.payer_name)}">${escHtml(t.payer_name || t.payer_team_id)}</span>`;
+        const payeeBadge = `<span class="tx-flow-badge ${teamBadgeClass(t.payee_name)}">${escHtml(t.payee_name || t.payee_team_id)}</span>`;
+        const rowClass   = (highlightFirst && i === 0) ? ' class="tx-new"' : '';
+        return `<tr${rowClass}>
+          <td style="color:var(--text-muted);font-size:12px;white-space:nowrap;padding:14px 20px">${fmtTime(t.created_at)}</td>
+          <td style="padding:14px 20px">${agentCell}</td>
+          <td style="padding:14px 20px">${skillCell}</td>
+          <td style="padding:14px 20px">
+            <div class="tx-flow-cell">${payerBadge}<span style="color:var(--text-muted)">→</span>${payeeBadge}</div>
+          </td>
+          <td style="padding:14px 20px"><span class="tx-credits-val">${t.credits}</span></td>
+          <td style="padding:14px 20px"><span class="run-status run-status--success">${t.status}</span></td>
+        </tr>`;
+      }).join('');
+    }
+
+    /* ── dropdowns ── */
+    function loadDropdowns() {
+      // start blank — progressive disclosure drives reveal
+    }
+
+    /* ── preview ── */
+    function updatePreview() {
+      const agentId = el('sel-agent').value;
+      const skillId = el('sel-skill').value;
+      const details = el('tx-details');
+      const hint    = el('select-hint');
+
+      if (!agentId || !skillId) {
+        details.classList.remove('visible');
+        details.style.display = 'none';
+        hint.style.display = '';
+        el('tx-label-from').textContent   = '—';
+        el('tx-label-to').textContent     = '—';
+        el('tx-credits-pill').textContent = '— tokens';
+        el('tx-sub-desc').innerHTML = '';
+        return;
+      }
+
+      const agent = agentsData.find(a => a.id === agentId);
+      const skill = skillsData.find(s => s.id === skillId);
+      if (!agent || !skill) return;
+
+      const isXTeam = agent.owner_team !== skill.owner_team;
+      const credits = isXTeam ? 50 : 10;
+      const txType  = isXTeam ? 'Cross-team' : 'Same-team';
+
+      el('tx-label-from').textContent   = `${agent.owner_team} · Scania`;
+      el('tx-label-to').textContent     = `${skill.owner_team} · Scania`;
+      el('tx-credits-pill').textContent = `${credits} tokens`;
+
+      el('preview-from').textContent    = `${agent.owner_team} · Scania`;
+      el('preview-to').textContent      = `${skill.owner_team} · Scania`;
+      el('preview-credits').textContent = `${credits} tokens`;
+      el('preview-type').textContent    = txType;
+      el('preview-links').innerHTML = `
+        <a href="agent-detail.html?id=${escHtml(agentId)}" class="tx-link" style="font-size:12px">View ${escHtml(agent.name)} →</a>
+        <a href="skill-detail.html?id=${escHtml(skillId)}" class="tx-link" style="font-size:12px">View ${escHtml(skill.name)} →</a>
+      `;
+      el('tx-sub-desc').innerHTML =
+        `<strong>${escHtml(agent.name)}</strong> calls <strong>${escHtml(skill.name)}</strong> &nbsp;·&nbsp; ${credits} tokens`;
+
+      if (!details.classList.contains('visible')) {
+        hint.style.display = 'none';
+        details.style.display = 'block';
+        requestAnimationFrame(() => requestAnimationFrame(() => details.classList.add('visible')));
+      }
+    }
+
+    /* ── streaming lines ── */
+    function getStreamLines(agentId, skillId) {
+      if (agentId === DEFAULT_AGENT && skillId === DEFAULT_SKILL) {
+        return [
+          { text: 'Sales Account Agent (Claude Code) starting task...',                         delay: 0   },
+          { text: 'Customer: Acme Industries, contract value €840,000, renewal in 60 days',    delay: 620 },
+          { text: '→ Calling Marketing team\'s churn-prediction skill',                         delay: 520, cls: 'stream-line--callout' },
+          { text: 'Pulling 12-month engagement data from CRM...',                              delay: 680 },
+          { text: 'Email opens down 64%, support tickets up 3x, NPS dropped from 8 to 4',     delay: 600 },
+          { text: 'Comparing against patterns from 200 churned accounts last year',            delay: 540 },
+          { text: 'Churn risk score: 78% — high',                                              delay: 820, cls: 'stream-line--result' },
+        ];
+      }
+      const agent = agentsData.find(a => a.id === agentId);
+      const skill = skillsData.find(s => s.id === skillId);
+      return [
+        { text: `${agent?.name || agentId} starting task...`,                                    delay: 0   },
+        { text: `Calling ${skill?.owner_team || 'team'}'s ${skill?.name || skillId} skill...`,   delay: 600, cls: 'stream-line--callout' },
+        { text: 'Fetching relevant context...',                                                  delay: 720 },
+        { text: 'Running analysis...',                                                           delay: 840 },
+        { text: 'Result generated.',                                                             delay: 700, cls: 'stream-line--success' },
+      ];
+    }
+
+    function applyResultCard(agentId, skillId) {
+      const rc = el('result-card');
+      if (agentId === DEFAULT_AGENT && skillId === DEFAULT_SKILL) {
+        rc.style.cssText = '';
+        el('result-badge').className      = 'result-badge result-badge--high';
+        el('result-badge').textContent    = 'High Risk';
+        el('result-headline').textContent = 'Acme Industries — €840k at risk';
+        el('result-body').textContent     = 'Recommend escalation to senior account manager. Propose retention call within 7 days.';
+      } else {
+        rc.style.cssText = 'background:rgba(22,163,74,.05);border-color:rgba(22,163,74,.25);';
+        const skill = skillsData.find(s => s.id === skillId);
+        el('result-badge').className      = 'result-badge result-badge--success';
+        el('result-badge').textContent    = 'Completed';
+        el('result-headline').textContent = `${skill?.name || skillId} — task complete`;
+        el('result-body').textContent     = 'Task completed. Recommendation generated. See log for details.';
+      }
+    }
+
+    async function streamLinesNow(lines) {
+      const panel    = el('streaming-panel');
+      const terminal = el('stream-terminal');
+      const card     = el('result-card');
+
+      terminal.innerHTML = '';
+      card.classList.remove('visible');
+      panel.classList.add('visible');
+
+      for (const line of lines) {
+        await sleep(line.delay);
+        const span = document.createElement('span');
+        span.className = 'stream-line' + (line.cls ? ' ' + line.cls : '');
+        span.textContent = line.text;
+        terminal.appendChild(span);
+        span.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      await sleep(480);
+      card.classList.add('visible');
+      await sleep(900);
+    }
+
+    /* ── init ── */
+    async function init() {
+      try {
+        const [teamsRes, txRes] = await Promise.all([
+          fetch('/api/teams'),
+          fetch('/api/transactions'),
+        ]);
+        const teamsArr = await teamsRes.json();
+        teamsArr.forEach(t => { teams[t.id] = t; });
+        txData = await txRes.json();
+        renderBalances();
+        renderLog(false);
+      } catch {
+        el('tx-tbody').innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--man-red);padding:32px">⚠ Backend not running — start with <code>npm start</code></td></tr>';
+        ['spend-sales','earn-sales','spend-marketing','earn-marketing','hero-spend-sales','hero-earn-sales']
+          .forEach(id => { const e = el(id); if (e) e.textContent = '—'; });
+      }
+    }
+
+    /* ── transaction ── */
+    async function runTransaction() {
+      const agentId = el('sel-agent').value;
+      const skillId = el('sel-skill').value;
+      if (!agentId || !skillId) return;
+
+      const agent = agentsData.find(a => a.id === agentId);
+      const skill = skillsData.find(s => s.id === skillId);
+      if (!agent || !skill) return;
+
+      const payerTeamId = teamIdFor(agent.owner_team);
+      const payeeTeamId = teamIdFor(skill.owner_team);
+      if (!payerTeamId || !payeeTeamId) return;
+
+      const isXTeam = agent.owner_team !== skill.owner_team;
+      const credits  = isXTeam ? 50 : 10;
+
+      const btn   = el('btn-transact');
+      const track = el('tx-track');
+      const pkt   = el('tx-packet');
+
+      btn.disabled = true;
+      btn.textContent = 'Running workflow…';
+
+      applyResultCard(agentId, skillId);
+
+      const apiPromise = fetch('/api/transactions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ payer_team_id: payerTeamId, payee_team_id: payeeTeamId, agent_id: agentId, skill_id: skillId, credits }),
+      }).then(r => r.json());
+
+      let result;
+      try {
+        const [, data] = await Promise.all([streamLinesNow(getStreamLines(agentId, skillId)), apiPromise]);
+        result = data;
+      } catch {
+        el('streaming-panel').classList.remove('visible');
+        btn.disabled = false;
+        btn.textContent = 'Run workflow';
+        return;
+      }
+
+      // Packet animation
+      pkt.classList.remove('flying');
+      void pkt.offsetHeight;
+      track.classList.add('lit');
+      pkt.classList.add('flying');
+
+      const spendElId = payerTeamId === 'team-001' ? 'spend-sales' : 'spend-marketing';
+      const earnElId  = payeeTeamId === 'team-001' ? 'earn-sales'  : 'earn-marketing';
+      const spendCard = payerTeamId === 'team-001' ? 'card-sales'  : 'card-marketing';
+      const earnCard  = payeeTeamId === 'team-001' ? 'card-sales'  : 'card-marketing';
+
+      const oldSpend = teams[payerTeamId].spend_budget;
+      const oldEarn  = teams[payeeTeamId].earnings_balance;
+      teams[payerTeamId] = result.payer;
+      teams[payeeTeamId] = result.payee;
+
+      const spendEl = el(spendElId);
+      const earnEl  = el(earnElId);
+
+      spendEl.classList.add('flash-down');
+      earnEl.classList.add('flash-up');
+      el(spendCard).classList.add('pulse-spend');
+      if (spendCard !== earnCard) el(earnCard).classList.add('pulse-earn');
+
+      tickNumber(spendEl, oldSpend, result.payer.spend_budget);
+      tickNumber(earnEl,  oldEarn,  result.payee.earnings_balance);
+
+      // Keep hero card in sync
+      if (payerTeamId === 'team-001') tickNumber(el('hero-spend-sales'), oldSpend, result.payer.spend_budget);
+      if (payeeTeamId === 'team-001') tickNumber(el('hero-earn-sales'),  oldEarn,  result.payee.earnings_balance);
+
+      await sleep(1600);
+      track.classList.remove('lit');
+      pkt.classList.remove('flying');
+
+      const freshTx = await fetch('/api/transactions').then(r => r.json());
+      txData = freshTx;
+      renderLog(true);
+
+      await sleep(1500);
+      spendEl.classList.remove('flash-down');
+      earnEl.classList.remove('flash-up');
+      el(spendCard).classList.remove('pulse-spend');
+      if (spendCard !== earnCard) el(earnCard).classList.remove('pulse-earn');
+
+      btn.disabled = false;
+      btn.textContent = 'Run workflow';
+    }
+
+    /* ── boot ── */
+    document.addEventListener('DOMContentLoaded', () => {
+      init();
+      loadDropdowns();
+      el('sel-agent').addEventListener('change', updatePreview);
+      el('sel-skill').addEventListener('change', updatePreview);
+      el('btn-transact').addEventListener('click', runTransaction);
+    });
+  </script>
+</body>
+</html>
