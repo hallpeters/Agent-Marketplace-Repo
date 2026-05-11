@@ -235,12 +235,55 @@
       .config-panel  { flex-direction: column; }
       .tx-preview    { grid-template-columns: 1fr 1fr; }
       .tx-flow-label { min-width: 100px; font-size: 12px; }
+      .hero-split    { grid-template-columns: 1fr; }
+      .hero-your-team { display: none; }
     }
     @media (max-width: 640px) {
       .workflows-hero h1 { font-size: 28px; }
       .tx-action         { flex-direction: column; align-items: flex-start; }
       .tx-preview        { grid-template-columns: 1fr 1fr; }
     }
+
+    /* ─── HERO SPLIT ─── */
+    .hero-split { display: grid; grid-template-columns: 1fr 300px; gap: 40px; align-items: center; }
+    .hero-team-card {
+      background: rgba(255,255,255,.08); border: 1.5px solid rgba(255,255,255,.14);
+      border-left: 4px solid #60a5fa; border-radius: 12px; padding: 20px 22px;
+    }
+    .hero-team-badge { display: block; font-size: 9px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: #60a5fa; margin-bottom: 5px; }
+    .hero-team-name { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 14px; }
+    .hero-team-brand { font-weight: 400; color: rgba(255,255,255,.5); }
+    .hero-token-row { display: flex; gap: 28px; }
+    .hero-token-item { display: flex; flex-direction: column; gap: 3px; }
+    .hero-token-label { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; color: rgba(255,255,255,.4); }
+    .hero-token-val { display: flex; align-items: baseline; gap: 4px; }
+    .hero-num { font-size: 28px; font-weight: 800; color: #fff; letter-spacing: -1px; line-height: 1; }
+    .hero-token-unit { font-size: 11px; color: rgba(255,255,255,.4); }
+
+    /* ─── MINI TEAM CARDS ─── */
+    .mini-teams-row { display: flex; gap: 12px; margin-bottom: 20px; }
+    .mini-team-card { flex: 1; border-radius: 10px; padding: 14px 16px; border: 1.5px solid var(--border-subtle); background: var(--bg-section-alt); transition: box-shadow var(--transition); }
+    .mini-team-card--sales     { border-left: 4px solid var(--brand-a-blue); }
+    .mini-team-card--marketing { border-left: 4px solid var(--brand-a-amber); }
+    .mini-team-name { font-size: 12px; font-weight: 700; color: var(--text-secondary); margin-bottom: 8px; }
+    .mini-stats { display: flex; gap: 16px; }
+    .mini-stat { display: flex; flex-direction: column; gap: 1px; }
+    .mini-stat-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); }
+    .mini-stat-val { font-size: 18px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.5px; line-height: 1.2; }
+    .mini-stat-unit { font-size: 10px; color: var(--text-muted); }
+
+    /* ─── BALANCE ANIMATIONS ─── */
+    .flash-down { animation: flashDown 1s ease forwards; }
+    .flash-up   { animation: flashUp   1s ease forwards; }
+    @keyframes flashDown { 0% { color: #dc2626; } 100% { color: var(--text-primary); } }
+    @keyframes flashUp   { 0% { color: #16a34a; } 100% { color: var(--text-primary); } }
+    .pulse-spend { animation: pulseSpend 1s ease forwards; }
+    .pulse-earn  { animation: pulseEarn  1s ease forwards; }
+    @keyframes pulseSpend { 0% { box-shadow: 0 0 0 4px rgba(220,38,38,.3); } 100% { box-shadow: none; } }
+    @keyframes pulseEarn  { 0% { box-shadow: 0 0 0 4px rgba(22,163,74,.3);  } 100% { box-shadow: none; } }
+
+    /* ─── CREDITS PILL ─── */
+    .tx-credits-pill { display: inline-block; background: var(--bg-section-alt); border: 1.5px solid var(--border-subtle); border-radius: 20px; padding: 3px 12px; font-size: 13px; font-weight: 700; color: var(--primary-blue); }
   </style>
 </head>
 <body>
@@ -267,8 +310,29 @@
   <!-- ─── HERO ─── -->
   <div class="workflows-hero">
     <div class="container">
-      <h1>Agent <span>Workflows</span></h1>
-      <p>Select an agent and a skill to build a cross-team workflow. Every invocation is governed by policy, logged in real time, and visible to IT and governance teams.</p>
+      <div class="hero-split">
+        <div>
+          <h1>Agent <span>Workflows</span></h1>
+          <p>Build and run cross-team agent workflows. Your agents invoke skills owned by other teams — every call is priced in tokens, governed by policy, and logged in real time.</p>
+        </div>
+        <div class="hero-your-team">
+          <div class="hero-team-card">
+            <span class="hero-team-badge">Your team</span>
+            <div class="hero-team-name">Sales <span class="hero-team-brand">· Atlas</span></div>
+            <div class="hero-token-row">
+              <div class="hero-token-item">
+                <span class="hero-token-label">Spend budget</span>
+                <div class="hero-token-val"><span class="hero-num" id="hero-spend-sales">—</span><span class="hero-token-unit">tokens</span></div>
+              </div>
+              <div class="hero-token-item">
+                <span class="hero-token-label">Earnings</span>
+                <div class="hero-token-val"><span class="hero-num" id="hero-earn-sales">—</span><span class="hero-token-unit">tokens</span></div>
+              </div>
+            </div>
+            <button id="btn-recharge" onclick="rechargeTokens()" style="margin-top:14px;font-size:11px;font-weight:600;color:rgba(255,255,255,.45);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:6px;padding:5px 12px;cursor:pointer" onmouseover="this.style.color='rgba(255,255,255,.8)';this.style.background='rgba(255,255,255,.12)'" onmouseout="this.style.color='rgba(255,255,255,.45)';this.style.background='rgba(255,255,255,.07)'">↺ Recharge tokens</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -280,6 +344,24 @@
         <div class="panel-header">
           <div class="panel-header-title">New Workflow</div>
           <div class="panel-header-sub">Select an agent and a skill, then run the workflow to see a live cross-team invocation</div>
+        </div>
+
+        <!-- Team balances -->
+        <div class="mini-teams-row">
+          <div class="mini-team-card mini-team-card--sales" id="card-sales">
+            <div class="mini-team-name">Sales</div>
+            <div class="mini-stats">
+              <div class="mini-stat"><span class="mini-stat-label">Spend budget</span><div><span class="mini-stat-val" id="spend-sales">—</span> <span class="mini-stat-unit">tokens</span></div></div>
+              <div class="mini-stat"><span class="mini-stat-label">Earnings</span><div><span class="mini-stat-val" id="earn-sales">—</span> <span class="mini-stat-unit">tokens</span></div></div>
+            </div>
+          </div>
+          <div class="mini-team-card mini-team-card--marketing" id="card-marketing">
+            <div class="mini-team-name">Marketing</div>
+            <div class="mini-stats">
+              <div class="mini-stat"><span class="mini-stat-label">Spend budget</span><div><span class="mini-stat-val" id="spend-marketing">—</span> <span class="mini-stat-unit">tokens</span></div></div>
+              <div class="mini-stat"><span class="mini-stat-label">Earnings</span><div><span class="mini-stat-val" id="earn-marketing">—</span> <span class="mini-stat-unit">tokens</span></div></div>
+            </div>
+          </div>
         </div>
 
         <!-- Dropdowns -->
@@ -325,6 +407,10 @@
             <div>
               <div class="tx-preview-label">Type</div>
               <div class="tx-preview-val" id="preview-type">—</div>
+            </div>
+            <div>
+              <div class="tx-preview-label">Cost</div>
+              <div class="tx-preview-val"><span class="tx-credits-pill" id="tx-credits-pill">— tokens</span></div>
             </div>
             <div class="tx-preview-links" id="preview-links"></div>
           </div>
@@ -418,16 +504,14 @@
     ];
 
     let txLog = [];
+    let teams = {};
 
     const el    = id => document.getElementById(id);
     const sleep = ms => new Promise(r => setTimeout(r, ms));
 
     function escHtml(str) {
-      return String(str)
-        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
-
     function teamBadgeClass(teamName) {
       if (!teamName) return 'tx-flow-badge--default';
       const n = teamName.toLowerCase();
@@ -435,13 +519,46 @@
       if (n === 'marketing') return 'tx-flow-badge--marketing';
       return 'tx-flow-badge--default';
     }
-
     function fmtTime(iso) {
       if (!iso) return '—';
-      return new Date(iso).toLocaleString('en-GB', {
-        month: 'short', day: 'numeric',
-        hour: '2-digit', minute: '2-digit', hour12: false,
-      });
+      return new Date(iso).toLocaleString('en-GB', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit', hour12:false });
+    }
+    function fmt(n) { return typeof n === 'number' ? n.toLocaleString('en-GB') : '—'; }
+
+    function tickNumber(element, from, to, duration = 900) {
+      const start = performance.now();
+      function step(now) {
+        const p = Math.min((now - start) / duration, 1);
+        element.textContent = Math.round(from + (to - from) * p);
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    function renderBalances() {
+      const safe = (id, val) => { const e = el(id); if (e) e.textContent = fmt(val); };
+      safe('spend-sales',      teams['team-001']?.spend_budget);
+      safe('earn-sales',       teams['team-001']?.earnings_balance);
+      safe('spend-marketing',  teams['team-002']?.spend_budget);
+      safe('earn-marketing',   teams['team-002']?.earnings_balance);
+      safe('hero-spend-sales', teams['team-001']?.spend_budget);
+      safe('hero-earn-sales',  teams['team-001']?.earnings_balance);
+    }
+
+    async function rechargeTokens() {
+      const btn = el('btn-recharge');
+      btn.textContent = '…'; btn.disabled = true;
+      try {
+        const arr = await fetch('/api/teams/recharge', { method: 'POST' }).then(r => r.json());
+        arr.forEach(t => { teams[t.id] = t; });
+        txLog = [];
+        renderBalances();
+        renderLog(false);
+        btn.textContent = '✓ Recharged';
+        setTimeout(() => { btn.textContent = '↺ Recharge tokens'; btn.disabled = false; }, 1500);
+      } catch {
+        btn.textContent = '↺ Recharge tokens'; btn.disabled = false;
+      }
     }
 
     function renderLog(highlightFirst = false) {
@@ -451,19 +568,14 @@
         return;
       }
       tbody.innerHTML = txLog.map((t, i) => {
-        const agentCell = t.agent_id
-          ? `<a href="agent-detail.html?id=${escHtml(t.agent_id)}" class="tx-link">${escHtml(t.agent_name || t.agent_id)}</a>`
-          : '<span style="color:var(--text-muted)">—</span>';
-        const skillCell = t.skill_id
-          ? `<a href="skill-detail.html?id=${escHtml(t.skill_id)}" class="tx-link">${escHtml(t.skill_name || t.skill_id)}</a>`
-          : '<span style="color:var(--text-muted)">—</span>';
-        const payerBadge = `<span class="tx-flow-badge ${teamBadgeClass(t.payer_name)}">${escHtml(t.payer_name || '—')}</span>`;
-        const payeeBadge = `<span class="tx-flow-badge ${teamBadgeClass(t.payee_name)}">${escHtml(t.payee_name || '—')}</span>`;
+        const agentCell = t.agent_id ? `<a href="agent-detail.html?id=${escHtml(t.agent_id)}" class="tx-link">${escHtml(t.agent_name || t.agent_id)}</a>` : '<span style="color:var(--text-muted)">—</span>';
+        const skillCell = t.skill_id ? `<a href="skill-detail.html?id=${escHtml(t.skill_id)}" class="tx-link">${escHtml(t.skill_name || t.skill_id)}</a>` : '<span style="color:var(--text-muted)">—</span>';
+        const payerBadge = `<span class="tx-flow-badge ${teamBadgeClass(t.payer_name)}">${escHtml(t.payer_name||'—')}</span>`;
+        const payeeBadge = `<span class="tx-flow-badge ${teamBadgeClass(t.payee_name)}">${escHtml(t.payee_name||'—')}</span>`;
         const rowClass   = (highlightFirst && i === 0) ? ' class="tx-new"' : '';
         return `<tr${rowClass}>
           <td style="color:var(--text-muted);font-size:12px;white-space:nowrap">${fmtTime(t.created_at)}</td>
-          <td>${agentCell}</td>
-          <td>${skillCell}</td>
+          <td>${agentCell}</td><td>${skillCell}</td>
           <td><div class="tx-flow-cell">${payerBadge}<span style="color:var(--text-muted)">→</span>${payeeBadge}</div></td>
           <td><span class="run-status run-status--success">${t.status || 'success'}</span></td>
         </tr>`;
@@ -477,11 +589,10 @@
       const hint    = el('select-hint');
 
       if (!agentId || !skillId) {
-        details.classList.remove('visible');
-        details.style.display = 'none';
+        details.classList.remove('visible'); details.style.display = 'none';
         hint.style.display = '';
-        el('tx-label-from').textContent = '—';
-        el('tx-label-to').textContent   = '—';
+        el('tx-label-from').textContent = '—'; el('tx-label-to').textContent = '—';
+        el('tx-credits-pill').textContent = '— tokens';
         el('tx-sub-desc').innerHTML = '';
         return;
       }
@@ -491,24 +602,21 @@
       if (!agent || !skill) return;
 
       const isXTeam = agent.owner_team !== skill.owner_team;
-      const txType  = isXTeam ? 'Cross-team' : 'Same-team';
+      const credits = isXTeam ? 50 : 10;
 
-      el('tx-label-from').textContent = `${agent.owner_team} · Atlas`;
-      el('tx-label-to').textContent   = `${skill.owner_team} · Atlas`;
-
-      el('preview-from').textContent  = `${agent.owner_team} · Atlas`;
-      el('preview-to').textContent    = `${skill.owner_team} · Atlas`;
-      el('preview-type').textContent  = txType;
+      el('tx-label-from').textContent  = `${agent.owner_team} · Atlas`;
+      el('tx-label-to').textContent    = `${skill.owner_team} · Atlas`;
+      el('preview-from').textContent   = `${agent.owner_team} · Atlas`;
+      el('preview-to').textContent     = `${skill.owner_team} · Atlas`;
+      el('preview-type').textContent   = isXTeam ? 'Cross-team' : 'Same-team';
+      el('tx-credits-pill').textContent = `${credits} tokens`;
       el('preview-links').innerHTML = `
         <a href="agent-detail.html?id=${escHtml(agentId)}" class="tx-link" style="font-size:12px">View ${escHtml(agent.name)} →</a>
-        <a href="skill-detail.html?id=${escHtml(skillId)}" class="tx-link" style="font-size:12px">View ${escHtml(skill.name)} →</a>
-      `;
-      el('tx-sub-desc').innerHTML =
-        `<strong>${escHtml(agent.name)}</strong> calls <strong>${escHtml(skill.name)}</strong>`;
+        <a href="skill-detail.html?id=${escHtml(skillId)}" class="tx-link" style="font-size:12px">View ${escHtml(skill.name)} →</a>`;
+      el('tx-sub-desc').innerHTML = `<strong>${escHtml(agent.name)}</strong> calls <strong>${escHtml(skill.name)}</strong> &nbsp;·&nbsp; ${credits} tokens`;
 
       if (!details.classList.contains('visible')) {
-        hint.style.display = 'none';
-        details.style.display = 'block';
+        hint.style.display = 'none'; details.style.display = 'block';
         requestAnimationFrame(() => requestAnimationFrame(() => details.classList.add('visible')));
       }
     }
@@ -516,23 +624,23 @@
     function getStreamLines(agentId, skillId) {
       if (agentId === DEFAULT_AGENT && skillId === DEFAULT_SKILL) {
         return [
-          { text: 'Sales Account Agent (Claude Code) starting task...',                         delay: 0   },
-          { text: 'Customer: Acme Industries, contract value €840,000, renewal in 60 days',    delay: 620 },
-          { text: '→ Calling Marketing team\'s churn-prediction skill',                         delay: 520, cls: 'stream-line--callout' },
-          { text: 'Pulling 12-month engagement data from CRM...',                              delay: 680 },
-          { text: 'Email opens down 64%, support tickets up 3x, NPS dropped from 8 to 4',     delay: 600 },
-          { text: 'Comparing against patterns from 200 churned accounts last year',            delay: 540 },
-          { text: 'Churn risk score: 78% — high',                                              delay: 820, cls: 'stream-line--result' },
+          { text: 'Sales Account Agent (Claude Code) starting task...',                      delay: 0   },
+          { text: 'Customer: Acme Industries, contract value €840,000, renewal in 60 days', delay: 620 },
+          { text: '→ Calling Marketing team\'s churn-prediction skill',                      delay: 520, cls: 'stream-line--callout' },
+          { text: 'Pulling 12-month engagement data from CRM...',                           delay: 680 },
+          { text: 'Email opens down 64%, support tickets up 3x, NPS dropped from 8 to 4',  delay: 600 },
+          { text: 'Comparing against patterns from 200 churned accounts last year',         delay: 540 },
+          { text: 'Churn risk score: 78% — high',                                           delay: 820, cls: 'stream-line--result' },
         ];
       }
       const agent = HARDCODED_AGENTS.find(a => a.id === agentId);
       const skill = HARDCODED_SKILLS.find(s => s.id === skillId);
       return [
-        { text: `${agent?.name || agentId} starting task...`,                                    delay: 0   },
-        { text: `Calling ${skill?.owner_team || 'team'}'s ${skill?.name || skillId} skill...`,   delay: 600, cls: 'stream-line--callout' },
-        { text: 'Fetching relevant context...',                                                  delay: 720 },
-        { text: 'Running analysis...',                                                           delay: 840 },
-        { text: 'Result generated.',                                                             delay: 700, cls: 'stream-line--success' },
+        { text: `${agent?.name || agentId} starting task...`,                                  delay: 0   },
+        { text: `Calling ${skill?.owner_team || 'team'}'s ${skill?.name || skillId} skill...`, delay: 600, cls: 'stream-line--callout' },
+        { text: 'Fetching relevant context...',                                                delay: 720 },
+        { text: 'Running analysis...',                                                         delay: 840 },
+        { text: 'Result generated.',                                                           delay: 700, cls: 'stream-line--success' },
       ];
     }
 
@@ -557,11 +665,9 @@
     async function streamLinesNow(lines) {
       const terminal = el('stream-terminal');
       const card     = el('result-card');
-
       terminal.innerHTML = '';
       card.classList.remove('visible');
       el('streaming-panel').classList.add('visible');
-
       for (const line of lines) {
         await sleep(line.delay);
         const span = document.createElement('span');
@@ -570,7 +676,6 @@
         terminal.appendChild(span);
         span.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
-
       await sleep(480);
       card.classList.add('visible');
       await sleep(900);
@@ -589,60 +694,84 @@
       const track = el('tx-track');
       const pkt   = el('tx-packet');
 
-      btn.disabled = true;
-      btn.textContent = 'Running…';
+      const payerTeamId = agent.owner_team === 'Sales' ? 'team-001' : 'team-002';
+      const payeeTeamId = skill.owner_team  === 'Sales' ? 'team-001' : 'team-002';
+      const isXTeam     = agent.owner_team !== skill.owner_team;
+      const credits     = isXTeam ? 50 : 10;
 
+      btn.disabled = true; btn.textContent = 'Running…';
       applyResultCard(agentId, skillId);
 
-      // Fire API log (non-fatal)
-      const logPromise = fetch('/api/transactions', {
+      const apiPromise = fetch('/api/transactions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          payer_team_id: agent.owner_team === 'Sales' ? 'team-001' : 'team-002',
-          payee_team_id: skill.owner_team  === 'Sales' ? 'team-001' : 'team-002',
-          agent_id: agentId,
-          skill_id: skillId,
-          credits: 0,
-        }),
-      }).catch(() => null);
+        body: JSON.stringify({ payer_team_id: payerTeamId, payee_team_id: payeeTeamId, agent_id: agentId, skill_id: skillId, credits }),
+      }).then(r => r.json()).catch(() => null);
 
-      await Promise.all([streamLinesNow(getStreamLines(agentId, skillId)), logPromise]);
+      let result;
+      try {
+        const [, data] = await Promise.all([streamLinesNow(getStreamLines(agentId, skillId)), apiPromise]);
+        result = data;
+      } catch {
+        el('streaming-panel').classList.remove('visible');
+        btn.disabled = false; btn.textContent = 'Run workflow';
+        return;
+      }
 
-      // Packet fly
-      pkt.classList.remove('flying');
-      void pkt.offsetHeight;
-      track.classList.add('lit');
-      pkt.classList.add('flying');
+      // Packet animation
+      pkt.classList.remove('flying'); void pkt.offsetHeight;
+      track.classList.add('lit'); pkt.classList.add('flying');
 
-      await sleep(1600);
-      track.classList.remove('lit');
-      pkt.classList.remove('flying');
+      if (result?.payer && result?.payee) {
+        const spendElId = payerTeamId === 'team-001' ? 'spend-sales' : 'spend-marketing';
+        const earnElId  = payeeTeamId === 'team-001' ? 'earn-sales'  : 'earn-marketing';
+        const spendCard = payerTeamId === 'team-001' ? 'card-sales'  : 'card-marketing';
+        const earnCard  = payeeTeamId === 'team-001' ? 'card-sales'  : 'card-marketing';
+
+        const oldSpend = teams[payerTeamId]?.spend_budget      ?? 0;
+        const oldEarn  = teams[payeeTeamId]?.earnings_balance  ?? 0;
+        teams[payerTeamId] = result.payer;
+        teams[payeeTeamId] = result.payee;
+
+        const spendEl = el(spendElId);
+        const earnEl  = el(earnElId);
+        spendEl.classList.add('flash-down'); earnEl.classList.add('flash-up');
+        el(spendCard).classList.add('pulse-spend');
+        if (spendCard !== earnCard) el(earnCard).classList.add('pulse-earn');
+        tickNumber(spendEl, oldSpend, result.payer.spend_budget);
+        tickNumber(earnEl,  oldEarn,  result.payee.earnings_balance);
+        if (payerTeamId === 'team-001') tickNumber(el('hero-spend-sales'), oldSpend, result.payer.spend_budget);
+        if (payeeTeamId === 'team-001') tickNumber(el('hero-earn-sales'),  oldEarn,  result.payee.earnings_balance);
+
+        await sleep(1600);
+        track.classList.remove('lit'); pkt.classList.remove('flying');
+        await sleep(500);
+        spendEl.classList.remove('flash-down'); earnEl.classList.remove('flash-up');
+        el(spendCard).classList.remove('pulse-spend');
+        if (spendCard !== earnCard) el(earnCard).classList.remove('pulse-earn');
+      } else {
+        await sleep(1600);
+        track.classList.remove('lit'); pkt.classList.remove('flying');
+      }
 
       // Refresh log
       try {
         const fresh = await fetch('/api/transactions');
         if (fresh.ok) txLog = await fresh.json();
       } catch (_) {
-        // Append locally if backend unavailable
-        txLog.unshift({
-          agent_id: agentId, agent_name: agent.name,
-          skill_id: skillId, skill_name: skill.name,
-          payer_name: agent.owner_team, payee_name: skill.owner_team,
-          status: 'success', created_at: new Date().toISOString(),
-        });
+        txLog.unshift({ agent_id: agentId, agent_name: agent.name, skill_id: skillId, skill_name: skill.name, payer_name: agent.owner_team, payee_name: skill.owner_team, status: 'success', created_at: new Date().toISOString() });
       }
       renderLog(true);
 
       await sleep(500);
-      btn.disabled = false;
-      btn.textContent = 'Run workflow';
+      btn.disabled = false; btn.textContent = 'Run workflow';
     }
 
     async function init() {
       try {
-        const res = await fetch('/api/transactions');
-        if (res.ok) txLog = await res.json();
+        const [teamsRes, txRes] = await Promise.all([fetch('/api/teams'), fetch('/api/transactions')]);
+        if (teamsRes.ok) { const arr = await teamsRes.json(); arr.forEach(t => { teams[t.id] = t; }); renderBalances(); }
+        if (txRes.ok) txLog = await txRes.json();
       } catch (_) {}
       renderLog(false);
     }

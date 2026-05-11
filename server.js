@@ -1368,6 +1368,13 @@ app.get('/api/teams', (_req, res) => {
   res.json(db.prepare('SELECT * FROM teams').all());
 });
 
+app.post('/api/teams/recharge', (_req, res) => {
+  db.prepare('UPDATE teams SET spend_budget = 880, earnings_balance = 60  WHERE id = ?').run('team-001');
+  db.prepare('UPDATE teams SET spend_budget = 940, earnings_balance = 120 WHERE id = ?').run('team-002');
+  db.prepare('DELETE FROM transactions').run();
+  res.json(db.prepare('SELECT * FROM teams').all());
+});
+
 // Transactions
 app.get('/api/transactions', (_req, res) => {
   const rows = db.prepare(`
